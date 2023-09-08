@@ -1,0 +1,20 @@
+{
+    "name": "zxin/think-library-plus",
+    "type": "library",
+    "require": {
+        "php": "^8.0",
+        "composer-runtime-api": "^2",
+        "topthink/framework": "^8.0.2",
+        "topthink/think-helper": "^3.1.6",
+        "zxin/utils": "^2.2"
+    },
+    "require-dev": {
+        "topthink/think-orm": "~3.0.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Zxin\\Think\\": "legacy/",
+            "Zxin\\Think\\Library\\": "src/"
+        }
+    }
+}
