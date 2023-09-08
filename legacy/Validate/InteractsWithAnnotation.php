@@ -8,6 +8,7 @@ use ReflectionClass;
 use ReflectionException;
 use think\Validate;
 use ReflectionAttribute;
+
 use function dump;
 use function var_dump;
 
@@ -68,7 +69,7 @@ trait InteractsWithAnnotation
         }
         if (str_starts_with($validation->name, '@')) {
             $class = $this->namespace . str_replace('.', '\\', substr($validation->name, 1));
-        } elseif (\class_exists($validation->name)) {
+        } elseif (class_exists($validation->name)) {
             $class = $validation->name;
         } elseif (str_starts_with($validation->name, '\\')) {
             // 弃用的写法

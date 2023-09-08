@@ -4,6 +4,8 @@ declare(strict_types=1);
 $finder = PhpCsFixer\Finder::create()
     ->in([
         'src',
+        'legacy',
+        'bin',
     ]);
 $config = new PhpCsFixer\Config();
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zxin\Think\Validate;
 
 use think\Validate;
+
 use function app;
 
 class ValidateContext

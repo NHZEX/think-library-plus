@@ -8,6 +8,7 @@ use think\exception\HttpException;
 use think\Request;
 use think\Response;
 use think\Validate;
+
 use function count;
 use function get_class;
 use function is_array;

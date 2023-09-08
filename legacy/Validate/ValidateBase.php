@@ -3,6 +3,7 @@
 namespace Zxin\Think\Validate;
 
 use think\Validate;
+
 use function explode;
 use function in_array;
 use function str_contains;

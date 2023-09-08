@@ -4,6 +4,7 @@ namespace Zxin\Think\Validate;
 
 use think\App;
 use think\Service;
+
 use function str_replace;
 
 class ValidateService extends Service
