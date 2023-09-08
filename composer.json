@@ -30,5 +30,20 @@
         "platform": {
             "php": "8.0.2"
         }
+    },
+    "bin": [
+        "bin/dump-auth",
+        "bin/dump-route",
+        "bin/dump-validate"
+    ],
+    "extra": {
+        "think": {
+            "services": [
+            ],
+            "config": {
+                "auth": "config/auth.php",
+                "validate": "config/validate.php"
+            }
+        }
     }
 }
