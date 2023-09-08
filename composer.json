@@ -6,15 +6,24 @@
         "composer-runtime-api": "^2",
         "topthink/framework": "^8.0.2",
         "topthink/think-helper": "^3.1.6",
-        "zxin/utils": "^2.2"
+        "zxin/utils": "^2.2",
+        "symfony/var-exporter": "^6.0",
+        "symfony/finder": "^6.0"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.26",
+        "rector/rector": "^0.18.2",
         "topthink/think-orm": "~3.0.11"
     },
     "autoload": {
         "psr-4": {
-            "Zxin\\Think\\": "legacy/",
-            "Zxin\\Think\\Library\\": "src/"
+            "Zxin\\Think\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "8.0.2"
         }
     }
 }
