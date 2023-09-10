@@ -43,11 +43,8 @@ class Permission
 
     /**
      * 获取树
-     * @param string        $index
-     * @param int           $level
      * @param array|null    $data
      * @param callable|null $filter
-     * @return array
      */
     public function getTree(
         string $index = '__ROOT__',
@@ -84,34 +81,21 @@ class Permission
         return $this->storage;
     }
 
-    /**
-     * @return bool
-     */
     public function hasStorage(): bool
     {
-        return $this->loadStorage() !== null;
+        return $this->loadStorage() instanceof AuthStorage;
     }
 
-    /**
-     * @return AuthStorage
-     */
     public function getStorage(): AuthStorage
     {
         return $this->storage;
     }
 
-    /**
-     * @return array
-     */
     public function getPermission(): array
     {
         return $this->loadStorage()->permission;
     }
 
-    /**
-     * @param array $permission
-     * @return void
-     */
     public function setPermission(array $permission): void
     {
         $this->loadStorage()->permission = $permission;
@@ -119,8 +103,6 @@ class Permission
 
     /**
      * 查询节点
-     * @param string $node
-     * @return array|null
      */
     public function queryFeature(string $node): ?array
     {
@@ -129,8 +111,6 @@ class Permission
 
     /**
      * 查询权限
-     * @param string $name
-     * @return array|null
      */
     public function queryPermission(string $name): ?array
     {

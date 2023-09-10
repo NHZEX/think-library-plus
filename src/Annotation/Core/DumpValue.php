@@ -8,13 +8,10 @@ use Symfony\Component\VarExporter\VarExporter;
 
 class DumpValue
 {
-    private string $filename;
-
     private ?string $filehash = null;
 
-    public function __construct(string $filename)
+    public function __construct(private string $filename)
     {
-        $this->filename = $filename;
     }
 
     public function load(): void
@@ -38,7 +35,7 @@ class DumpValue
     {
         try {
             $dumpData = VarExporter::export($data);
-        } catch (ExceptionInterface $e) {
+        } catch (ExceptionInterface) {
             $dumpData = $default;
         }
 

@@ -30,9 +30,6 @@ class ValidateContext
     {
     }
 
-    /**
-     * @return ValidateContext|null
-     */
     public static function get(): ?ValidateContext
     {
         $app = \app();
@@ -40,12 +37,7 @@ class ValidateContext
     }
 
     /**
-     * @param string   $controller
-     * @param string   $method
-     * @param Validate $validate
      * @param string[] $inputFields
-     * @param bool     $success
-     * @return ValidateContext
      */
     public static function create(
         string $controller,
@@ -65,25 +57,16 @@ class ValidateContext
         return $ctx;
     }
 
-    /**
-     * @return string
-     */
     public function getController(): string
     {
         return $this->controller;
     }
 
-    /**
-     * @return string
-     */
     public function getMethod(): string
     {
         return $this->method;
     }
 
-    /**
-     * @return Validate
-     */
     public function getValidate(): Validate
     {
         return $this->validate;

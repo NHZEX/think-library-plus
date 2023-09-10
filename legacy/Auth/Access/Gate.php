@@ -58,7 +58,6 @@ class Gate
     /**
      * Register a callback to run before all Gate checks.
      *
-     * @param  callable  $callback
      * @return $this
      */
     public function before(callable $callback)
@@ -71,7 +70,6 @@ class Gate
     /**
      * Register a callback to run after all Gate checks.
      *
-     * @param  callable  $callback
      * @return $this
      */
     public function after(callable $callback)
@@ -96,7 +94,6 @@ class Gate
 
     /**
      * 定义一个能力
-     * @param string          $ability
      * @param callable|string $callback
      * @return $this
      */
@@ -109,7 +106,6 @@ class Gate
     /**
      * 当前用户是否授予给定能力
      *
-     * @param string      $ability
      * @param array|mixed $arguments
      * @return bool
      */
@@ -121,7 +117,6 @@ class Gate
     /**
      * 当前用户是否拒绝给定能力
      *
-     * @param string      $ability
      * @param array|mixed $arguments
      * @return bool
      */
@@ -198,8 +193,6 @@ class Gate
 
     /**
      * @param mixed  $user
-     * @param string $ability
-     * @param array  $arguments
      * @return mixed
      */
     protected function callAuthCallback($user, string $ability, array $arguments)
@@ -207,7 +200,7 @@ class Gate
         array_unshift($arguments, $user);
         try {
             return $this->container->invoke($this->abilities[$this->getAlias($ability)], $arguments);
-        } catch (FuncNotFoundException $exception) {
+        } catch (FuncNotFoundException) {
             return null;
         }
     }
@@ -217,7 +210,6 @@ class Gate
      *
      * @param  $user
      * @param  string  $ability
-     * @param  array  $arguments
      * @return bool|null
      */
     protected function callBeforeCallbacks($user, $ability, array $arguments)
@@ -235,7 +227,6 @@ class Gate
      *
      * @param  $user
      * @param  string  $ability
-     * @param  array  $arguments
      * @param  mixed  $result
      * @return mixed
      */
@@ -250,10 +241,6 @@ class Gate
         return $result;
     }
 
-    /**
-     * @param string $ability
-     * @return string
-     */
     public function getAlias(string $ability): string
     {
         if (isset($this->abilities[$ability])) {

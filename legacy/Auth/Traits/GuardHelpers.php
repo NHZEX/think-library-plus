@@ -17,16 +17,10 @@ trait GuardHelpers
      */
     protected $message = '';
 
-    /**
-     * @return string
-     */
     public function getMessage(): string
     {
         return $this->message;
     }
-    /**
-     * @param string $message
-     */
     protected function setMessage(string $message): void
     {
         $this->message = $message;

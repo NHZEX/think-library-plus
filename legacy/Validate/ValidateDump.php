@@ -2,11 +2,10 @@
 
 namespace Zxin\Think\Validate;
 
+use Zxin\Think\Validate\Annotation\Validation;
 use think\App;
 use Zxin\Think\Annotation\Core\DumpValue;
 use Zxin\Think\Annotation\Core\Scanning;
-
-use function var_dump;
 
 class ValidateDump
 {
@@ -41,7 +40,7 @@ class ValidateDump
         foreach ($scanning->scanningClass() as $class) {
             foreach (get_class_methods($class) as $method) {
                 $validation = $this->parseAnnotation($class, $method);
-                if ($validation === null) {
+                if (!$validation instanceof Validation) {
                     continue;
                 }
                 $validate = [

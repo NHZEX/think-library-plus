@@ -2,6 +2,7 @@
 
 namespace Zxin\Think\Validate;
 
+use Zxin\Think\Validate\Annotation\Validation;
 use Closure;
 use think\App;
 use think\exception\HttpException;
@@ -53,11 +54,6 @@ class ValidateMiddleware
         $this->errorHandle = $this->app->config->get('validate.error_handle');
     }
 
-    /**
-     * @param Request  $request
-     * @param Closure $next
-     * @return Response
-     */
     public function handle(Request $request, Closure $next): Response
     {
         $controllerClass = $this->getControllerClassName($request);
@@ -65,24 +61,22 @@ class ValidateMiddleware
 
         // 转存匹配
         $storage = $this->app->get('validateStorage');
-        if (\is_array($storage)) {
-            if ($v = $storage[$controllerClass][$controllerAction] ?? null) {
-                $result = $this->execValidate($request, $controllerClass, $controllerAction, $v['validate'], $v['scene']);
-                if ($result !== null) {
-                    return $result;
-                } else {
-                    return $next($request);
-                }
+        if (\is_array($storage) && ($v = $storage[$controllerClass][$controllerAction] ?? null)) {
+            $result = $this->execValidate($request, $controllerClass, $controllerAction, $v['validate'], $v['scene']);
+            if ($result instanceof Response) {
+                return $result;
+            } else {
+                return $next($request);
             }
         }
 
         // 注解匹配
         $annotation = $this->parseAnnotation($controllerClass, $controllerAction);
-        if ($annotation !== null) {
+        if ($annotation instanceof Validation) {
             $validateClass = $annotation->name;
             $validateScene = $annotation->scene;
             $result = $this->execValidate($request, $controllerClass, $controllerAction, $validateClass, $validateScene);
-            if ($result !== null) {
+            if ($result instanceof Response) {
                 return $result;
             }
         } else {
@@ -92,12 +86,9 @@ class ValidateMiddleware
     }
 
     /**
-     * @param Request     $request
      * @param             $controllerClass
      * @param             $controllerAction
-     * @param string      $class
      * @param string|null $scene
-     * @return Response|null
      * @throws ValidateException
      */
     protected function execValidate(Request $request, $controllerClass, $controllerAction, string $class, ?string $scene): ?Response
@@ -127,7 +118,7 @@ class ValidateMiddleware
             $scene && $validateClass->scene($scene);
         }
         if ($this->app->isDebug()) {
-            $this->app->log->record(\sprintf('[validate] %s, scene=%s', \get_class($validateClass), $scene ?: 'null'), 'debug');
+            $this->app->log->record(\sprintf('[validate] %s, scene=%s', $validateClass::class, $scene ?: 'null'), 'debug');
         }
         $input = $request->param();
         if ($files = $request->file()) {
@@ -160,11 +151,8 @@ class ValidateMiddleware
 
     /**
      * 兼容匹配
-     * @param Request $request
-     * @param Closure $next
      * @param         $controllerClass
      * @param         $controllerAction
-     * @return Response
      */
     protected function compatible(Request $request, Closure $next, $controllerClass, $controllerAction): Response
     {
@@ -184,7 +172,7 @@ class ValidateMiddleware
             // 验证输入数据
             if ($validateClass && class_exists($validateClass)) {
                 $result = $this->execValidate($request, $controllerClass, $controllerAction, $validateClass, $validateScene);
-                if ($result) {
+                if ($result instanceof Response) {
                     return $result;
                 }
             }
@@ -193,10 +181,6 @@ class ValidateMiddleware
         return $next($request);
     }
 
-    /**
-     * @param Request $request
-     * @return string|null
-     */
     protected function getControllerClassName(Request $request): ?string
     {
         $suffix = $this->app->route->config('controller_suffix') ? 'Controller' : '';

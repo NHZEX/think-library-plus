@@ -18,12 +18,11 @@ trait ValidateFilterTrait
 
     /**
      * 获取验证中间件传递的许可字段
-     * @return array
      */
     protected function getAllowInputFields(): array
     {
         $ctx = ValidateContext::get();
-        if ($ctx === null) {
+        if (!$ctx instanceof ValidateContext) {
             return [];
         }
         if ($this->allowInputFields === null) {
@@ -34,7 +33,6 @@ trait ValidateFilterTrait
 
     /**
      * 获取过滤后的输入
-     * @return array
      */
     protected function getFilterInput(): array
     {

@@ -24,7 +24,7 @@ class ValidateService extends Service
 
     protected function loadStorage(): array
     {
-        if (empty($this->storage)) {
+        if ($this->storage === []) {
             $filename = app_path() . 'validate_storage.php';
             $this->storage = require $filename;
         }

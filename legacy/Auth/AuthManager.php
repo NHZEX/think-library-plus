@@ -7,9 +7,6 @@ use Zxin\Think\Auth\Contracts\Authenticatable;
 
 class AuthManager
 {
-    /**
-     * @return AuthGuard
-     */
     public static function instance(): AuthGuard
     {
         return Container::getInstance()->make(AuthGuard::class);
@@ -30,9 +27,6 @@ class AuthManager
         return self::instance()->user();
     }
 
-    /**
-     * @return bool
-     */
     public static function check(): bool
     {
         return self::instance()->check();
@@ -43,9 +37,6 @@ class AuthManager
         return AuthContext::get();
     }
 
-    /**
-     * @return array|null
-     */
     public static function getPermissions(): ?array
     {
         $user = self::user();
@@ -55,10 +46,6 @@ class AuthManager
         return $user->permissions();
     }
 
-    /**
-     * @param string $permission
-     * @return bool
-     */
     public static function allowPermission(string $permission): bool
     {
         $permissions = self::getPermissions();

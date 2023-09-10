@@ -10,8 +10,6 @@ use ValueError;
 
 class Scanning
 {
-    protected App $app;
-
     protected string $baseDir;
     protected string $controllerLayer;
     /**
@@ -22,7 +20,7 @@ class Scanning
 
     protected string $controllerNamespaces = 'app\\';
 
-    public function __construct(App $app, ?string $namespaces = null)
+    public function __construct(protected App $app, ?string $namespaces = null)
     {
         if (!empty($namespaces)) {
             if (!str_ends_with($namespaces, '\\')) {
@@ -30,7 +28,6 @@ class Scanning
             }
             $this->controllerNamespaces = $namespaces;
         }
-        $this->app = $app;
     }
 
     public function scanningClass(): Generator

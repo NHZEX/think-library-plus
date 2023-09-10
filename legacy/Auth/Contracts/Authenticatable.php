@@ -25,39 +25,17 @@ interface Authenticatable
      */
     public function getIdentity();
 
-    /**
-     * @return bool
-     */
     public function isIgnoreAuthentication(): bool;
 
-    /**
-     * @param string $permission
-     * @return bool
-     */
     public function allowPermission(string $permission): bool;
 
-    /**
-     * @return array
-     */
     public function permissions(): array;
 
-    /**
-     * @return array
-     */
     public function attachSessionInfo(): array;
 
-    /**
-     * @return string
-     */
     public function getRememberSecret(): string;
 
-    /**
-     * @return string
-     */
     public function getRememberToken(): string;
 
-    /**
-     * @param string $token
-     */
     public function updateRememberToken(string $token): void;
 }

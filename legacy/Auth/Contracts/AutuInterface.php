@@ -8,8 +8,6 @@ interface AutuInterface
 {
     /**
      * 是否已经登录
-     *
-     * @return bool
      */
     public function check(): bool;
 
@@ -22,8 +20,6 @@ interface AutuInterface
 
     /**
      * 用户具有这个操作的权限
-     *
-     * @return bool
      */
     public function can(): bool;
 }

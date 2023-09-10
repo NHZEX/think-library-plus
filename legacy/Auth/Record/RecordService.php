@@ -42,9 +42,6 @@ class RecordService extends Service
         });
     }
 
-    /**
-     * @return RecordAdapterInterface
-     */
     protected function getRecordAdapter(): RecordAdapterInterface
     {
         return $this->app->get(RecordAdapterInterface::class);

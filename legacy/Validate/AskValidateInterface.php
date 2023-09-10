@@ -9,7 +9,6 @@ use think\Request;
 interface AskValidateInterface
 {
     /**
-     * @param Request     $request
      * @param string|null $scene
      * @return string|array
      */

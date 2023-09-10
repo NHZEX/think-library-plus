@@ -55,7 +55,7 @@ class Service extends \think\Service
                 throw new RuntimeException("invalid guard, not an object");
             }
             if (!($instance instanceof Guard)) {
-                throw new RuntimeException('invalid guard: ' . \get_class($instance));
+                throw new RuntimeException('invalid guard: ' . $instance::class);
             }
             return $instance;
         } else {

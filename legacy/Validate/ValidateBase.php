@@ -12,7 +12,6 @@ abstract class ValidateBase extends Validate
 {
     /**
      * 获取当前验证器生效的字段
-     * @return array
      */
     final public function getRuleKeys(): array
     {

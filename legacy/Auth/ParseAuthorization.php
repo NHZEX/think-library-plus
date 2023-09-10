@@ -45,17 +45,11 @@ class ParseAuthorization
         }
     }
 
-    /**
-     * @return string|null
-     */
     public function getToken(): ?string
     {
         return $this->token;
     }
 
-    /**
-     * @return string|null
-     */
     public function getMachine(): ?string
     {
         return $this->machine;

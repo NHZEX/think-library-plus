@@ -30,7 +30,7 @@ trait InteractsWithAnnotation
         }
         try {
             $refMethod = $refClass->getMethod($method);
-        } catch (ReflectionException $e) {
+        } catch (ReflectionException) {
             return null;
         }
         if (!$refMethod->isPublic() || $refMethod->isStatic()) {

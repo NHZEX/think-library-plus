@@ -40,7 +40,6 @@ class AuthScan
 
     /**
      * AuthScan constructor.
-     * @param App $app
      */
     public function __construct(App $app)
     {
@@ -49,9 +48,6 @@ class AuthScan
         $this->permission = Permission::getInstance();
     }
 
-    /**
-     * @param bool $debug
-     */
     public function setDebug(bool $debug): void
     {
         $this->debug = $debug;
@@ -101,7 +97,7 @@ class AuthScan
             $namespaces      = $scanning->getControllerNamespaces();
             $controllerLayer = $scanning->getControllerLayer();
             // 是否多应用
-            $isApp = (0 !== strpos($class, $namespaces . $controllerLayer));
+            $isApp = (!str_starts_with($class, $namespaces . $controllerLayer));
 
             if ($isApp) {
                 $controllerUrl = substr($class, \strlen($namespaces));
@@ -120,7 +116,7 @@ class AuthScan
                     continue;
                 }
                 $methodName = $refMethod->getName();
-                if (0 === strpos($methodName, '_')) {
+                if (str_starts_with($methodName, '_')) {
                     continue;
                 }
 
@@ -137,11 +133,6 @@ class AuthScan
     }
 
     /**
-     * @param Base   $obj
-     * @param string $methodPath
-     * @param string $nodeUrl
-     * @param string $controllerUrl
-     * @param string $methodName
      * @return void
      */
     protected function handleAttributes(Base $obj, string $methodPath, string $nodeUrl, string $controllerUrl, string $methodName)
@@ -182,12 +173,6 @@ class AuthScan
         }
     }
 
-    /**
-     * @param AuthMeta $auth
-     * @param string   $methodPath
-     * @param string   $nodeUrl
-     * @return void
-     */
     protected function handleAuthMeta(AuthMeta $auth, string $methodPath, string $nodeUrl): void
     {
         if (empty($auth->desc)) {

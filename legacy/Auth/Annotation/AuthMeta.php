@@ -14,7 +14,6 @@ final class AuthMeta extends Base
         public string $desc,
         // 定义策略
         public string $policy = ''
-    )
-    {
+    ) {
     }
 }

@@ -65,10 +65,6 @@ class RouteLoader
 
     public function registerAnnotation(): void
     {
-        if (PHP_VERSION_ID < 80000) {
-            return;
-        }
-
         $this->app->event->listen(RouteLoaded::class, function () {
             $this->route = $this->app->route;
 

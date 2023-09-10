@@ -49,8 +49,6 @@ trait InteractsWithStorage
     }
 
     /**
-     * @param array $data
-     * @param array $original
      * @return array<string, array>
      */
     protected function fillPermission(array $data, array $original): array
@@ -94,10 +92,6 @@ trait InteractsWithStorage
 
     /**
      * 填充父节点
-     * @param array  $data
-     * @param array  $original
-     * @param string $permission
-     * @return string
      */
     protected function fillParent(array &$data, array $original, string $permission): string
     {

@@ -9,7 +9,6 @@ interface StatefulGuard extends Guard
     /**
      * Attempt to authenticate a user using the given credentials.
      *
-     * @param  array  $credentials
      * @param  bool   $remember
      * @return bool
      */
@@ -18,7 +17,6 @@ interface StatefulGuard extends Guard
     /**
      * Log a user into the application without sessions or cookies.
      *
-     * @param  array  $credentials
      * @return bool
      */
     public function once(array $credentials = []);
@@ -26,7 +24,6 @@ interface StatefulGuard extends Guard
     /**
      * Log a user into the application.
      *
-     * @param  Authenticatable  $user
      * @param  bool  $remember
      * @return void
      */

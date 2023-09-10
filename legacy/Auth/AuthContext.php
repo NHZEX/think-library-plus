@@ -35,9 +35,6 @@ class AuthContext
     {
     }
 
-    /**
-     * @return bool
-     */
     public static function has(): bool
     {
         return app()->has(AuthContext::class);
@@ -50,10 +47,7 @@ class AuthContext
     }
 
     /**
-     * @param string   $url
      * @param string[] $permissions
-     * @param bool     $allow
-     * @return AuthContext
      */
     public static function create(string $url, ?array $permissions, bool $allow): AuthContext
     {
@@ -67,42 +61,26 @@ class AuthContext
         return $ctx;
     }
 
-    /**
-     * @param string $url
-     * @return AuthContext
-     */
     public static function createSuperRoot(string $url): AuthContext
     {
         return self::create($url, null, true);
     }
 
-    /**
-     * @return string
-     */
     public function getUrl(): string
     {
         return $this->url;
     }
 
-    /**
-     * @return array|null
-     */
     public function getFeature(): ?array
     {
         return $this->feature;
     }
 
-    /**
-     * @return array|null
-     */
     public function getPermissions(): ?array
     {
         return $this->permissions;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPermissionsLine(): ?string
     {
         return $this->permissions === null ? null : implode(',', $this->permissions);
@@ -127,9 +105,6 @@ class AuthContext
         return $this->permissionsDetails = $details;
     }
 
-    /**
-     * @return bool
-     */
     public function isAllow(): bool
     {
         return $this->allow;

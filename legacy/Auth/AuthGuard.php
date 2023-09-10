@@ -80,10 +80,6 @@ class AuthGuard implements Guard
 
     /**
      * AuthGuard constructor.
-     * @param Container $container
-     * @param Config    $config
-     * @param Session   $session
-     * @param CookieJar $cookie
      */
     public function __construct(Container $container, Config $config, Session $session, CookieJar $cookie)
     {
@@ -93,17 +89,11 @@ class AuthGuard implements Guard
         $this->config = array_merge($this->config, $config->get('auth', []));
     }
 
-    /**
-     * @return ParseAuthorization
-     */
     public function getAuthorization(): ParseAuthorization
     {
         return $this->container->make(ParseAuthorization::class);
     }
 
-    /**
-     * @return string
-     */
     public function getSecuritySalt(): string
     {
         return env('DEPLOY_SECURITY_SALT');
@@ -134,9 +124,6 @@ class AuthGuard implements Guard
         return !$this->check();
     }
 
-    /**
-     * @return Authenticatable|null
-     */
     public function user(): ?Authenticatable
     {
         if ($this->loggedOut) {
@@ -201,7 +188,6 @@ class AuthGuard implements Guard
 
     /**
      * @param int|string $id
-     * @return Authenticatable|null
      */
     public function getProvider($id): ?Authenticatable
     {
@@ -222,7 +208,6 @@ class AuthGuard implements Guard
 
     /**
      * @param int|string $id
-     * @return Authenticatable|null
      */
     protected function retrieveById($id): ?Authenticatable
     {
@@ -238,7 +223,7 @@ class AuthGuard implements Guard
             }
             return $result;
         } /** @noinspection PhpRedundantCatchClauseInspection */
-        catch (DataNotFoundException | ModelNotFoundException | DbException $e) {
+        catch (DataNotFoundException | ModelNotFoundException | DbException) {
             return null;
         }
     }
@@ -312,7 +297,6 @@ class AuthGuard implements Guard
     }
 
     /**
-     * @param Authenticatable $user
      * @return void
      */
     protected function createRememberToken(Authenticatable $user)
@@ -339,9 +323,6 @@ class AuthGuard implements Guard
         $this->cookie->delete($this->getRecallerName());
     }
 
-    /**
-     * @return Authenticatable|null
-     */
     protected function validRememberToken(): ?Authenticatable
     {
         $machineCode = $this->getAuthorization()->getMachine();
@@ -387,7 +368,6 @@ class AuthGuard implements Guard
     }
 
     /**
-     * @param Authenticatable $user
      * @return AuthGuard
      */
     public function setUser(Authenticatable $user)
@@ -405,7 +385,6 @@ class AuthGuard implements Guard
      * Get a unique identifier for the auth session value.
      *
      * @param string|null $append
-     * @param string $join
      * @return string
      */
     public function getName(string $append = null, string $join = '_')
