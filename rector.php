@@ -28,4 +28,5 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->importNames();
     $rectorConfig->importShortClasses(false);
+    $rectorConfig->phpstanConfig(__DIR__ . '/phpstan.neon');
 };
