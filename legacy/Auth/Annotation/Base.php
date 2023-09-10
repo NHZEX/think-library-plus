@@ -2,6 +2,8 @@
 
 namespace Zxin\Think\Auth\Annotation;
 
-abstract class Base
+use Zxin\Think\Annotation\BaseAnnotation;
+
+abstract class Base extends BaseAnnotation
 {
 }
