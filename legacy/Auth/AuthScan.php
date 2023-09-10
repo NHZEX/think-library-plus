@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Auth;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\Reader;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
@@ -30,11 +28,6 @@ class AuthScan
     protected $app;
 
     /**
-     * @var Reader
-     */
-    protected $reader;
-
-    /**
      * @var Permission
      */
     protected $permission;
@@ -52,8 +45,6 @@ class AuthScan
     public function __construct(App $app)
     {
         $this->app = $app;
-
-        $this->reader = new AnnotationReader();
 
         $this->permission = Permission::getInstance();
     }
@@ -136,17 +127,8 @@ class AuthScan
                 $nodeUrl    = $controllerUrl . '/' . strtolower($methodName);
                 $methodPath = $class . '::' . $methodName;
 
-                if (PHP_VERSION_ID >= 80000) {
-                    foreach ($refMethod->getAttributes(Base::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
-                        $this->handleAttributes($attribute->newInstance(), $methodPath, $nodeUrl, $controllerUrl, $methodName);
-                    }
-                }
-
-                $annotations = $this->reader->getMethodAnnotations($refMethod);
-                foreach ($annotations as $auth) {
-                    if ($auth instanceof Base) {
-                        $this->handleAttributes($auth, $methodPath, $nodeUrl, $controllerUrl, $methodName);
-                    }
+                foreach ($refMethod->getAttributes(Base::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                    $this->handleAttributes($attribute->newInstance(), $methodPath, $nodeUrl, $controllerUrl, $methodName);
                 }
 
                 $this->controllers[$class][$methodName] = $nodeUrl;

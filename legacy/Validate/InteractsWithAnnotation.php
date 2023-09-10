@@ -3,7 +3,6 @@
 namespace Zxin\Think\Validate;
 
 use Zxin\Think\Validate\Annotation\Validation;
-use Doctrine\Common\Annotations\AnnotationReader;
 use ReflectionClass;
 use ReflectionException;
 use think\Validate;
@@ -29,7 +28,6 @@ trait InteractsWithAnnotation
         if ($refClass->isAbstract() || $refClass->isTrait()) {
             return null;
         }
-        $reader = new AnnotationReader();
         try {
             $refMethod = $refClass->getMethod($method);
         } catch (ReflectionException $e) {
@@ -43,13 +41,8 @@ trait InteractsWithAnnotation
             return null;
         }
         $annotations = [];
-        if (PHP_VERSION_ID >= 80000) {
-            foreach ($refMethod->getAttributes(Validation::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
-                $annotations[] = $attribute->newInstance();
-            }
-        }
-        if (empty($annotations)) {
-            $annotations = $reader->getMethodAnnotations($refMethod);
+        foreach ($refMethod->getAttributes(Validation::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+            $annotations[] = $attribute->newInstance();
         }
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Validation) {
