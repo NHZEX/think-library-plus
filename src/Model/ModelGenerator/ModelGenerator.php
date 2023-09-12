@@ -1,0 +1,147 @@
+<?php
+declare(strict_types=1);
+
+namespace Zxin\Think\Model\ModelGenerator;
+
+use Composer\Autoload\ClassLoader;
+use think\Collection;
+use think\db\ConnectionInterface;
+
+/**
+ * @template SingleItemOptions of array{table: array<string>, dir: string, namespace: string}
+ */
+class ModelGenerator
+{
+    public static function queryTables(ConnectionInterface $connection): array
+    {
+        $tables = $connection
+            ->table('information_schema.tables')
+            // 默认不处理视图 VIEW
+            ->where('TABLE_TYPE', '=', 'BASE TABLE')
+            ->whereRaw('`TABLE_SCHEMA`=SCHEMA()')
+            ->select();
+
+        return $tables->column('TABLE_COMMENT', 'TABLE_NAME');
+    }
+
+    public static function queryTableFields(ConnectionInterface $connection, string $table): Collection
+    {
+        return $connection
+            ->table('information_schema.COLUMNS')
+            ->whereRaw('`TABLE_SCHEMA`=SCHEMA()')
+            ->where('table_name', '=', $table)
+            ->order('ORDINAL_POSITION')
+            ->select();
+    }
+
+    public static function findNamespacePaths(string $class, ?ClassLoader $loader, ?array &$baseDirs = null): ?array
+    {
+        if (null === $loader) {
+            $loaders = ClassLoader::getRegisteredLoaders();
+            $loader  = \current($loaders);
+        }
+
+        $logicalPathPsr4 = $loader->getPrefixesPsr4();
+
+        $subPath = $class;
+        $lastPos = null;
+
+        $dirs = null;
+
+        $notFound = [];
+
+        do {
+            $tmp = null;
+            if ($lastPos) {
+                $tmp = substr($subPath, $lastPos + 1);
+
+            }
+            $subPath = $lastPos ? substr($subPath, 0, $lastPos) : $subPath;
+            $search  = $subPath . '\\';
+
+            if ($tmp) {
+                \array_unshift($notFound, $tmp);
+            }
+
+            if (isset($logicalPathPsr4[$search])) {
+
+                $dirs = $logicalPathPsr4[$search];
+
+                break;
+            }
+
+        } while (false !== $lastPos = strrpos($subPath, '\\'));
+
+        $dirs     = \array_map('\realpath', $dirs);
+        $baseDirs = $dirs;
+
+        return \array_map(fn($dir) => \join(DIRECTORY_SEPARATOR, [$dir, ...$notFound]), $dirs);
+    }
+
+    public static function scanNamespace(string $namespace, ?string $defaultConnect = null): \Generator
+    {
+        $dirs = self::findNamespacePaths($namespace, null);
+
+        foreach ($dirs as $dir) {
+            if (!is_dir($dir)) {
+                continue;
+            }
+
+            foreach (scandir($dir) as $filename) {
+                if (!\str_ends_with($filename, '.php')) {
+                    continue;
+                }
+                if ('Base.php' === $filename) {
+                    continue;
+                }
+                $item = new ModelFileItem(
+                    namespace: $namespace,
+                    filename: $filename,
+                    dir: $dir,
+                    defaultConnect: $defaultConnect,
+                );
+                yield $item;
+            }
+        }
+    }
+
+    /**
+     * @param array<SingleItemOptions> $items
+     */
+    public static function loadSingle(array $items, ?string $defaultConnect = null): \Generator
+    {
+        foreach ($items as $item) {
+            $class = $item['class'];
+            $table = $item['table'];
+
+            if (!\class_exists($class)) {
+                continue;
+            }
+
+            $ref       = new \ReflectionClass($class);
+            $namespace = $ref->getNamespaceName();
+            $filename  = $ref->getFileName();
+
+            $item = new ModelFileItem(
+                namespace: $namespace,
+                filename: \basename($filename),
+                dir: \dirname($filename),
+                tableName: $table,
+                defaultConnect: $defaultConnect,
+                reflectionClass: $ref,
+            );
+            yield $item;
+        }
+    }
+
+    public static function classToPath(string $class): ?string
+    {
+        $pathname = ModelGenerator::findNamespacePaths($class, null);
+
+        if (empty($pathname)) {
+            return null;
+        }
+
+        return $pathname[0] . '.php';
+    }
+}
