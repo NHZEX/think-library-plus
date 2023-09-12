@@ -61,7 +61,7 @@ class ModelCollection
 
     /**
      * @param string $connectName
-     * @return array<string, array<ModelFileItem>>
+     * @return array<string, ModelFileItem>
      */
     public function getModelsByConnect(string $connectName): array
     {

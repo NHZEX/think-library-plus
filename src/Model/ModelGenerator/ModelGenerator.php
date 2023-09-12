@@ -11,7 +11,7 @@ use Generator;
 use ReflectionClass;
 
 /**
- * @template SingleItemOptions of array{table: array<string>, dir: string, namespace: string}
+ * @template SingleItemOptions of array{table: string, class: string}
  */
 class ModelGenerator
 {

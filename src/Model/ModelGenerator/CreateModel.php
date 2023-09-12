@@ -54,7 +54,7 @@ class CreateModel extends Command
      */
     private array $single;
     /**
-     * @var array<array{table: array<string>, dir: string, namespace: string}>
+     * @var array<array{table: array<string>, connect: string|null, dir: string, namespace: string}>
      */
     private array $mapping = [];
 
@@ -127,7 +127,7 @@ class CreateModel extends Command
 
         $baseClass = Arr::get($config, 'baseClass');
 
-        if (\is_string($baseClass) && !class_exists($baseClass)) {
+        if (!\is_string($baseClass) || !class_exists($baseClass)) {
             $this->output->warning("基类不存在或者无效: {$baseClass}");
             return false;
         }
