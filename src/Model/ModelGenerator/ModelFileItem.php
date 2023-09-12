@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Think\Model\ModelGenerator;
 
 use think\Model;
+use ReflectionObject;
+use ReflectionClass;
 
 class ModelFileItem
 {
@@ -24,15 +27,14 @@ class ModelFileItem
         private ?string $tableName = null,
         private ?string $defaultConnect = null,
         /**
-         * @var \ReflectionClass<Model>|null
+         * @var ReflectionClass<Model>|null
          */
-        private ?\ReflectionClass $reflectionClass = null,
-    )
-    {
-        $this->objId = \spl_object_id($this);
+        private ?ReflectionClass $reflectionClass = null,
+    ) {
+        $this->objId = spl_object_id($this);
 
         $this->pathname  = $dir . DIRECTORY_SEPARATOR . $filename;
-        $this->classname = $this->namespace . '\\' . \substr($this->filename, 0, -4);
+        $this->classname = $this->namespace . '\\' . substr($this->filename, 0, -4);
     }
 
     public function getObjId(): int
@@ -66,13 +68,13 @@ class ModelFileItem
     }
 
     /**
-     * @return \ReflectionClass<Model>|null
+     * @return ReflectionClass<Model>|null
      */
-    public function getReflectionClass(): \ReflectionClass
+    public function getReflectionClass(): ReflectionClass
     {
         // todo 实现加载异常处理
 
-        return $this->reflectionClass ??= new \ReflectionClass($this->classname);
+        return $this->reflectionClass ??= new ReflectionClass($this->classname);
     }
 
     public function isValidModel(): bool
@@ -85,20 +87,20 @@ class ModelFileItem
         // todo 实现加载异常处理
         // \call_user_func([$this->classname, 'connect'], 'main')
 
-        return new $this->classname;
+        return new $this->classname();
     }
 
-    private \ReflectionObject $reflectionObject;
+    private ReflectionObject $reflectionObject;
     private Model $internalObject;
 
-    public function makeReflectionInstance(): \ReflectionObject
+    public function makeReflectionInstance(): ReflectionObject
     {
         if (!empty($this->reflectionObject)) {
             return $this->reflectionObject;
         }
 
         $this->internalObject = $this->getReflectionClass()->newInstanceWithoutConstructor();
-        return $this->reflectionObject ??= new \ReflectionObject($this->internalObject);
+        return $this->reflectionObject ??= new ReflectionObject($this->internalObject);
     }
 
     public function getTabelName(): ?string
@@ -135,7 +137,7 @@ class ModelFileItem
             return null;
         }
 
-        return \app()->db->getConfig("connections.{$name}");
+        return app()->db->getConfig("connections.{$name}");
 
     }
 
@@ -153,11 +155,11 @@ class ModelFileItem
 
     public function getFileContent(): string
     {
-        return \file_get_contents($this->pathname);
+        return file_get_contents($this->pathname);
     }
 
     public function writeFileContent(string $content): bool
     {
-        return \file_put_contents($this->pathname, $content, LOCK_EX) > 0;
+        return file_put_contents($this->pathname, $content, LOCK_EX) > 0;
     }
 }

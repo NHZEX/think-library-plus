@@ -1,9 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Think\Model\ModelGenerator;
 
 use Nette\Utils\Validators;
+use Generator;
 
 class PropertyCollection
 {
@@ -57,13 +59,13 @@ class PropertyCollection
             'comment' => $comment,
         ];
 
-        $this->fieldStrMaxLen = max($this->fieldStrMaxLen, strlen($field));
-        $this->typeStrMaxLen  = max($this->typeStrMaxLen, strlen($type));
+        $this->fieldStrMaxLen = max($this->fieldStrMaxLen, \strlen($field));
+        $this->typeStrMaxLen  = max($this->typeStrMaxLen, \strlen($type));
     }
 
     public function appendRef(string $field, string $type, ?string $comment): void
     {
-        $type = \trim($type);
+        $type = trim($type);
 
         if (empty($type)) {
             return;
@@ -71,10 +73,10 @@ class PropertyCollection
 
         $this->refProps[$field] = [
             'type'    => $type,
-            'comment' => $comment ? (\trim($comment) ?: null) : null,
+            'comment' => $comment ? (trim($comment) ?: null) : null,
         ];
 
-        $this->typeStrMaxLen  = max($this->typeStrMaxLen, strlen($type));
+        $this->typeStrMaxLen  = max($this->typeStrMaxLen, \strlen($type));
     }
 
     public function hasProperty(string $field): bool
@@ -85,14 +87,14 @@ class PropertyCollection
     public function resetMaxLen(): void
     {
         foreach ($this->properties as $property) {
-            $this->fieldStrMaxLen = max($this->fieldStrMaxLen, strlen($property['field']));
-            $this->typeStrMaxLen  = max($this->typeStrMaxLen, strlen($property['type']));
+            $this->fieldStrMaxLen = max($this->fieldStrMaxLen, \strlen($property['field']));
+            $this->typeStrMaxLen  = max($this->typeStrMaxLen, \strlen($property['type']));
         }
 
-        $this->typeStrMaxLen  = \array_reduce($this->refProps, fn($carry, $item) => max($carry, strlen($item['type'])), $this->typeStrMaxLen);
+        $this->typeStrMaxLen  = array_reduce($this->refProps, fn ($carry, $item) => max($carry, \strlen($item['type'])), $this->typeStrMaxLen);
     }
 
-    public function outPropertyLines(): \Generator
+    public function outPropertyLines(): Generator
     {
         foreach ($this->properties as $field => $property) {
             yield $this->propertyToStr($property, $this->refProps[$field] ?? null);
@@ -127,7 +129,7 @@ class PropertyCollection
             $line[2] = '$' . $field;
         }
 
-        return \join(' ', $line);
+        return join(' ', $line);
     }
 
     public function outputAllText(): string

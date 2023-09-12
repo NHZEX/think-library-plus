@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Think\Model\ModelGenerator;
@@ -21,6 +22,7 @@ use think\db\ConnectionInterface;
 use think\db\PDOConnection;
 use think\helper\Arr;
 use think\helper\Str;
+
 use function is_dir;
 use function max;
 use function scandir;
@@ -125,7 +127,7 @@ class CreateModel extends Command
 
         $baseClass = Arr::get($config, 'baseClass');
 
-        if (\is_string($baseClass) && !\class_exists($baseClass)) {
+        if (\is_string($baseClass) && !class_exists($baseClass)) {
             $this->output->warning("基类不存在或者无效: {$baseClass}");
             return false;
         }

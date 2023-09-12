@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Think\Model\ModelGenerator;
 
 class ModelCollection
 {
-
     /**
      * @var array<ModelFileItem>
      */

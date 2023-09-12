@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Think\Model\ModelGenerator;
@@ -14,7 +15,6 @@ use think\helper\Str;
 
 class TableCollection
 {
-
     /**
      * @var array<string, array<string, string>>
      */
@@ -45,7 +45,7 @@ class TableCollection
 
     public function loadTables(?string $connectName = null): array
     {
-        $connectName = $connectName ?? $this->defaultConnect;
+        $connectName ??= $this->defaultConnect;
 
         $connection = self::resolveDbConnect($connectName);
 
@@ -64,7 +64,7 @@ class TableCollection
 
     public function getTables(?string $connectName = null): ?array
     {
-        $connectName = $connectName ?? $this->defaultConnect;
+        $connectName ??= $this->defaultConnect;
 
         return $this->tableTree[$connectName] ?? null;
     }
@@ -197,23 +197,23 @@ class TableCollection
         $rawComment = $phpClass->getComment();
 
         $liens = [];
-        foreach (\explode("\n", $rawComment) as $i => $line) {
-            if (!\preg_match('/^\s*@property/', $line)) {
+        foreach (explode("\n", $rawComment) as $i => $line) {
+            if (!preg_match('/^\s*@property/', $line)) {
                 $liens[] = [$i, $line, 'raw'];
                 continue;
             }
 
-            $line = \trim($line);
+            $line = trim($line);
 
-            if (!\preg_match('/^@(property\S*?)\s+(\S+)\s+\$(\S+)(?:\s([\S\s]+))?/', $line, $matchs, PREG_UNMATCHED_AS_NULL)) {
+            if (!preg_match('/^@(property\S*?)\s+(\S+)\s+\$(\S+)(?:\s([\S\s]+))?/', $line, $matchs, PREG_UNMATCHED_AS_NULL)) {
                 $liens[] = [$i, $line, 'raw'];
                 continue;
             }
 
-            $head        = \trim($matchs[1]);
-            $propType    = \trim($matchs[2]);
-            $propName    = \trim($matchs[3]);
-            $propComment = $matchs[4] ? \trim($matchs[4]) : null;
+            $head        = trim($matchs[1]);
+            $propType    = trim($matchs[2]);
+            $propName    = trim($matchs[3]);
+            $propComment = $matchs[4] ? trim($matchs[4]) : null;
 
             $line = [$i, $line, 'property', [
                 'head'    => $head,
@@ -260,11 +260,11 @@ class TableCollection
             $propLines[] = $line;
         }
 
-        if ($headLines && $headLines[\array_key_last($headLines)] !== '') {
+        if ($headLines && $headLines[array_key_last($headLines)] !== '') {
             $headLines[] = '';
         }
         if ($endLines && $endLines[0] !== '') {
-            \array_unshift($endLines, '');
+            array_unshift($endLines, '');
         }
         $lines = [
             ...$headLines,
@@ -272,12 +272,12 @@ class TableCollection
             ...$endLines,
         ];
 
-        $comment = ' * ' . \join("\n * ", $lines);
+        $comment = ' * ' . join("\n * ", $lines);
 
         $fileContent = $model->getFileContent();
 
         // 建立注解替换匹配
-        $pattern = \preg_quote(\join("\n", \array_map(fn($str) => $str, \explode("\n", $rawComment))), '#');
+        $pattern = preg_quote(join("\n", array_map(fn ($str) => $str, explode("\n", $rawComment))), '#');
         $pattern = Preg::replace('#^|\n#', "$0\\s*?\*\\s*?", $pattern);
         $pattern = "\/\*\*\n{$pattern}\\s*?\*\/";
         $comment = "/**\n{$comment}\n */";
@@ -304,11 +304,11 @@ class TableCollection
     {
         $dirname = \dirname($filename);
 
-        if (!\file_exists($dirname)) {
-            \mkdir($dirname, 0755, true);
+        if (!file_exists($dirname)) {
+            mkdir($dirname, 0755, true);
         }
 
-        \file_put_contents($filename, $content, LOCK_EX);
+        file_put_contents($filename, $content, LOCK_EX);
     }
 
     private function resolveTableNamespace(string $table, ?string $connectName): string
@@ -328,7 +328,7 @@ class TableCollection
             }
 
             foreach ($matchTable as $pattern) {
-                if (\fnmatch($pattern, $table)) {
+                if (fnmatch($pattern, $table)) {
                     return $item['namespace'];
                 };
             }
