@@ -169,7 +169,11 @@ class TableCollection
         $phpClass->addComment($propertyCollection->outputAllText());
 
         // 类元声明
-        // > 表明
+        // > 连接
+        if ($connectName !== $this->defaultConnect) {
+            $phpClass->addProperty('connection', $connectName);
+        }
+        // > 表名
         $phpClass->addProperty('table', $table);
         // > 主键
         $priFields = $fields->where('COLUMN_KEY', '=', 'PRI')->column('COLUMN_NAME');
