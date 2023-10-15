@@ -65,7 +65,7 @@ class ModelCollection
     {
         foreach (ModelGenerator::loadSingle($items, $this->defaultOptions->getConnect()) as $item) {
             $this->modelList[]                                      = $item;
-            $connectName                                            = $item->getConnectName() ?: $this->defaultConnect;
+            $connectName                                            = $item->getConnectName() ?: $this->defaultOptions->getConnect();
             $this->modelTree[$connectName][$item->getTabelName()][] = $item;
         }
     }

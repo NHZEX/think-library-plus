@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Think\Model\ModelGenerator\Options;
@@ -90,7 +91,7 @@ class MappingConfigOptions
         }
 
         foreach ($matchTable as $pattern) {
-            if (\fnmatch($pattern, $table)) {
+            if (fnmatch($pattern, $table)) {
                 return true;
             };
         }

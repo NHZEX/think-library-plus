@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Think\Model\ModelGenerator\Options;
@@ -9,8 +10,7 @@ class DefaultConfigOptions extends MappingConfigOptions
         string $connect,
         string $namespace,
         string $baseClass,
-    ): DefaultConfigOptions
-    {
+    ): DefaultConfigOptions {
         return new DefaultConfigOptions(
             index: -1,
             connect: $connect,

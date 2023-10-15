@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Model\ModelGenerator;
 
-use ReflectionClass;
-use ReflectionObject;
 use think\Model;
 
 class ModelFileItem
@@ -27,9 +25,9 @@ class ModelFileItem
         private ?string $tableName = null,
         private ?string $defaultConnect = null,
         /**
-         * @var ReflectionClass<Model>|null
+         * @var \ReflectionClass<Model>|null
          */
-        private ?ReflectionClass $reflectionClass = null,
+        private ?\ReflectionClass $reflectionClass = null,
     ) {
         $this->objId = spl_object_id($this);
 
@@ -74,7 +72,7 @@ class ModelFileItem
     {
         // todo 实现加载异常处理
 
-        return $this->reflectionClass ??= new ReflectionClass($this->classname);
+        return $this->reflectionClass ??= new \ReflectionClass($this->classname);
     }
 
     public function isValidModel(): bool
@@ -90,17 +88,17 @@ class ModelFileItem
         return new $this->classname();
     }
 
-    private ReflectionObject $reflectionObject;
+    private \ReflectionObject $reflectionObject;
     private Model $internalObject;
 
-    public function makeReflectionInstance(): ReflectionObject
+    public function makeReflectionInstance(): \ReflectionObject
     {
         if (!empty($this->reflectionObject)) {
             return $this->reflectionObject;
         }
 
         $this->internalObject = $this->getReflectionClass()->newInstanceWithoutConstructor();
-        return $this->reflectionObject ??= new ReflectionObject($this->internalObject);
+        return $this->reflectionObject ??= new \ReflectionObject($this->internalObject);
     }
 
     public function getTabelName(): ?string

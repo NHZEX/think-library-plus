@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Zxin\Think\Model\ModelGenerator;
 
 use Nette\Utils\Validators;
-use Generator;
 
 class PropertyCollection
 {
@@ -94,7 +93,7 @@ class PropertyCollection
         $this->typeStrMaxLen  = array_reduce($this->refProps, fn ($carry, $item) => max($carry, \strlen($item['type'])), $this->typeStrMaxLen);
     }
 
-    public function outPropertyLines(): Generator
+    public function outPropertyLines(): \Generator
     {
         foreach ($this->properties as $field => $property) {
             yield $this->propertyToStr($property, $this->refProps[$field] ?? null);

@@ -59,7 +59,7 @@ class TableCollection
 
     public function loadTables(?string $connectName = null): array
     {
-        $connectName = $connectName ?? $this->defaultOptions->getConnect();
+        $connectName ??= $this->defaultOptions->getConnect();
 
         $connection = self::resolveDbConnect($connectName);
 
@@ -78,7 +78,7 @@ class TableCollection
 
     public function getTables(?string $connectName = null): ?array
     {
-        $connectName = $connectName ?? $this->defaultOptions->getConnect();
+        $connectName ??= $this->defaultOptions->getConnect();
 
         return $this->tableTree[$connectName] ?? null;
     }

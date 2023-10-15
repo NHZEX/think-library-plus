@@ -26,9 +26,9 @@ class CreateModel extends Command
     public const FILTE_TABLE = ['_phinxlog', 'activity_log'];
 
     public const OUTPUT_ALIGN = 22;
-    private LoggerInterface $logger;
-    private DefaultConfigOptions $detaultOptions;
-    private bool $strictTypes;
+    private LoggerInterface      $logger;
+    private DefaultConfigOptions $defaultOptions;
+    private bool                 $strictTypes;
     private array $excludeTable;
     /**
      * @var array<SingleItemOptions>
@@ -68,15 +68,15 @@ class CreateModel extends Command
         }
 
         $tableCollection = new TableCollection(
-            defaultOptions: $this->detaultOptions,
+            defaultOptions: $this->defaultOptions,
             mapping: $this->mapping,
             excludeTable: $this->excludeTable,
             logger: $this->logger,
         );
 
-        $output->info(sprintf("Connect: \t%s", $this->detaultOptions->getConnect()));
-        $output->info("Namespace: \t{$this->detaultOptions->getNamespace()}");
-        $output->info("BaseClass: \t{$this->detaultOptions->getBaseClass()}");
+        $output->info(sprintf("Connect: \t%s", $this->defaultOptions->getConnect()));
+        $output->info("Namespace: \t{$this->defaultOptions->getNamespace()}");
+        $output->info("BaseClass: \t{$this->defaultOptions->getBaseClass()}");
 
         $tableCollection->loadTables();
 
@@ -124,7 +124,7 @@ class CreateModel extends Command
         $this->strictTypes = Arr::get($config, 'strictTypes', true);
         $this->excludeTable = $excludeTable;
         $this->single = $single;
-        $this->detaultOptions = DefaultConfigOptions::makeDefault(
+        $this->defaultOptions = DefaultConfigOptions::makeDefault(
             connect: $defaultConnect,
             namespace: $baseNamespace,
             baseClass: $baseClass,

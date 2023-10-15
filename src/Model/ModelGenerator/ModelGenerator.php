@@ -39,7 +39,7 @@ class ModelGenerator
     {
         if (null === $loader) {
             $loaders = ClassLoader::getRegisteredLoaders();
-            $loader  = \current($loaders);
+            $loader  = current($loaders);
         }
 
         $logicalPathPsr4 = $loader->getPrefixesPsr4();
@@ -61,7 +61,7 @@ class ModelGenerator
             $search  = $subPath . '\\';
 
             if ($tmp) {
-                \array_unshift($notFound, $tmp);
+                array_unshift($notFound, $tmp);
             }
 
             if (isset($logicalPathPsr4[$search])) {
@@ -73,13 +73,13 @@ class ModelGenerator
 
         } while (false !== $lastPos = strrpos($subPath, '\\'));
 
-        $dirs     = \array_map('\realpath', $dirs);
+        $dirs     = array_map('\realpath', $dirs);
         $baseDirs = $dirs;
 
-        return \array_map(fn($dir) => \join(DIRECTORY_SEPARATOR, [$dir, ...$notFound]), $dirs);
+        return array_map(fn ($dir) => join(DIRECTORY_SEPARATOR, [$dir, ...$notFound]), $dirs);
     }
 
-    public static function scanNamespace(string $namespace, ?string $defaultConnect = null): Generator
+    public static function scanNamespace(string $namespace, ?string $defaultConnect = null): \Generator
     {
         $dirs = self::findNamespacePaths($namespace, null);
 
@@ -112,7 +112,7 @@ class ModelGenerator
     /**
      * @param array<SingleItemOptions> $items
      */
-    public static function loadSingle(array $items, ?string $defaultConnect = null): Generator
+    public static function loadSingle(array $items, ?string $defaultConnect = null): \Generator
     {
         foreach ($items as $item) {
             $class = $item['class'];
@@ -122,7 +122,7 @@ class ModelGenerator
                 continue;
             }
 
-            $ref       = new ReflectionClass($class);
+            $ref       = new \ReflectionClass($class);
             $namespace = $ref->getNamespaceName();
             $filename  = $ref->getFileName();
 
