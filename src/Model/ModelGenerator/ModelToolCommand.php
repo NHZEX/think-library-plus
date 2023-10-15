@@ -21,10 +21,8 @@ use Zxin\Think\Model\ModelGenerator\Options\MappingConfigOptions;
  *
  * @template SingleItemOptions of array{table: array<string>, dir: string, namespace: string}
  */
-class CreateModel extends Command
+class ModelToolCommand extends Command
 {
-    public const FILTE_TABLE = ['_phinxlog', 'activity_log'];
-
     public const OUTPUT_ALIGN = 22;
     private LoggerInterface      $logger;
     private DefaultConfigOptions $defaultOptions;

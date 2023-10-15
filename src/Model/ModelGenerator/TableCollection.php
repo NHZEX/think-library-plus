@@ -22,7 +22,7 @@ class TableCollection
      */
     private array $tableTree = [];
 
-    private ModelCollection $modelCollection;
+    private ModelReaderCollection $modelCollection;
 
     private array $recordRows = [];
 
@@ -36,7 +36,7 @@ class TableCollection
         private ?LoggerInterface $logger = null,
     ) {
         $this->logger          ??= new NullLogger();
-        $this->modelCollection = new ModelCollection($this);
+        $this->modelCollection = new ModelReaderCollection($this);
     }
 
     public function getDefaultOptions(): MappingConfigOptions
@@ -66,7 +66,7 @@ class TableCollection
         return $this->tableTree[$connectName] ??= ModelGenerator::queryTables($connection);
     }
 
-    public function getModelCollection(): ModelCollection
+    public function getModelCollection(): ModelReaderCollection
     {
         return $this->modelCollection;
     }

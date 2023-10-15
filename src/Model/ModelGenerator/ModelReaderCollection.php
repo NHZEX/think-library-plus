@@ -6,7 +6,7 @@ namespace Zxin\Think\Model\ModelGenerator;
 
 use Zxin\Think\Model\ModelGenerator\Options\MappingConfigOptions;
 
-class ModelCollection
+class ModelReaderCollection
 {
     private MappingConfigOptions $defaultOptions;
 
