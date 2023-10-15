@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Model\ModelGenerator;
 
-use think\Model;
-use ReflectionObject;
 use ReflectionClass;
+use ReflectionObject;
+use think\Model;
 
 class ModelFileItem
 {
@@ -67,7 +67,10 @@ class ModelFileItem
         return $this->dir;
     }
 
-    public function getReflectionClass(): ReflectionClass
+    /**
+     * @return \ReflectionClass<Model>|null
+     */
+    public function getReflectionClass(): \ReflectionClass
     {
         // todo 实现加载异常处理
 

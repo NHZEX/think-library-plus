@@ -4,34 +4,17 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Model\ModelGenerator;
 
-use Composer\Autoload\ClassLoader;
-use Composer\Pcre\Preg;
-use Nette\PhpGenerator\PhpFile;
-use Nette\PhpGenerator\Printer;
-use Nette\Utils\Validators;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use think\Collection;
 use think\console\Command;
 use think\console\Input;
 use think\console\input\Argument;
 use think\console\input\Option;
 use think\console\Output;
 use think\console\Table;
-use think\db\ConnectionInterface;
-use think\db\PDOConnection;
 use think\helper\Arr;
-use think\helper\Str;
-
-use function is_dir;
-use function max;
-use function scandir;
-use function str_pad;
-use function strlen;
-use function strrpos;
-use function Zxin\Arr\array_group;
-use function Zxin\Arr\array_index_cb;
-use function Zxin\Arr\array_map_with_key;
+use Zxin\Think\Model\ModelGenerator\Options\DefaultConfigOptions;
+use Zxin\Think\Model\ModelGenerator\Options\MappingConfigOptions;
 
 /**
  * 批量创建数据结构到模型
@@ -44,9 +27,7 @@ class CreateModel extends Command
 
     public const OUTPUT_ALIGN = 22;
     private LoggerInterface $logger;
-    private string $baseClass;
-    private string $baseNamespace;
-    private string $defaultConnect;
+    private DefaultConfigOptions $detaultOptions;
     private bool $strictTypes;
     private array $excludeTable;
     /**
@@ -54,7 +35,7 @@ class CreateModel extends Command
      */
     private array $single;
     /**
-     * @var array<array{table: array<string>, connect: string|null, dir: string, namespace: string}>
+     * @var array<MappingConfigOptions>
      */
     private array $mapping = [];
 
@@ -87,23 +68,21 @@ class CreateModel extends Command
         }
 
         $tableCollection = new TableCollection(
-            baseNamespace: $this->baseNamespace,
-            baseClass: $this->baseClass,
-            defaultConnect: $this->defaultConnect,
+            defaultOptions: $this->detaultOptions,
             mapping: $this->mapping,
             excludeTable: $this->excludeTable,
             logger: $this->logger,
         );
 
-        $output->info(sprintf("Connect: \t%s", $this->defaultConnect));
-        $output->info("Namespace: \t{$this->baseNamespace}");
-        $output->info("BaseClass: \t{$this->baseClass}");
+        $output->info(sprintf("Connect: \t%s", $this->detaultOptions->getConnect()));
+        $output->info("Namespace: \t{$this->detaultOptions->getNamespace()}");
+        $output->info("BaseClass: \t{$this->detaultOptions->getBaseClass()}");
 
         $tableCollection->loadTables();
 
         $mc = $tableCollection->getModelCollection();
-        $mc->loadModelByNamespace($this->baseNamespace);
-        $mc->loadModelByMapping($this->mapping);
+        $mc->loadModelByDefaultNamespace();
+        $mc->loadModelByMapping();
         $mc->loadModelByList($this->single);
 
 
@@ -142,13 +121,15 @@ class CreateModel extends Command
 
         $mapping = Arr::get($config, 'mapping', []);
 
-        $this->baseClass = $baseClass;
-        $this->baseNamespace = $baseNamespace;
         $this->strictTypes = Arr::get($config, 'strictTypes', true);
         $this->excludeTable = $excludeTable;
-        $this->defaultConnect = $defaultConnect;
         $this->single = $single;
-        $this->mapping = $mapping;
+        $this->detaultOptions = DefaultConfigOptions::makeDefault(
+            connect: $defaultConnect,
+            namespace: $baseNamespace,
+            baseClass: $baseClass,
+        );
+        $this->mapping = MappingConfigOptions::fromArrSet($mapping);
 
         return true;
     }

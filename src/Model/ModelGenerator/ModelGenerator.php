@@ -7,11 +7,9 @@ namespace Zxin\Think\Model\ModelGenerator;
 use Composer\Autoload\ClassLoader;
 use think\Collection;
 use think\db\ConnectionInterface;
-use Generator;
-use ReflectionClass;
 
 /**
- * @template SingleItemOptions of array{table: string, class: string}
+ * @template SingleItemOptions of array{table: array<string>, dir: string, namespace: string}
  */
 class ModelGenerator
 {
@@ -41,7 +39,7 @@ class ModelGenerator
     {
         if (null === $loader) {
             $loaders = ClassLoader::getRegisteredLoaders();
-            $loader  = current($loaders);
+            $loader  = \current($loaders);
         }
 
         $logicalPathPsr4 = $loader->getPrefixesPsr4();
@@ -63,7 +61,7 @@ class ModelGenerator
             $search  = $subPath . '\\';
 
             if ($tmp) {
-                array_unshift($notFound, $tmp);
+                \array_unshift($notFound, $tmp);
             }
 
             if (isset($logicalPathPsr4[$search])) {
@@ -75,10 +73,10 @@ class ModelGenerator
 
         } while (false !== $lastPos = strrpos($subPath, '\\'));
 
-        $dirs     = array_map('\realpath', $dirs);
+        $dirs     = \array_map('\realpath', $dirs);
         $baseDirs = $dirs;
 
-        return array_map(fn ($dir) => join(DIRECTORY_SEPARATOR, [$dir, ...$notFound]), $dirs);
+        return \array_map(fn($dir) => \join(DIRECTORY_SEPARATOR, [$dir, ...$notFound]), $dirs);
     }
 
     public static function scanNamespace(string $namespace, ?string $defaultConnect = null): Generator
@@ -103,6 +101,9 @@ class ModelGenerator
                     dir: $dir,
                     defaultConnect: $defaultConnect,
                 );
+                if ($item->getReflectionClass()->isAbstract()) {
+                    continue;
+                }
                 yield $item;
             }
         }

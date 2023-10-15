@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Model\ModelGenerator;
 
+use Zxin\Think\Model\ModelGenerator\Options\MappingConfigOptions;
+
 class ModelCollection
 {
+    private MappingConfigOptions $defaultOptions;
+
     /**
      * @var array<ModelFileItem>
      */
@@ -18,36 +22,48 @@ class ModelCollection
 
     public function __construct(
         private TableCollection $tableCollection,
-        private string $defaultConnect,
     ) {
+        $this->defaultOptions = $this->tableCollection->getDefaultOptions();
+
+        if (!$this->defaultOptions->isDefault()) {
+            throw new \InvalidArgumentException('[internal] defaultOptions must be default');
+        }
     }
 
-    public function loadModelByNamespace(string $namespace): void
+
+    public function loadModelByDefaultNamespace(): void
     {
-        foreach (ModelGenerator::scanNamespace($namespace, $this->defaultConnect) as $item) {
+        $this->loadModelByNamespace(
+            namespace: $this->defaultOptions->getNamespace(),
+            connect: $this->defaultOptions->getConnect(),
+        );
+    }
+
+    public function loadModelByNamespace(string $namespace, string $connect): void
+    {
+        foreach (ModelGenerator::scanNamespace($namespace, $connect) as $item) {
             $this->modelList[]                                      = $item;
-            $connectName                                            = $item->getConnectName() ?: $this->defaultConnect;
+            $connectName                                            = $item->getConnectName() ?: $connect;
             $this->modelTree[$connectName][$item->getTabelName()][] = $item;
         }
     }
 
-    public function loadModelByMapping(array $mapping): void
+    public function loadModelByMapping(): void
     {
-        foreach ($mapping as $item) {
-            if (!isset($item['namespace'])) {
+        foreach ($this->tableCollection->getMappingOptions() as $item) {
+            if (!empty($item->getConnect())) {
+                $this->tableCollection->loadTables($item->getConnect());
+            }
+            if (empty($item->getNamespace())) {
                 continue;
             }
-
-            if (!empty($item['connect'])) {
-                $this->tableCollection->loadTables($item['connect']);
-            }
-            $this->loadModelByNamespace($item['namespace']);
+            $this->loadModelByNamespace($item->getNamespace(), $item->getConnect() ?? $this->defaultOptions->getConnect());
         }
     }
 
     public function loadModelByList(array $items): void
     {
-        foreach (ModelGenerator::loadSingle($items, $this->defaultConnect) as $item) {
+        foreach (ModelGenerator::loadSingle($items, $this->defaultOptions->getConnect()) as $item) {
             $this->modelList[]                                      = $item;
             $connectName                                            = $item->getConnectName() ?: $this->defaultConnect;
             $this->modelTree[$connectName][$item->getTabelName()][] = $item;
@@ -61,7 +77,7 @@ class ModelCollection
 
     /**
      * @param string $connectName
-     * @return array<string, ModelFileItem>
+     * @return array<string, array<ModelFileItem>>
      */
     public function getModelsByConnect(string $connectName): array
     {

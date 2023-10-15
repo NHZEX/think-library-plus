@@ -12,6 +12,8 @@ use Psr\Log\NullLogger;
 use think\db\ConnectionInterface;
 use think\db\PDOConnection;
 use think\helper\Str;
+use Zxin\Think\Model\ModelGenerator\Options\DefaultConfigOptions;
+use Zxin\Think\Model\ModelGenerator\Options\MappingConfigOptions;
 
 class TableCollection
 {
@@ -27,15 +29,27 @@ class TableCollection
     private array $efficientModelSet = [];
 
     public function __construct(
-        private string           $baseNamespace,
-        private string           $baseClass,
-        private string           $defaultConnect,
+        private DefaultConfigOptions $defaultOptions,
+        /** @var array<MappingConfigOptions> */
         private array            $mapping,
         private array            $excludeTable,
         private ?LoggerInterface $logger = null,
     ) {
         $this->logger          ??= new NullLogger();
-        $this->modelCollection = new ModelCollection($this, $this->defaultConnect);
+        $this->modelCollection = new ModelCollection($this);
+    }
+
+    public function getDefaultOptions(): MappingConfigOptions
+    {
+        return $this->defaultOptions;
+    }
+
+    /**
+     * @return MappingConfigOptions[]
+     */
+    public function getMappingOptions(): array
+    {
+        return $this->mapping;
     }
 
     public static function resolveDbConnect(string $name): ConnectionInterface|PDOConnection
@@ -45,7 +59,7 @@ class TableCollection
 
     public function loadTables(?string $connectName = null): array
     {
-        $connectName ??= $this->defaultConnect;
+        $connectName = $connectName ?? $this->defaultOptions->getConnect();
 
         $connection = self::resolveDbConnect($connectName);
 
@@ -64,7 +78,7 @@ class TableCollection
 
     public function getTables(?string $connectName = null): ?array
     {
-        $connectName ??= $this->defaultConnect;
+        $connectName = $connectName ?? $this->defaultOptions->getConnect();
 
         return $this->tableTree[$connectName] ?? null;
     }
@@ -114,9 +128,9 @@ class TableCollection
 
     private function createModel(string $connectName, string $table, string $comment): void
     {
-        $namespace = $this->resolveTableNamespace($table, $connectName);
+        $matchOption = $this->resolveTableNamespace($table, $connectName);
 
-        $content = $this->generateModel($connectName, $namespace, $table, $comment, $className);
+        $content = $this->generateModel($connectName, $table, $comment, $matchOption, $className);
 
         $savePath = ModelGenerator::classToPath($className);
 
@@ -136,9 +150,9 @@ class TableCollection
 
     private function generateModel(
         string  $connectName,
-        string  $namespace,
         string  $table,
         string  $comment,
+        ?MappingConfigOptions $matchOption,
         ?string &$className,
     ): string {
         $connection = self::resolveDbConnect($connectName);
@@ -148,13 +162,16 @@ class TableCollection
 
         $phpFile->setStrictTypes();
 
+        $namespace = $matchOption?->getNamespace() ?? $this->defaultOptions->getNamespace();
+        $baseClass = $matchOption?->getBaseClass() ?? $this->defaultOptions->getBaseClass();
+
         $phpNamespace = $phpFile->addNamespace($namespace);
-        $phpNamespace->addUse($this->baseClass);
+        $phpNamespace->addUse($baseClass);
 
         $phpClass = $phpNamespace
             ->addClass(Str::studly($table) . 'Model')
             ->setFinal()
-            ->setExtends($this->baseClass);
+            ->setExtends($baseClass);
 
         $className = $phpNamespace->getName() . '\\' . $phpClass->getName();
 
@@ -170,7 +187,7 @@ class TableCollection
 
         // 类元声明
         // > 连接
-        if ($connectName !== $this->defaultConnect) {
+        if ($connectName !== $this->defaultOptions->getConnect()) {
             $phpClass->addProperty('connection', $connectName);
         }
         // > 表名
@@ -315,29 +332,15 @@ class TableCollection
         file_put_contents($filename, $content, LOCK_EX);
     }
 
-    private function resolveTableNamespace(string $table, ?string $connectName): string
+    private function resolveTableNamespace(string $table, ?string $connectName): ?MappingConfigOptions
     {
         foreach ($this->mapping as $item) {
 
-            $mappingConnect = $item['connect'] ?? null;
-
-            if (null !== $connectName && null !== $mappingConnect && $connectName !== $mappingConnect) {
-                continue;
-            }
-
-            $matchTable = $item['table'];
-
-            if (empty($matchTable) && $connectName === $mappingConnect) {
-                return $item['namespace'];
-            }
-
-            foreach ($matchTable as $pattern) {
-                if (fnmatch($pattern, $table)) {
-                    return $item['namespace'];
-                };
+            if ($item->testMatchOption($table, $connectName)) {
+                return $item;
             }
         }
 
-        return $this->baseNamespace;
+        return null;
     }
 }
