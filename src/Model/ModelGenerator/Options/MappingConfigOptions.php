@@ -10,10 +10,11 @@ class MappingConfigOptions
 {
     public function __construct(
         protected int $index,
-        protected string|null $connect,
+        protected string $connect,
         protected string $namespace,
         protected string|array|null $table,
         protected string|null $baseClass,
+        protected array|null $exclude,
     ) {
         if (-1 > $index) {
             throw new \InvalidArgumentException('index must be greater than -1');
@@ -27,22 +28,23 @@ class MappingConfigOptions
      * @param array $set
      * @return array<MappingConfigOptions>
      */
-    public static function fromArrSet(array $set): array
+    public static function fromArrSet(array $set, ?DefaultConfigOptions $defaultOptions = null): array
     {
         return array_map_with_key(
-            fn ($item, $index) => MappingConfigOptions::fromArray($item, $index),
+            fn ($item, $index) => MappingConfigOptions::fromArray($item, $index, $defaultOptions),
             $set,
         );
     }
 
-    public static function fromArray(array $config, int $index): self
+    public static function fromArray(array $config, int $index, ?DefaultConfigOptions $defaultOptions): self
     {
         return new self(
             index: $index,
-            connect: $config['connect'] ?? null,
+            connect: $config['connect'] ?? $defaultOptions->getConnect(),
             namespace: $config['namespace'],
             table: $config['table'] ?? null,
             baseClass: $config['baseClass'] ?? null,
+            exclude: $config['exclude'] ?? null,
         );
     }
 
@@ -56,7 +58,7 @@ class MappingConfigOptions
         return $this->index;
     }
 
-    public function getConnect(): ?string
+    public function getConnect(): string
     {
         return $this->connect;
     }
@@ -76,11 +78,16 @@ class MappingConfigOptions
         return $this->baseClass;
     }
 
+    public function getExclude(): ?array
+    {
+        return $this->exclude;
+    }
+
     public function testMatchOption(string $table, ?string $connectName): bool
     {
-        $mappingConnect = $this->connect ?? null;
+        $mappingConnect = $this->connect;
 
-        if (null !== $connectName && null !== $mappingConnect && $connectName !== $mappingConnect) {
+        if (null !== $connectName && $connectName !== $mappingConnect) {
             return false;
         }
 
@@ -97,5 +104,20 @@ class MappingConfigOptions
         }
 
         return false;
+    }
+
+    public function testExcludeOption(string $table, string $connectName): bool
+    {
+        if ($connectName !== $this->connect) {
+            return false;
+        }
+
+        $exclude = $this->exclude;
+
+        if (empty($exclude)) {
+            return false;
+        }
+
+        return \in_array($table, $exclude, true);
     }
 }

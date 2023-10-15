@@ -19,6 +19,7 @@ class ModelReaderCollection
      * @var array<string, array<string, ModelFileItem>>
      */
     private array $modelTree = [];
+    private array $classSet = [];
 
     public function __construct(
         private TableCollection $tableCollection,
@@ -42,6 +43,11 @@ class ModelReaderCollection
     public function loadModelByNamespace(string $namespace, string $connect): void
     {
         foreach (ModelGenerator::scanNamespace($namespace, $connect) as $item) {
+            if (isset($this->classSet[$item->getClassName()])) {
+                // todo 加入重复冲突日志
+                continue;
+            }
+            $this->classSet[$item->getClassName()] = true;
             $this->modelList[]                                      = $item;
             $connectName                                            = $item->getConnectName() ?: $connect;
             $this->modelTree[$connectName][$item->getTabelName()][] = $item;
@@ -63,7 +69,14 @@ class ModelReaderCollection
 
     public function loadModelByList(array $items): void
     {
+        // todo 重构为配置对象
+
         foreach (ModelGenerator::loadSingle($items, $this->defaultOptions->getConnect()) as $item) {
+            if (isset($this->classSet[$item->getClassName()])) {
+                // todo 加入重复冲突日志
+                continue;
+            }
+            $this->classSet[$item->getClassName()] = true;
             $this->modelList[]                                      = $item;
             $connectName                                            = $item->getConnectName() ?: $this->defaultOptions->getConnect();
             $this->modelTree[$connectName][$item->getTabelName()][] = $item;

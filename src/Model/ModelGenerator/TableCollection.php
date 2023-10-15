@@ -32,7 +32,6 @@ class TableCollection
         private DefaultConfigOptions $defaultOptions,
         /** @var array<MappingConfigOptions> */
         private array            $mapping,
-        private array            $excludeTable,
         private ?LoggerInterface $logger = null,
     ) {
         $this->logger          ??= new NullLogger();
@@ -71,25 +70,22 @@ class TableCollection
         return $this->modelCollection;
     }
 
-    public function getTableTree(): array
-    {
-        return $this->tableTree;
-    }
-
-    public function getTables(?string $connectName = null): ?array
-    {
-        $connectName ??= $this->defaultOptions->getConnect();
-
-        return $this->tableTree[$connectName] ?? null;
-    }
-
     public function handleModel(): void
     {
         $this->recordRows        = [];
         $this->efficientModelSet = [];
 
         foreach ($this->tableTree as $connectName => $tables) {
+            $defaultExclude = $this->defaultOptions->getExclude() ?? [];
+            $tables = array_filter($tables, function (string $table) use ($connectName, $defaultExclude) {
+                if (\in_array($table, $defaultExclude)) {
+                    return false;
+                }
+                return null === $this->resolveMappingConfigOptionsByExclude($table, $connectName);
+            }, ARRAY_FILTER_USE_KEY);
             $this->handleModelByConnect($connectName, $tables);
+
+            // todo 处理当前连接的单个模型声明
         }
 
         foreach ($this->modelCollection->getModelList() as $item) {
@@ -109,11 +105,6 @@ class TableCollection
         $modelList = $this->modelCollection->getModelsByConnect($connectName);
 
         foreach ($tables as $table => $comment) {
-            if (\in_array($table, $this->excludeTable)) {
-                // 忽略排除项目
-                continue;
-            }
-
             if (isset($modelList[$table])) {
                 foreach ($modelList[$table] as $item) {
                     $this->recordRows[] = [$connectName, $table, $item->getClassname(), 'UPDATE'];
@@ -128,7 +119,7 @@ class TableCollection
 
     private function createModel(string $connectName, string $table, string $comment): void
     {
-        $matchOption = $this->resolveTableNamespace($table, $connectName);
+        $matchOption = $this->resolveMappingConfigOptions($table, $connectName);
 
         $content = $this->generateModel($connectName, $table, $comment, $matchOption, $className);
 
@@ -332,11 +323,22 @@ class TableCollection
         file_put_contents($filename, $content, LOCK_EX);
     }
 
-    private function resolveTableNamespace(string $table, ?string $connectName): ?MappingConfigOptions
+    private function resolveMappingConfigOptions(string $table, ?string $connectName): ?MappingConfigOptions
     {
         foreach ($this->mapping as $item) {
 
             if ($item->testMatchOption($table, $connectName)) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
+
+    private function resolveMappingConfigOptionsByExclude(string $table, string $connectName): ?MappingConfigOptions
+    {
+        foreach ($this->mapping as $item) {
+            if ($item->testExcludeOption($table, $connectName)) {
                 return $item;
             }
         }

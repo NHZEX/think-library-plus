@@ -27,7 +27,6 @@ class ModelToolCommand extends Command
     private LoggerInterface      $logger;
     private DefaultConfigOptions $defaultOptions;
     private bool                 $strictTypes;
-    private array $excludeTable;
     /**
      * @var array<SingleItemOptions>
      */
@@ -68,7 +67,6 @@ class ModelToolCommand extends Command
         $tableCollection = new TableCollection(
             defaultOptions: $this->defaultOptions,
             mapping: $this->mapping,
-            excludeTable: $this->excludeTable,
             logger: $this->logger,
         );
 
@@ -79,9 +77,9 @@ class ModelToolCommand extends Command
         $tableCollection->loadTables();
 
         $mc = $tableCollection->getModelCollection();
+        $mc->loadModelByList($this->single);
         $mc->loadModelByDefaultNamespace();
         $mc->loadModelByMapping();
-        $mc->loadModelByList($this->single);
 
 
         $tableCollection->handleModel();
@@ -120,14 +118,14 @@ class ModelToolCommand extends Command
         $mapping = Arr::get($config, 'mapping', []);
 
         $this->strictTypes = Arr::get($config, 'strictTypes', true);
-        $this->excludeTable = $excludeTable;
         $this->single = $single;
         $this->defaultOptions = DefaultConfigOptions::makeDefault(
             connect: $defaultConnect,
             namespace: $baseNamespace,
             baseClass: $baseClass,
+            exclude: $excludeTable,
         );
-        $this->mapping = MappingConfigOptions::fromArrSet($mapping);
+        $this->mapping = MappingConfigOptions::fromArrSet($mapping, $this->defaultOptions);
 
         return true;
     }

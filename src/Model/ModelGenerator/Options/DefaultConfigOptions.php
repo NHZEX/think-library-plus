@@ -10,6 +10,7 @@ class DefaultConfigOptions extends MappingConfigOptions
         string $connect,
         string $namespace,
         string $baseClass,
+        ?array $exclude,
     ): DefaultConfigOptions {
         return new DefaultConfigOptions(
             index: -1,
@@ -17,6 +18,7 @@ class DefaultConfigOptions extends MappingConfigOptions
             namespace: $namespace,
             table: null,
             baseClass: $baseClass,
+            exclude: $exclude,
         );
     }
 
