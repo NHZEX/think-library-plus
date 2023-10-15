@@ -2,22 +2,12 @@
 
 namespace Zxin\Think\Validate;
 
-use Zxin\Think\Validate\Annotation\Validation;
-use Closure;
 use think\App;
 use think\exception\HttpException;
 use think\Request;
 use think\Response;
 use think\Validate;
-
-use function count;
-use function get_class;
-use function is_array;
-use function is_file;
-use function is_string;
-use function is_subclass_of;
-use function join;
-use function sprintf;
+use Zxin\Think\Validate\Annotation\Validation;
 
 class ValidateMiddleware
 {
@@ -54,7 +44,7 @@ class ValidateMiddleware
         $this->errorHandle = $this->app->config->get('validate.error_handle');
     }
 
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, \Closure $next): Response
     {
         $controllerClass = $this->getControllerClassName($request);
         $controllerAction = $request->action(true);
@@ -154,7 +144,7 @@ class ValidateMiddleware
      * @param         $controllerClass
      * @param         $controllerAction
      */
-    protected function compatible(Request $request, Closure $next, $controllerClass, $controllerAction): Response
+    protected function compatible(Request $request, \Closure $next, $controllerClass, $controllerAction): Response
     {
         if (!isset($this->mapping[$controllerClass])) {
             return $next($request);

@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Route\Annotation;
 
-use Attribute;
-
 /**
  * 注册资源路由
  */
-#[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 final class Resource extends Base
 {
     use TOptions;

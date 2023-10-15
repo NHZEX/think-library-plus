@@ -2,14 +2,8 @@
 
 namespace Zxin\Think\Validate;
 
-use Zxin\Think\Validate\Annotation\Validation;
-use ReflectionClass;
-use ReflectionException;
 use think\Validate;
-use ReflectionAttribute;
-
-use function dump;
-use function var_dump;
+use Zxin\Think\Validate\Annotation\Validation;
 
 /**
  * Trait InteractsWithAnnotation
@@ -21,8 +15,8 @@ trait InteractsWithAnnotation
     public function parseAnnotation(string $class, string $method): ?Validation
     {
         try {
-            $refClass = new ReflectionClass($class);
-        } catch (ReflectionException $e) {
+            $refClass = new \ReflectionClass($class);
+        } catch (\ReflectionException $e) {
             return null;
         }
         if ($refClass->isAbstract() || $refClass->isTrait()) {
@@ -30,7 +24,7 @@ trait InteractsWithAnnotation
         }
         try {
             $refMethod = $refClass->getMethod($method);
-        } catch (ReflectionException) {
+        } catch (\ReflectionException) {
             return null;
         }
         if (!$refMethod->isPublic() || $refMethod->isStatic()) {
@@ -41,7 +35,7 @@ trait InteractsWithAnnotation
             return null;
         }
         $annotations = [];
-        foreach ($refMethod->getAttributes(Validation::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+        foreach ($refMethod->getAttributes(Validation::class, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
             $annotations[] = $attribute->newInstance();
         }
         foreach ($annotations as $annotation) {

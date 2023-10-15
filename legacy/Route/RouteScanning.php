@@ -2,17 +2,13 @@
 
 namespace Zxin\Think\Route;
 
-use ReflectionClass;
-use ReflectionException;
 use think\App;
 use Zxin\Think\Annotation\Core\Scanning;
 use Zxin\Think\Route\Annotation\Group as GroupAttr;
+use Zxin\Think\Route\Annotation\Middleware as MiddlewareAttr;
 use Zxin\Think\Route\Annotation\Resource as ResourceAttr;
 use Zxin\Think\Route\Annotation\ResourceRule as ResourceRuleAttr;
 use Zxin\Think\Route\Annotation\Route as RouteAttr;
-use Zxin\Think\Route\Annotation\Middleware as MiddlewareAttr;
-use ReflectionMethod;
-use ReflectionAttribute;
 
 class RouteScanning
 {
@@ -40,15 +36,15 @@ class RouteScanning
 
         foreach ($scanning->scanningClass() as $file => $class) {
             try {
-                $refClass = new ReflectionClass($class);
-            } catch (ReflectionException) {
+                $refClass = new \ReflectionClass($class);
+            } catch (\ReflectionException) {
                 continue;
             }
             if ($refClass->isAbstract() || $refClass->isTrait()) {
                 continue;
             }
 
-            $attr = $refClass->getAttributes(GroupAttr::class, ReflectionAttribute::IS_INSTANCEOF)[0] ?? null;
+            $attr = $refClass->getAttributes(GroupAttr::class, \ReflectionAttribute::IS_INSTANCEOF)[0] ?? null;
             /** @var GroupAttr|null $groupAttr */
             $groupAttr = $attr !== null ? $attr->newInstance() : null;
 
@@ -59,10 +55,10 @@ class RouteScanning
             /** @var MiddlewareAttr[] $middlewareAttr */
             $middlewareAttr = array_map(
                 fn ($attr) => $attr->newInstance(),
-                $refClass->getAttributes(MiddlewareAttr::class, ReflectionAttribute::IS_INSTANCEOF)
+                $refClass->getAttributes(MiddlewareAttr::class, \ReflectionAttribute::IS_INSTANCEOF)
             );
 
-            $attr = $refClass->getAttributes(ResourceAttr::class, ReflectionAttribute::IS_INSTANCEOF)[0] ?? null;
+            $attr = $refClass->getAttributes(ResourceAttr::class, \ReflectionAttribute::IS_INSTANCEOF)[0] ?? null;
             $resourceAttr = $attr !== null ? $attr->newInstance() : null;
 
             $filename = (string) $file;
@@ -91,12 +87,12 @@ class RouteScanning
         return $items;
     }
 
-    public function parseMethod(array &$groupItem, ReflectionClass $refClass): void
+    public function parseMethod(array &$groupItem, \ReflectionClass $refClass): void
     {
         // todo 支持排序
 
         // 资源路由
-        foreach ($refClass->getMethods(ReflectionMethod::IS_PUBLIC) as $refMethod) {
+        foreach ($refClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $refMethod) {
             $methodName = $refMethod->getName();
 
             if (!$refMethod->isPublic() || $refMethod->isStatic()) {
@@ -106,7 +102,7 @@ class RouteScanning
                 continue;
             }
 
-            $attr = $refMethod->getAttributes(ResourceRuleAttr::class, ReflectionAttribute::IS_INSTANCEOF)[0] ?? null;
+            $attr = $refMethod->getAttributes(ResourceRuleAttr::class, \ReflectionAttribute::IS_INSTANCEOF)[0] ?? null;
             /** @var ResourceRuleAttr|null $rrule */
             $rrule = $attr !== null ? $attr->newInstance() : null;
 
@@ -120,14 +116,14 @@ class RouteScanning
             /** @var RouteAttr[] $route */
             $route = array_map(
                 fn ($attr) => $attr->newInstance(),
-                $refMethod->getAttributes(RouteAttr::class, ReflectionAttribute::IS_INSTANCEOF),
+                $refMethod->getAttributes(RouteAttr::class, \ReflectionAttribute::IS_INSTANCEOF),
             );
 
             if ($route !== []) {
                 /** @var MiddlewareAttr[] $middleware */
                 $middleware = array_map(
                     fn ($attr) => $attr->newInstance(),
-                    $refMethod->getAttributes(MiddlewareAttr::class, ReflectionAttribute::IS_INSTANCEOF),
+                    $refMethod->getAttributes(MiddlewareAttr::class, \ReflectionAttribute::IS_INSTANCEOF),
                 );
 
                 usort($route, fn ($a, $b) => $b->registerSort <=> $a->registerSort);

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Auth\Annotation;
 
-use Attribute;
-
-#[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 final class Auth extends Base
 {
     public function __construct(

@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Auth;
 
-use ReflectionAttribute;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
 use think\App;
 use Zxin\Think\Annotation\Core\DumpValue;
 use Zxin\Think\Annotation\Core\Scanning;
@@ -86,8 +82,8 @@ class AuthScan
 
         foreach ($scanning->scanningClass() as $class) {
             try {
-                $refClass = new ReflectionClass($class);
-            } catch (ReflectionException $e) {
+                $refClass = new \ReflectionClass($class);
+            } catch (\ReflectionException $e) {
                 throw new AuthException('load class fail: ' . $class, 0, $e);
             }
             if ($refClass->isAbstract() || $refClass->isTrait()) {
@@ -111,7 +107,7 @@ class AuthScan
             }
 
 
-            foreach ($refClass->getMethods(ReflectionMethod::IS_PUBLIC) as $refMethod) {
+            foreach ($refClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $refMethod) {
                 if ($refMethod->isStatic()) {
                     continue;
                 }
@@ -123,7 +119,7 @@ class AuthScan
                 $nodeUrl    = $controllerUrl . '/' . strtolower($methodName);
                 $methodPath = $class . '::' . $methodName;
 
-                foreach ($refMethod->getAttributes(Base::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                foreach ($refMethod->getAttributes(Base::class, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
                     $this->handleAttributes($attribute->newInstance(), $methodPath, $nodeUrl, $controllerUrl, $methodName);
                 }
 

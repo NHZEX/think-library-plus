@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Auth;
 
-use Closure;
-use RuntimeException;
 use think\App;
 use Zxin\Think\Auth\Access\Gate;
 use Zxin\Think\Auth\Contracts\Authenticatable;
@@ -47,19 +45,19 @@ class Service extends \think\Service
             if (is_subclass_of($guard, Guard::class)) {
                 return $app->invokeClass($guard);
             } else {
-                throw new RuntimeException("invalid guard: {$guard}");
+                throw new \RuntimeException("invalid guard: {$guard}");
             }
-        } elseif ($guard instanceof Closure) {
+        } elseif ($guard instanceof \Closure) {
             $instance = $app->invokeFunction($guard);
             if (!\is_object($instance)) {
-                throw new RuntimeException("invalid guard, not an object");
+                throw new \RuntimeException("invalid guard, not an object");
             }
             if (!($instance instanceof Guard)) {
-                throw new RuntimeException('invalid guard: ' . $instance::class);
+                throw new \RuntimeException('invalid guard: ' . $instance::class);
             }
             return $instance;
         } else {
-            throw new RuntimeException("invalid guard provider");
+            throw new \RuntimeException("invalid guard provider");
         }
     }
 

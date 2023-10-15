@@ -2,11 +2,8 @@
 
 namespace Zxin\Think\Annotation\Core;
 
-use Generator;
-use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 use think\App;
-use ValueError;
 
 class Scanning
 {
@@ -24,13 +21,13 @@ class Scanning
     {
         if (!empty($namespaces)) {
             if (!str_ends_with($namespaces, '\\')) {
-                throw new ValueError("{$namespaces} must end with \\");
+                throw new \ValueError("{$namespaces} must end with \\");
             }
             $this->controllerNamespaces = $namespaces;
         }
     }
 
-    public function scanningClass(): Generator
+    public function scanningClass(): \Generator
     {
         $this->baseDir         = $this->app->getBasePath();
         $this->controllerLayer = $this->app->config->get('route.controller_layer');
@@ -48,7 +45,7 @@ class Scanning
     /**
      * @param string|array<string> $dirs
      */
-    protected function scanningFile($dirs): Generator
+    protected function scanningFile($dirs): \Generator
     {
         $finder = new Finder();
         $finder->files()->in($dirs)->name('*.php');
@@ -61,7 +58,7 @@ class Scanning
     /**
      * 解析类命名（仅支持Psr4）
      */
-    protected function parseClassName(SplFileInfo $file): string
+    protected function parseClassName(\SplFileInfo $file): string
     {
         $controllerPath = substr($file->getPath(), \strlen($this->baseDir));
 

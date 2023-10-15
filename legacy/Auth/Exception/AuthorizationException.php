@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Auth\Exception;
 
-use Throwable;
 use Zxin\Think\Auth\Access\Response;
 
 class AuthorizationException extends AuthException
@@ -14,7 +13,7 @@ class AuthorizationException extends AuthException
      */
     protected $response;
 
-    public function __construct($message = "", $code = 0, Throwable $previous = null)
+    public function __construct($message = "", $code = 0, \Throwable $previous = null)
     {
         parent::__construct($message ?: 'This action is unauthorized.', 0, $previous);
 

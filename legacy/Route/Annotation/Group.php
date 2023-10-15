@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Route\Annotation;
 
-use Attribute;
-
 /**
  * 路由分组
  */
-#[Attribute(Attribute::TARGET_CLASS)]
+#[\Attribute(\Attribute::TARGET_CLASS)]
 final class Group extends Base
 {
     use TOptions;

@@ -2,7 +2,6 @@
 
 namespace Zxin\Think\Auth\Record;
 
-use RuntimeException;
 use think\App;
 use think\event\HttpEnd;
 use think\Response;
@@ -36,7 +35,7 @@ class RecordService extends Service
         $this->app->bind(RecordAdapterInterface::class, function () {
             $adapter = new $this->config['adapter']();
             if (!$adapter instanceof RecordAdapterInterface) {
-                throw new RuntimeException('record adapter interface invalid');
+                throw new \RuntimeException('record adapter interface invalid');
             }
             return $adapter;
         });

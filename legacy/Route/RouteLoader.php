@@ -8,11 +8,10 @@ use think\App;
 use think\event\RouteLoaded;
 use think\Route;
 use Zxin\Think\Route\Annotation\Group as GroupAttr;
+use Zxin\Think\Route\Annotation\Middleware as MiddlewareAttr;
 use Zxin\Think\Route\Annotation\Resource as ResourceAttr;
 use Zxin\Think\Route\Annotation\ResourceRule as ResourceRuleAttr;
 use Zxin\Think\Route\Annotation\Route as RouteAttr;
-use Zxin\Think\Route\Annotation\Middleware as MiddlewareAttr;
-use RuntimeException;
 
 class RouteLoader
 {
@@ -51,7 +50,7 @@ class RouteLoader
             $path .= '/';
         }
         if (!is_dir($path)) {
-            throw new RuntimeException("{$path} does not exist");
+            throw new \RuntimeException("{$path} does not exist");
         }
         return $path . $filename;
     }

@@ -14,7 +14,7 @@ return $config
         '@PSR12'                     => true,
         '@PHP80Migration'            => true,
         'normalize_index_brace'      => true,
-        'global_namespace_import'    => ['import_classes' => true, 'import_constants' => true, 'import_functions' => false],
+        'global_namespace_import'    => ['import_classes' => false, 'import_constants' => false, 'import_functions' => false],
         'operator_linebreak'         => ['only_booleans' => true, 'position' => 'beginning'],
         'standardize_not_equals'     => true,
         'unary_operator_spaces'      => true,

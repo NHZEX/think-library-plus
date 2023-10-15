@@ -2,7 +2,6 @@
 
 namespace Zxin\Think\Annotation\Core;
 
-use SplFileObject;
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Symfony\Component\VarExporter\VarExporter;
 
@@ -17,7 +16,7 @@ class DumpValue
     public function load(): void
     {
         if (is_file($this->filename) && is_readable($this->filename)) {
-            $sf = new SplFileObject($this->filename, 'r');
+            $sf = new \SplFileObject($this->filename, 'r');
             $sf->seek(2);
             [, $lastHash] = explode(':', $sf->current() ?: ':');
             $lastHash = trim($lastHash);

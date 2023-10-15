@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Auth;
 
-use LogicException;
 use think\App;
 use think\Config;
 use think\Container;
@@ -21,7 +20,6 @@ use Zxin\Think\Auth\Contracts\ProviderlSelfCheck;
 use Zxin\Think\Auth\Exception\AuthException;
 use Zxin\Think\Auth\Traits\EventHelpers;
 use Zxin\Think\Auth\Traits\GuardHelpers;
-
 use function Zxin\Crypto\decrypt_data;
 use function Zxin\Crypto\encrypt_data;
 
@@ -101,7 +99,7 @@ class AuthGuard implements Guard
 
     public function validate(array $credentials = [])
     {
-        throw new LogicException('method not implemented');
+        throw new \LogicException('method not implemented');
     }
 
     /**

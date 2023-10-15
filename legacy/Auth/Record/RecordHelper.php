@@ -2,8 +2,6 @@
 
 namespace Zxin\Think\Auth\Record;
 
-use Throwable;
-
 class RecordHelper
 {
     public static function accessLog(): RecordContext
@@ -23,7 +21,7 @@ class RecordHelper
         return self::accessLog()->setCode($code)->setMessage($message);
     }
 
-    public static function recordException(Throwable $throwable): RecordContext
+    public static function recordException(\Throwable $throwable): RecordContext
     {
         return self::accessLog()->setException($throwable);
     }
