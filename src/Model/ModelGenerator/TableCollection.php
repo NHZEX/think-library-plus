@@ -125,6 +125,11 @@ class TableCollection
 
         $savePath = ModelGenerator::classToPath($className);
 
+        if (empty($savePath)) {
+            $this->logger->warning("Class name invalid, table: [{$connectName}]{$table}, class: {$className}");
+            return;
+        }
+
         $this->recordRows[] = [$connectName, $table, $className, 'CREATE'];
 
         self::writeFile($savePath, $content);

@@ -73,6 +73,10 @@ class ModelGenerator
 
         } while (false !== $lastPos = strrpos($subPath, '\\'));
 
+        if (empty($dirs)) {
+            return null;
+        }
+
         $dirs     = array_map('\realpath', $dirs);
         $baseDirs = $dirs;
 
@@ -82,6 +86,10 @@ class ModelGenerator
     public static function scanNamespace(string $namespace, ?string $defaultConnect = null): \Generator
     {
         $dirs = self::findNamespacePaths($namespace, null);
+
+        if (empty($dirs)) {
+            return;
+        }
 
         foreach ($dirs as $dir) {
             if (!is_dir($dir)) {

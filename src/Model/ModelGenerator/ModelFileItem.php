@@ -97,7 +97,13 @@ class ModelFileItem
             return $this->reflectionObject;
         }
 
-        $this->internalObject = $this->getReflectionClass()->newInstanceWithoutConstructor();
+        $model = $this->getReflectionClass()->newInstanceWithoutConstructor();
+
+        if (!$model instanceof Model) {
+            throw new \RuntimeException("Load class({$this->classname}) must be instanceof \think\Model");
+        }
+
+        $this->internalObject = $model;
         return $this->reflectionObject ??= new \ReflectionObject($this->internalObject);
     }
 

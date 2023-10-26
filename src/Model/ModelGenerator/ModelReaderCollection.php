@@ -71,7 +71,7 @@ class ModelReaderCollection
     {
         // todo 重构为配置对象
 
-        foreach (ModelGenerator::loadSingle($items, $this->defaultOptions->getConnect()) as $item) {
+        foreach (ModelGenerator::loadSingle(items: $items, defaultConnect: $this->defaultOptions->getConnect()) as $item) {
             if (isset($this->classSet[$item->getClassName()])) {
                 // todo 加入重复冲突日志
                 continue;
