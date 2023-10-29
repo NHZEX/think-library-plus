@@ -16,7 +16,7 @@ use Zxin\Think\Model\ModelGenerator\Options\DefaultConfigOptions;
 use Zxin\Think\Model\ModelGenerator\Options\MappingConfigOptions;
 
 /**
- * @template RecordRow of array{connect: string, table: string, calss: string, filename: string, status: string, content: string}
+ * @template RecordRow of array{connect: string, table: string, class: string, filename: string, status: string, content: string}
  */
 class TableCollection
 {

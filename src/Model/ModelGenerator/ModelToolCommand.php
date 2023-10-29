@@ -60,11 +60,11 @@ class ModelToolCommand extends Command
         $table = new Table();
         $table->setHeader(['connect', 'table', 'model', 'status']);
 
-        foreach ($tableResult as $row) {
+        foreach ($tableResult->getRecordRows() as $row) {
             $table->addRow([
                 $row['connect'],
                 $row['table'],
-                $row['model'],
+                $row['class'],
                 $row['status'],
             ]);
         }
