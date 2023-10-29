@@ -15,6 +15,9 @@ use think\helper\Str;
 use Zxin\Think\Model\ModelGenerator\Options\DefaultConfigOptions;
 use Zxin\Think\Model\ModelGenerator\Options\MappingConfigOptions;
 
+/**
+ * @template RecordRow of array{connect: string, table: string, calss: string, filename: string, status: string, content: string}
+ */
 class TableCollection
 {
     /**
@@ -24,6 +27,9 @@ class TableCollection
 
     private ModelReaderCollection $modelCollection;
 
+    /**
+     * @var array<RecordRow>
+     */
     private array $recordRows = [];
 
     private array $efficientModelSet = [];
@@ -33,6 +39,7 @@ class TableCollection
         /** @var array<MappingConfigOptions> */
         private array            $mapping,
         private ?LoggerInterface $logger = null,
+        private bool             $tryRun = false,
     ) {
         $this->logger          ??= new NullLogger();
         $this->modelCollection = new ModelReaderCollection($this);
@@ -90,11 +97,21 @@ class TableCollection
 
         foreach ($this->modelCollection->getModelList() as $item) {
             if (!isset($this->efficientModelSet[$item->getObjId()])) {
-                $this->recordRows[] = [$item->getConnectName(), $item->getTabelName(), $item->getClassname(), 'LOSS'];
+                $this->recordRows[] = [
+                    'connect'  => $item->getConnectName(),
+                    'table'    => $item->getTabelName(),
+                    'class'    => $item->getClassname(),
+                    'filename' => $item->getPathname(),
+                    'status'   => 'LOSS',
+                    'content'  => '',
+                ];
             }
         }
     }
 
+    /**
+     * @return array<RecordRow>
+     */
     public function getRecordRows(): array
     {
         return $this->recordRows;
@@ -107,7 +124,6 @@ class TableCollection
         foreach ($tables as $table => $comment) {
             if (isset($modelList[$table])) {
                 foreach ($modelList[$table] as $item) {
-                    $this->recordRows[] = [$connectName, $table, $item->getClassname(), 'UPDATE'];
                     $this->updateModel($connectName, $table, $item);
                     $this->efficientModelSet[$item->getObjId()] = true;
                 }
@@ -130,16 +146,34 @@ class TableCollection
             return;
         }
 
-        $this->recordRows[] = [$connectName, $table, $className, 'CREATE'];
+        $this->recordRows[] = [
+            'connect'  => $connectName,
+            'table'    => $table,
+            'class'    => $className,
+            'filename' => $savePath,
+            'status'   => 'CREATE',
+            'content'  => $content,
+        ];
 
-        self::writeFile($savePath, $content);
+        if (!$this->tryRun) {
+            self::writeFile($savePath, $content);
+        }
     }
 
     private function updateModel(string $connectName, string $table, ModelFileItem $model): void
     {
         $content = $this->_updateModel($connectName, $table, $model);
 
-        if ($content) {
+        $this->recordRows[] = [
+            'connect'  => $connectName,
+            'table'    => $table,
+            'class'    => $model->getClassname(),
+            'filename' => $model->getPathname(),
+            'status'   => 'UPDATE',
+            'content'  => $content,
+        ];
+
+        if (!$this->tryRun && $content) {
             $model->writeFileContent($content);
         }
     }
