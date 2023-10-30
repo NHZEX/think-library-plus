@@ -12,6 +12,7 @@ use Psr\Log\NullLogger;
 use think\db\ConnectionInterface;
 use think\db\PDOConnection;
 use think\helper\Str;
+use Zxin\Think\Model\ModelGenerator\Data\ModelFileItem;
 use Zxin\Think\Model\ModelGenerator\Data\RecordRow;
 use Zxin\Think\Model\ModelGenerator\Options\DefaultConfigOptions;
 use Zxin\Think\Model\ModelGenerator\Options\MappingConfigOptions;

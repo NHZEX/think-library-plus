@@ -7,6 +7,7 @@ namespace Zxin\Think\Model\ModelGenerator;
 use Composer\Autoload\ClassLoader;
 use think\Collection;
 use think\db\ConnectionInterface;
+use Zxin\Think\Model\ModelGenerator\Data\ModelFileItem;
 
 /**
  * @template SingleItemOptions of array{table: array<string>, dir: string, namespace: string}
@@ -103,13 +104,14 @@ class ModelGenerator
                 if ('Base.php' === $filename) {
                     continue;
                 }
-                $item = new ModelFileItem(
+                $item = ModelFileItem::fromFile(
                     namespace: $namespace,
                     filename: $filename,
                     dir: $dir,
                     defaultConnect: $defaultConnect,
                 );
-                if ($item->getReflectionClass()->isAbstract()) {
+                if (null === $item) {
+                    // todo 做日志记录
                     continue;
                 }
                 yield $item;
@@ -134,14 +136,18 @@ class ModelGenerator
             $namespace = $ref->getNamespaceName();
             $filename  = $ref->getFileName();
 
-            $item = new ModelFileItem(
+            $item = ModelFileItem::fromReflection(
                 namespace: $namespace,
                 filename: basename($filename),
                 dir: \dirname($filename),
-                tableName: $table,
                 defaultConnect: $defaultConnect,
-                reflectionClass: $ref,
+                tableName: $table,
+                reflection: $ref,
             );
+            if (null === $item) {
+                // todo 做日志记录
+                continue;
+            }
             yield $item;
         }
     }

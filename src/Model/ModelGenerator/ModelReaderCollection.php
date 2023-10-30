@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Model\ModelGenerator;
 
+use Zxin\Think\Model\ModelGenerator\Data\ModelFileItem;
 use Zxin\Think\Model\ModelGenerator\Options\MappingConfigOptions;
 
 class ModelReaderCollection

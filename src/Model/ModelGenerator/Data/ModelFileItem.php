@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zxin\Think\Model\ModelGenerator;
+namespace Zxin\Think\Model\ModelGenerator\Data;
 
 use think\Model;
 
@@ -11,28 +11,74 @@ class ModelFileItem
     private int    $objId;
     private ?string $connectName = null;
 
-    private string $pathname;
-
-    /**
-     * @var class-string<Model>
-     */
-    private string $classname;
-
-    public function __construct(
+    private function __construct(
         private string $namespace,
         private string $filename,
         private string $dir,
-        private ?string $tableName = null,
-        private ?string $defaultConnect = null,
+        private string $pathname,
+        /**
+         * @var class-string<Model>
+         */
+        private string $classname,
         /**
          * @var \ReflectionClass<Model>|null
          */
-        private ?\ReflectionClass $reflectionClass = null,
+        private \ReflectionClass $reflectionClass,
+        private ?string $tableName = null,
+        private ?string $defaultConnect = null,
     ) {
         $this->objId = spl_object_id($this);
+    }
 
-        $this->pathname  = $dir . DIRECTORY_SEPARATOR . $filename;
-        $this->classname = $this->namespace . '\\' . substr($this->filename, 0, -4);
+    public static function fromFile(
+        string $namespace,
+        string $filename,
+        string $dir,
+        string $defaultConnect,
+    ): ?self
+    {
+        return self::fromReflection(
+            namespace: $namespace,
+            filename: $filename,
+            dir: $dir,
+            defaultConnect: $defaultConnect,
+            tableName: null,
+            reflection: null,
+        );
+    }
+
+    public static function fromReflection(
+        string $namespace,
+        string $filename,
+        string $dir,
+        string $defaultConnect,
+        ?string $tableName,
+        ?\ReflectionClass $reflection
+    ): ?self
+    {
+        $pathname  = $dir . DIRECTORY_SEPARATOR . $filename;
+        $classname = $namespace . '\\' . substr($filename, 0, -4);
+
+        if (null === $reflection && \class_exists($classname)) {
+            $reflection = new \ReflectionClass($classname);
+        } else {
+            return null;
+        }
+
+        if ($reflection->isAbstract() || $reflection->isTrait() || $reflection->isInterface()) {
+            return null;
+        }
+
+        return new self(
+            namespace: $namespace,
+            filename: $filename,
+            dir: $dir,
+            pathname: $pathname,
+            classname: $classname,
+            reflectionClass: $reflection,
+            tableName: $tableName,
+            defaultConnect: $defaultConnect,
+        );
     }
 
     public function getObjId(): int
