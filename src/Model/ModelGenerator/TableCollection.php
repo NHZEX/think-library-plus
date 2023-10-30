@@ -12,12 +12,10 @@ use Psr\Log\NullLogger;
 use think\db\ConnectionInterface;
 use think\db\PDOConnection;
 use think\helper\Str;
+use Zxin\Think\Model\ModelGenerator\Data\RecordRow;
 use Zxin\Think\Model\ModelGenerator\Options\DefaultConfigOptions;
 use Zxin\Think\Model\ModelGenerator\Options\MappingConfigOptions;
 
-/**
- * @template RecordRow of array{connect: string, table: string, class: string, filename: string, status: string, content: string}
- */
 class TableCollection
 {
     /**
@@ -97,14 +95,13 @@ class TableCollection
 
         foreach ($this->modelCollection->getModelList() as $item) {
             if (!isset($this->efficientModelSet[$item->getObjId()])) {
-                $this->recordRows[] = [
-                    'connect'  => $item->getConnectName(),
-                    'table'    => $item->getTabelName(),
-                    'class'    => $item->getClassname(),
-                    'filename' => $item->getPathname(),
-                    'status'   => 'LOSS',
-                    'content'  => '',
-                ];
+                $this->recordRows[] = new RecordRow(
+                    connect: $item->getConnectName(),
+                    table: $item->getTabelName(),
+                    className: $item->getClassname(),
+                    filename: $item->getPathname(),
+                    status: 'LOSS'
+                );
             }
         }
     }
@@ -146,14 +143,15 @@ class TableCollection
             return;
         }
 
-        $this->recordRows[] = [
-            'connect'  => $connectName,
-            'table'    => $table,
-            'class'    => $className,
-            'filename' => $savePath,
-            'status'   => 'CREATE',
-            'content'  => $content,
-        ];
+        $this->recordRows[] = new RecordRow(
+            connect: $connectName,
+            table: $table,
+            className: $className,
+            filename: $savePath,
+            status: 'CREATE',
+            content: $content,
+            change: true,
+        );
 
         if (!$this->tryRun) {
             self::writeFile($savePath, $content);
@@ -164,16 +162,25 @@ class TableCollection
     {
         $content = $this->_updateModel($connectName, $table, $model);
 
-        $this->recordRows[] = [
-            'connect'  => $connectName,
-            'table'    => $table,
-            'class'    => $model->getClassname(),
-            'filename' => $model->getPathname(),
-            'status'   => 'UPDATE',
-            'content'  => $content,
-        ];
+        $isChange = \file_get_contents($model->getPathname()) !== $content;
 
-        if (!$this->tryRun && $content) {
+        $status = match (true) {
+            empty($content) => 'FAIL',
+            $isChange => 'UPDATE',
+            default => 'EXIST',
+        };
+
+        $this->recordRows[] = new RecordRow(
+            connect: $connectName,
+            table: $table,
+            className: $model->getClassname(),
+            filename: $model->getPathname(),
+            status: $status,
+            content: $content,
+            change: $isChange,
+        );
+
+        if (!$this->tryRun && $isChange) {
             $model->writeFileContent($content);
         }
     }

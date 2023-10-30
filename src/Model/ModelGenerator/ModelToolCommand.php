@@ -62,10 +62,10 @@ class ModelToolCommand extends Command
 
         foreach ($tableResult->getRecordRows() as $row) {
             $table->addRow([
-                $row['connect'],
-                $row['table'],
-                $row['class'],
-                $row['status'],
+                $row->getConnect(),
+                $row->getTable(),
+                $row->getClassName(),
+                $row->getStatus(),
             ]);
         }
 
