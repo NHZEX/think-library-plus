@@ -167,7 +167,7 @@ class TableCollection
         $status = match (true) {
             empty($content) => 'FAIL',
             $isChange => 'UPDATE',
-            default => 'EXIST',
+            default => 'OK',
         };
 
         $this->recordRows[] = new RecordRow(
