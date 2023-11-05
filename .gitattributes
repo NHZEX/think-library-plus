@@ -1,4 +1,3 @@
-/tests export-ignore
 /.github export-ignore
 /.gitattributes export-ignore
 /.phpunit.xml export-ignore
@@ -6,3 +5,5 @@
 /rector.php export-ignore
 /phpstan.neon export-ignore
 /phpstan-baseline.neon export-ignore
+/tests export-ignore
+/example export-ignore

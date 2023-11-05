@@ -16,6 +16,7 @@
         "nette/php-generator": "^4.0",
         "php-cs-fixer/shim": "^3.26",
         "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^9.6",
         "rector/rector": "^0.18.2",
         "topthink/think-orm": "~3.0.11"
     },
@@ -25,6 +26,12 @@
                 "src/",
                 "legacy/"
             ]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/",
+            "example\\": "example/"
         }
     },
     "suggest": {
