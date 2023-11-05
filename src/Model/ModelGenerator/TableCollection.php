@@ -126,25 +126,33 @@ class TableCollection
                     $this->efficientModelSet[$item->getObjId()] = true;
                 }
             } else {
-                $this->createModel($connectName, $table, $comment);
+                $record = $this->createModel($connectName, $table, $comment);
+                if (null !== $record) {
+                    $this->recordRows[] = $record;
+                }
             }
         }
     }
 
-    private function createModel(string $connectName, string $table, string $comment): void
+    public function createModel(string $connectName, string $table, string $comment): ?RecordRow
     {
         $matchOption = $this->resolveMappingConfigOptions($table, $connectName);
 
         $content = $this->generateModel($connectName, $table, $comment, $matchOption, $className);
 
+        if (empty($content)) {
+            $this->logger->warning("table invalid, table: [{$connectName}]{$table}");
+            return null;
+        }
+
         $savePath = ModelGenerator::classToPath($className);
 
         if (empty($savePath)) {
             $this->logger->warning("Class name invalid, table: [{$connectName}]{$table}, class: {$className}");
-            return;
+            return null;
         }
 
-        $this->recordRows[] = new RecordRow(
+        $record = new RecordRow(
             connect: $connectName,
             table: $table,
             className: $className,
@@ -157,6 +165,8 @@ class TableCollection
         if (!$this->tryRun) {
             self::writeFile($savePath, $content);
         }
+
+        return $record;
     }
 
     private function updateModel(string $connectName, string $table, ModelFileItem $model): void
@@ -192,9 +202,13 @@ class TableCollection
         string  $comment,
         ?MappingConfigOptions $matchOption,
         ?string &$className,
-    ): string {
+    ): ?string {
         $connection = self::resolveDbConnect($connectName);
         $fields     = ModelGenerator::queryTableFields($connection, $table);
+
+        if ($fields->isEmpty()) {
+            return null;
+        }
 
         $phpFile = new PhpFile();
 
