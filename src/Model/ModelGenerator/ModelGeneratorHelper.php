@@ -12,7 +12,7 @@ use Zxin\Think\Model\ModelGenerator\Data\ModelFileItem;
 /**
  * @template SingleItemOptions of array{table: array<string>, dir: string, namespace: string}
  */
-class ModelGenerator
+class ModelGeneratorHelper
 {
     public static function queryTables(ConnectionInterface $connection): array
     {
@@ -154,7 +154,7 @@ class ModelGenerator
 
     public static function classToPath(string $class): ?string
     {
-        $pathname = ModelGenerator::findNamespacePaths($class, null);
+        $pathname = ModelGeneratorHelper::findNamespacePaths($class, null);
 
         if (empty($pathname)) {
             return null;

@@ -43,7 +43,7 @@ class ModelReaderCollection
 
     public function loadModelByNamespace(string $namespace, string $connect): void
     {
-        foreach (ModelGenerator::scanNamespace($namespace, $connect) as $item) {
+        foreach (ModelGeneratorHelper::scanNamespace($namespace, $connect) as $item) {
             if (isset($this->classSet[$item->getClassName()])) {
                 // todo 加入重复冲突日志
                 continue;
@@ -72,7 +72,7 @@ class ModelReaderCollection
     {
         // todo 重构为配置对象
 
-        foreach (ModelGenerator::loadSingle(items: $items, defaultConnect: $this->defaultOptions->getConnect()) as $item) {
+        foreach (ModelGeneratorHelper::loadSingle(items: $items, defaultConnect: $this->defaultOptions->getConnect()) as $item) {
             if (isset($this->classSet[$item->getClassName()])) {
                 // todo 加入重复冲突日志
                 continue;

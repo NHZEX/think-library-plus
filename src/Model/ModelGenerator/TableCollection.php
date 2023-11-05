@@ -68,7 +68,7 @@ class TableCollection
 
         $connection = self::resolveDbConnect($connectName);
 
-        return $this->tableTree[$connectName] ??= ModelGenerator::queryTables($connection);
+        return $this->tableTree[$connectName] ??= ModelGeneratorHelper::queryTables($connection);
     }
 
     public function getModelCollection(): ModelReaderCollection
@@ -145,7 +145,7 @@ class TableCollection
             return null;
         }
 
-        $savePath = ModelGenerator::classToPath($className);
+        $savePath = ModelGeneratorHelper::classToPath($className);
 
         if (empty($savePath)) {
             $this->logger->warning("Class name invalid, table: [{$connectName}]{$table}, class: {$className}");
@@ -204,7 +204,7 @@ class TableCollection
         ?string &$className,
     ): ?string {
         $connection = self::resolveDbConnect($connectName);
-        $fields     = ModelGenerator::queryTableFields($connection, $table);
+        $fields     = ModelGeneratorHelper::queryTableFields($connection, $table);
 
         if ($fields->isEmpty()) {
             return null;
@@ -300,7 +300,7 @@ class TableCollection
 
 
         // 加载表字段
-        $fields             = ModelGenerator::queryTableFields($connection, $table);
+        $fields             = ModelGeneratorHelper::queryTableFields($connection, $table);
         $propertyCollection = PropertyCollection::fromFields($fields);
 
         // todo 支持更新主键
