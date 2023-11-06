@@ -174,9 +174,9 @@ class ModelGeneratorTest extends TestCase
             'single' => [
                 // todo 有问题需要修
                 [
-                    'table'   => 'user_role_relation',
+                    'table'   => 'exception_logs',
                     'connect' => null,
-                    'class'   => '\Tests\ModelOutput\UserRoleRelationModelAlias',
+                    'class'   => '\Tests\ModelOutput\T0\ExceptionLogsModelAlias',
                 ],
             ],
 
@@ -220,9 +220,11 @@ class ModelGeneratorTest extends TestCase
                 $row->getStatus(),
             ), PHP_EOL;
 
-            self::assertTrue(\in_array($row->getStatus(), ['CREATE', 'UPDATE', 'LOSS']));
+            self::assertTrue(\in_array($row->getStatus(), ['CREATE', 'UPDATE', 'LOSS', 'OK']));
 
-            if ($row->getClassName() === 'Tests\ModelOutput\LossModel') {
+            if ($row->getClassName() === 'Tests\ModelOutput\T0\ExceptionLogsModelAlias') {
+                self::assertEquals('OK', $row->getStatus());
+            } elseif ($row->getClassName() === 'Tests\ModelOutput\LossModel') {
                 self::assertEquals('LOSS', $row->getStatus());
             } elseif ($row->getStatus() === 'UPDATE') {
                 self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());

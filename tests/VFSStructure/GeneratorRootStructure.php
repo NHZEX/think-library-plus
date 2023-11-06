@@ -146,28 +146,36 @@ const SCAN_ROOT_DIR = [
         
         }
         PHP,
-    'UserRoleRelationModelAlias.php' => <<<PHP
-        <?php
-        
-        declare(strict_types=1);
-        
-        namespace Tests\ModelOutput;
-        
-        /**
-         * Model: Table of user_role_relation.
-         * 
-         * @property int \$id 
-         * @property int \$user_id 
-         * @property int \$role_id 
-         * @property int \$create_time 
-         */
-        final class UserRoleRelationModelAlias extends ModelBase
-        {
-            public \$table = 'user_role_relation';
-            public \$pk = 'id';
-        }
-        
-        PHP,
+    'T0' => [
+        'ExceptionLogsModelAlias.php' => <<<PHP
+            <?php
+            
+            declare(strict_types=1);
+            
+            namespace Tests\ModelOutput\T0;
+            
+            use Tests\ModelOutput\ModelBase;
+            
+            /**
+             * @property int    \$id
+             * @property int    \$create_time    创建时间
+             * @property string \$request_url    请求地址
+             * @property string \$request_route  请求路由
+             * @property string \$request_method 请求方法
+             * @property string \$request_ip     请求IP
+             * @property string \$mode           类型
+             * @property string \$request_info   请求信息
+             * @property string \$message        消息
+             * @property string \$trace_info     异常堆栈
+             */
+            final class ExceptionLogsModelAlias extends ModelBase
+            {
+                public \$table = 'exception_logs';
+                public \$pk = 'id';
+            }
+            
+            PHP,
+    ],
     'LossModel.php' => <<<PHP
         <?php
         

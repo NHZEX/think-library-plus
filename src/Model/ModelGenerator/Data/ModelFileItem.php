@@ -59,10 +59,12 @@ class ModelFileItem
         $pathname  = $dir . DIRECTORY_SEPARATOR . $filename;
         $classname = $namespace . '\\' . substr($filename, 0, -4);
 
-        if (null === $reflection && \class_exists($classname)) {
-            $reflection = new \ReflectionClass($classname);
-        } else {
-            return null;
+        if (null === $reflection) {
+            if (\class_exists($classname)) {
+                $reflection = new \ReflectionClass($classname);
+            } else {
+                return null;
+            }
         }
 
         if ($reflection->isAbstract() || $reflection->isTrait() || $reflection->isInterface()) {

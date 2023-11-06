@@ -71,7 +71,6 @@ class ModelReaderCollection
     public function loadModelByList(array $items): void
     {
         // todo 重构为配置对象
-
         foreach (ModelGeneratorHelper::loadSingle(items: $items, defaultConnect: $this->defaultOptions->getConnect()) as $item) {
             if (isset($this->classSet[$item->getClassName()])) {
                 // todo 加入重复冲突日志
