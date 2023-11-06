@@ -158,9 +158,9 @@ class ModelGeneratorTest extends TestCase
 
         $mgs->loadConfig([
             // 映射时默认继承基类
-            'baseClass'      => \Tests\ModelOutput\ModelBase::class,
+            'baseClass'      => '\Tests\ModelOutput\ModelBase',
             // 映射时默认命名空间
-            'baseNamespace'  => 'Tests\\ModelOutput',
+            'baseNamespace'  => 'Tests\ModelOutput',
             // 映射时的默认连接，空表示使用db配置指定
             'defaultConnect' => null,
             // 生成文件是否使用严格类型
@@ -176,7 +176,7 @@ class ModelGeneratorTest extends TestCase
                 [
                     'table'   => 'user_role_relation',
                     'connect' => null,
-                    'class'   => \Tests\ModelOutput\UserRoleRelationModelAlias::class,
+                    'class'   => '\Tests\ModelOutput\UserRoleRelationModelAlias',
                 ],
             ],
 
@@ -191,7 +191,7 @@ class ModelGeneratorTest extends TestCase
                     'exclude'   => [
                         'activity_log',
                     ],
-                    'namespace' => 'Tests\\ModelOutput',
+                    'namespace' => 'Tests\ModelOutput\T2',
                 ],
 //                [
 //                    // 匹配指定表，空代表任意表
