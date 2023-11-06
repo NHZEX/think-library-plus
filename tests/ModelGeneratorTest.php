@@ -225,7 +225,13 @@ class ModelGeneratorTest extends TestCase
             if ($row->getStatus() === 'UPDATE') {
                 self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
             }
+            if ($row->getTable() === 'admin_user') {
+                echo $row->getContent();
+            }
         }
+
+        // 更新文件后测试UPDATE
+        \file_put_contents($fs->url() . '/T2/AdminUserModel.php', VFSStructure\AdminUserModel_RAW);
 
         $tableResult = $mgs->execute(true);
 
@@ -243,9 +249,14 @@ class ModelGeneratorTest extends TestCase
                 $row->getStatus(),
             ), PHP_EOL;
 
-            // UNCHANGED
-            self::assertEquals('OK', $row->getStatus());
-            self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
+            if ($row->getClassName() === 'Tests\ModelOutput\T2\AdminUserModel') {
+                self::assertEquals('UPDATE', $row->getStatus());
+                self::assertEquals(VFSStructure\AdminUserModel_UPDATE, $row->getContent());
+            } else {
+                // UNCHANGED
+                self::assertEquals('OK', $row->getStatus());
+                self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
+            }
         }
     }
 }
