@@ -51,7 +51,7 @@ class ModelReaderCollection
             $this->classSet[$item->getClassName()] = true;
             $this->modelList[]                                      = $item;
             $connectName                                            = $item->getConnectName() ?: $connect;
-            $this->modelTree[$connectName][$item->getTabelName()][] = $item;
+            $this->modelTree[$connectName][$item->getTableName()][] = $item;
         }
     }
 
@@ -80,7 +80,7 @@ class ModelReaderCollection
             $this->classSet[$item->getClassName()] = true;
             $this->modelList[]                                      = $item;
             $connectName                                            = $item->getConnectName() ?: $this->defaultOptions->getConnect();
-            $this->modelTree[$connectName][$item->getTabelName()][] = $item;
+            $this->modelTree[$connectName][$item->getTableName()][] = $item;
         }
     }
 

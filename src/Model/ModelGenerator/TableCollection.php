@@ -98,7 +98,7 @@ class TableCollection
             if (!isset($this->efficientModelSet[$item->getObjId()])) {
                 $this->recordRows[] = new RecordRow(
                     connect: $item->getConnectName(),
-                    table: $item->getTabelName(),
+                    table: $item->getTableName(),
                     className: $item->getClassname(),
                     filename: $item->getPathname(),
                     status: 'LOSS'

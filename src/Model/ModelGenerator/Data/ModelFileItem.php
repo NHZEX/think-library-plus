@@ -153,7 +153,7 @@ class ModelFileItem
         return $this->reflectionObject ??= new \ReflectionObject($this->internalObject);
     }
 
-    public function getTabelName(): ?string
+    public function getTableName(): ?string
     {
         if (null !== $this->tableName) {
             return $this->tableName;
