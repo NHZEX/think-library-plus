@@ -220,12 +220,9 @@ class ModelGeneratorTest extends TestCase
                 $row->getStatus(),
             ), PHP_EOL;
 
-            if ($row->getStatus() === 'CREATE') {
-                continue;
-            } elseif ($row->getStatus() === 'UPDATE') {
-                self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
-            } elseif ($row->getStatus() === 'OK') {
-                // UNCHANGED
+            self::assertTrue(\in_array($row->getStatus(), ['CREATE', 'UPDATE']));
+
+            if ($row->getStatus() === 'UPDATE') {
                 self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
             }
         }
@@ -246,16 +243,9 @@ class ModelGeneratorTest extends TestCase
                 $row->getStatus(),
             ), PHP_EOL;
 
-            if ($row->getStatus() === 'CREATE') {
-                continue;
-            }
             // UNCHANGED
-            if ($row->getStatus() === 'UPDATE') {
-                self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
-            } elseif ($row->getStatus() === 'OK') {
-                // UNCHANGED
-                self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
-            }
+            self::assertEquals('OK', $row->getStatus());
+            self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
         }
     }
 }
