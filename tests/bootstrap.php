@@ -5,7 +5,9 @@ use think\App;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+const TEST_MODEL_GENERATOR_USE_VFS = true;
 
+require __DIR__ . '/VFSStructure/GeneratorRootStructure.php';
 
 $app = new App(__DIR__);
 $app->initialize();

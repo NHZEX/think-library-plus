@@ -11,6 +11,7 @@ return [
         '_phinxlog',
     ],
 
+    // 单个模型绑定跟踪
     'single' => [
         [
             'table' => 'table_name',
@@ -18,6 +19,7 @@ return [
         ],
     ],
 
+    // 批量模型绑定跟踪
     'mapping' => [
         [
             'table'     => [

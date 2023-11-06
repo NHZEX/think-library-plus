@@ -78,7 +78,6 @@ class ModelGeneratorHelper
             return null;
         }
 
-        $dirs     = array_map('\realpath', $dirs);
         $baseDirs = $dirs;
 
         return array_map(fn ($dir) => join(DIRECTORY_SEPARATOR, [$dir, ...$notFound]), $dirs);

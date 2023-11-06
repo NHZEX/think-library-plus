@@ -67,7 +67,7 @@ class ModelFileItem
 
         if ($reflection->isAbstract() || $reflection->isTrait() || $reflection->isInterface()) {
             return null;
-        }
+        };
 
         return new self(
             namespace: $namespace,
@@ -210,6 +210,10 @@ class ModelFileItem
 
     public function writeFileContent(string $content): bool
     {
-        return file_put_contents($this->pathname, $content, LOCK_EX) > 0;
+        $flags = LOCK_EX;
+        if (\defined('TEST_MODEL_GENERATOR_USE_VFS') && TEST_MODEL_GENERATOR_USE_VFS && \str_starts_with($this->pathname, 'vfs://')) {
+            $flags &= ~LOCK_EX;
+        }
+        return file_put_contents($this->pathname, $content, $flags) > 0;
     }
 }

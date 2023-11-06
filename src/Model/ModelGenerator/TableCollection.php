@@ -339,13 +339,16 @@ class TableCollection
         if ($endLines && $endLines[0] !== '') {
             array_unshift($endLines, '');
         }
-        $lines = [
-            ...$headLines,
-            ...$propLines,
-            ...$endLines,
-        ];
 
-        $comment = ' * ' . join("\n * ", $lines);
+        $lines = [];
+        foreach ([...$headLines, ...$propLines, ...$endLines] as $str) {
+            if ($str) {
+                $lines[] = ' * ' . $str;
+            } else {
+                $lines[] = ' *';
+            }
+        }
+        $comment = join("\n", $lines);
 
         $fileContent = $model->getFileContent();
 
@@ -381,7 +384,11 @@ class TableCollection
             mkdir($dirname, 0755, true);
         }
 
-        file_put_contents($filename, $content, LOCK_EX);
+        $flags = LOCK_EX;
+        if (\defined('TEST_MODEL_GENERATOR_USE_VFS') && TEST_MODEL_GENERATOR_USE_VFS && \str_starts_with($filename, 'vfs://')) {
+            $flags &= ~LOCK_EX;
+        }
+        file_put_contents($filename, $content, $flags);
     }
 
     private function resolveMappingConfigOptions(string $table, ?string $connectName): ?MappingConfigOptions

@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use Composer\Autoload\ClassLoader;
+use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
@@ -88,8 +90,6 @@ class ModelGeneratorTest extends TestCase
 
         $record = $tableCollection->createModel($defaultOptions->getConnect(), 'test_admin_user', '系统用户456');
 
-        echo $record->getContent(), PHP_EOL;
-
         self::assertNotNull($record);
         self::assertEquals(<<<PHP
             <?php
@@ -129,22 +129,86 @@ class ModelGeneratorTest extends TestCase
             PHP,
             $record->getContent(),
         );
+
+        $this->app->db->connect($defaultOptions->getConnect())->execute('DROP TABLE IF EXISTS `test_admin_user`');
     }
 
     public function testScanGenerator(): void
     {
+        $lines = \preg_split('#;\s*\n#', VFSStructure\SCAN_DDL);
+        $lines = \array_map('\trim', $lines);
+        $lines = \array_filter($lines);
+
+        foreach ($lines as $line) {
+            if (\str_starts_with($line, '#')) {
+                continue;
+            }
+            $this->app->db->connect()->execute($line);
+        }
+
+        $fs = vfsStream::setup('MGScan', null, VFSStructure\SCAN_ROOT_DIR);
+
+        $loaders = ClassLoader::getRegisteredLoaders();
+        $loader = current($loaders);
+        $loader->addPsr4('Tests\\ModelOutput\\', $fs->url(), true);
+
         $logger = self::echoLogger();
 
         $mgs = new ModelGeneratorService($logger);
 
-        $mgs->loadConfig();
-        $tableResult = $mgs->execute(true);
+        $mgs->loadConfig([
+            // 映射时默认继承基类
+            'baseClass'      => \Tests\ModelOutput\ModelBase::class,
+            // 映射时默认命名空间
+            'baseNamespace'  => 'Tests\\ModelOutput',
+            // 映射时的默认连接，空表示使用db配置指定
+            'defaultConnect' => null,
+            // 生成文件是否使用严格类型
+            'strictTypes'    => true,
+
+            'exclude' => [
+                '_phinxlog',
+            ],
+
+            // 单个模型绑定跟踪
+            'single' => [
+                // todo 有问题需要修
+                [
+                    'table'   => 'user_role_relation',
+                    'connect' => null,
+                    'class'   => \Tests\ModelOutput\UserRoleRelationModelAlias::class,
+                ],
+            ],
+
+            // 批量模型绑定跟踪
+            'mapping' => [
+                [
+                    // 匹配指定表
+                    'table'     => [
+                        'admin_*',
+                        'user_role_*',
+                    ],
+                    'exclude'   => [
+                        'activity_log',
+                    ],
+                    'namespace' => 'Tests\\ModelOutput',
+                ],
+//                [
+//                    // 匹配指定表，空代表任意表
+//                    'table'     => null,
+//                    // 模型映射关联的连接
+//                    'connect'   => 'cat',
+//                    // 模型映射使用的命名空间
+//                    'namespace' => 'Tests\\ModelOutput\\T2',
+//                    'baseClass' => \Tests\ModelOutput\T2\T2ModelBase::class,
+//                ],
+            ],
+        ]);
+        $tableResult = $mgs->execute(false);
 
         $recordRows = $tableResult->getRecordRows();
 
         self::assertNotEmpty($recordRows);
-
-        $rootPath = \rtrim(\app()->getRootPath(), '/') . '/';
 
         foreach ($recordRows as $row) {
             echo \sprintf(
@@ -152,7 +216,33 @@ class ModelGeneratorTest extends TestCase
                 $row->getConnect(),
                 $row->getTable(),
                 $row->getClassName(),
-                $row->getFilename($rootPath),
+                $row->getFilename(),
+                $row->getStatus(),
+            ), PHP_EOL;
+
+            if ($row->getStatus() === 'CREATE') {
+                continue;
+            } elseif ($row->getStatus() === 'UPDATE') {
+                self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
+            } elseif ($row->getStatus() === 'OK') {
+                // UNCHANGED
+                self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
+            }
+        }
+
+        $tableResult = $mgs->execute(true);
+
+        $recordRows = $tableResult->getRecordRows();
+
+        self::assertNotEmpty($recordRows);
+
+        foreach ($recordRows as $row) {
+            echo \sprintf(
+                '> [%s]%s, class %s, filename: %s, status: %s',
+                $row->getConnect(),
+                $row->getTable(),
+                $row->getClassName(),
+                $row->getFilename(),
                 $row->getStatus(),
             ), PHP_EOL;
 
@@ -160,9 +250,11 @@ class ModelGeneratorTest extends TestCase
                 continue;
             }
             // UNCHANGED
-            if ($this->getStatus() === 'UPDATE') {
+            if ($row->getStatus() === 'UPDATE') {
                 self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
-                continue;
+            } elseif ($row->getStatus() === 'OK') {
+                // UNCHANGED
+                self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
             }
         }
     }

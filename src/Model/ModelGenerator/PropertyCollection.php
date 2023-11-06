@@ -128,6 +128,7 @@ class PropertyCollection
             $line[2] = '$' . $field;
         }
 
+        $line = \array_filter($line);
         return join(' ', $line);
     }
 

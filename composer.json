@@ -13,6 +13,7 @@
         "zxin/utils": "^2.2"
     },
     "require-dev": {
+        "mikey179/vfsstream": "^1.6",
         "nette/php-generator": "^4.0",
         "php-cs-fixer/shim": "^3.26",
         "phpstan/phpstan": "^1.10",

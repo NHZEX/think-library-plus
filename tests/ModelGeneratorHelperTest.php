@@ -10,6 +10,6 @@ class ModelGeneratorHelperTest extends TestCase
 {
     public function testClassToPath(): void
     {
-        $this->assertEquals(__FILE__, ModelGeneratorHelper::classToPath('Tests\\ModelGeneratorHelperTest'));
+        $this->assertEquals(__FILE__, \realpath(ModelGeneratorHelper::classToPath('Tests\\ModelGeneratorHelperTest')));
     }
 }
