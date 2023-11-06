@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zxin\Think\Model\ModelGenerator;
+namespace Zxin\Think\Model\ModelGenerator\Command;
 
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
@@ -12,6 +12,7 @@ use think\console\input\Argument;
 use think\console\input\Option;
 use think\console\Output;
 use think\console\Table;
+use Zxin\Think\Model\ModelGenerator\ModelGeneratorService;
 
 /**
  * 批量创建数据结构到模型
