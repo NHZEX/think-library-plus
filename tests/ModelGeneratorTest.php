@@ -220,13 +220,12 @@ class ModelGeneratorTest extends TestCase
                 $row->getStatus(),
             ), PHP_EOL;
 
-            self::assertTrue(\in_array($row->getStatus(), ['CREATE', 'UPDATE']));
+            self::assertTrue(\in_array($row->getStatus(), ['CREATE', 'UPDATE', 'LOSS']));
 
-            if ($row->getStatus() === 'UPDATE') {
+            if ($row->getClassName() === 'Tests\ModelOutput\LossModel') {
+                self::assertEquals('LOSS', $row->getStatus());
+            } elseif ($row->getStatus() === 'UPDATE') {
                 self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
-            }
-            if ($row->getTable() === 'admin_user') {
-                echo $row->getContent();
             }
         }
 
@@ -249,7 +248,9 @@ class ModelGeneratorTest extends TestCase
                 $row->getStatus(),
             ), PHP_EOL;
 
-            if ($row->getClassName() === 'Tests\ModelOutput\T2\AdminUserModel') {
+            if ($row->getClassName() === 'Tests\ModelOutput\LossModel') {
+                self::assertEquals('LOSS', $row->getStatus());
+            } elseif ($row->getClassName() === 'Tests\ModelOutput\T2\AdminUserModel') {
                 self::assertEquals('UPDATE', $row->getStatus());
                 self::assertEquals(VFSStructure\AdminUserModel_UPDATE, $row->getContent());
             } else {

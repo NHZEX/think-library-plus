@@ -168,6 +168,22 @@ const SCAN_ROOT_DIR = [
         }
         
         PHP,
+    'LossModel.php' => <<<PHP
+        <?php
+        
+        declare(strict_types=1);
+        
+        namespace Tests\ModelOutput;
+        
+        /**
+         */
+        final class LossModel extends ModelBase
+        {
+            public \$table = 'loss_table';
+            public \$pk = 'id';
+        }
+        
+        PHP,
     'T2'                             => [
         'T2ModelBase.php' => <<<PHP
             <?php
