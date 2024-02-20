@@ -5,8 +5,6 @@ namespace Zxin\Think\Validate;
 use think\App;
 use think\Service;
 
-use function str_replace;
-
 class ValidateService extends Service
 {
     public array $storage;
@@ -24,7 +22,7 @@ class ValidateService extends Service
 
     protected function loadStorage(): array
     {
-        if ($this->storage === []) {
+        if (!isset($this->storage)) {
             $filename = app_path() . 'validate_storage.php';
             $this->storage = require $filename;
         }
