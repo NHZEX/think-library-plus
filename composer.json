@@ -6,20 +6,20 @@
         "composer-runtime-api": "^2",
         "brick/varexporter": "^0.4.0",
         "composer/pcre": "^3.1",
-        "symfony/finder": "^6.0",
-        "symfony/var-exporter": "^6.0",
+        "symfony/finder": "^6.0|^7.0",
+        "symfony/var-exporter": "^6.0|^7.0",
         "topthink/framework": "^8.0.2",
         "topthink/think-helper": "^3.1.6",
-        "zxin/utils": "^2.2"
+        "zxin/utils": "^2.5"
     },
     "require-dev": {
-        "mikey179/vfsstream": "^1.6",
-        "nette/php-generator": "^4.0",
+        "mikey179/vfsstream": "^1.6.11",
+        "nette/php-generator": "^4.1.4",
         "php-cs-fixer/shim": "^3.54",
         "phpstan/phpstan": "^1.10.67",
-        "phpunit/phpunit": "^9.6",
+        "phpunit/phpunit": "^9.6.19",
         "rector/rector": "^1.0.4",
-        "topthink/think-orm": "~3.0.11"
+        "topthink/think-orm": "~3.0.14"
     },
     "autoload": {
         "psr-4": {
