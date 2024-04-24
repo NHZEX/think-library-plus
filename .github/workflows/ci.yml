@@ -23,7 +23,6 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_DATABASE: testing
-          MYSQL_USER: testing
           MYSQL_ROOT_PASSWORD: password
         ports:
           - 3306:3306
@@ -76,6 +75,6 @@ jobs:
         env:
           PHP_TESTS_DB_MYSQL_HOST: 127.0.0.1
           PHP_TESTS_DB_MYSQL_PORT: 3306
-          PHP_TESTS_DB_MYSQL_USERNAME: testing
+          PHP_TESTS_DB_MYSQL_USERNAME: root
           PHP_TESTS_DB_MYSQL_PASSWORD: password
           PHP_TESTS_DB_MYSQL_DATABASE: testing
