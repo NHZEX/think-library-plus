@@ -160,9 +160,6 @@ class ModelFileItem
         return $this->dir;
     }
 
-    /**
-     * @return \ReflectionClass<Model>|null
-     */
     public function getReflectionClass(): \ReflectionClass
     {
         // todo 实现加载异常处理
