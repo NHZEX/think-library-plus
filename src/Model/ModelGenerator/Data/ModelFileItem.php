@@ -85,8 +85,7 @@ class ModelFileItem
 
     public static function fromNewClass(
         string $classname,
-        ?string $connect,
-        string $defaultConnect,
+        string $connect,
         ?string $tableName,
     ) {
         $classname = ltrim($classname, '\\');
@@ -105,10 +104,10 @@ class ModelFileItem
             classname: $classname,
             reflectionClass: null,
             tableName: $tableName,
-            defaultConnect: $defaultConnect,
+            defaultConnect: null,
         );
 
-        $obj->connectName = $connect ?? $defaultConnect;
+        $obj->connectName = $connect;
         $obj->fileExists = false;
 
         return $obj;

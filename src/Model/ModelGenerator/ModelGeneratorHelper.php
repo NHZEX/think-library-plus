@@ -8,10 +8,8 @@ use Composer\Autoload\ClassLoader;
 use think\Collection;
 use think\db\ConnectionInterface;
 use Zxin\Think\Model\ModelGenerator\Data\ModelFileItem;
+use Zxin\Think\Model\ModelGenerator\Options\SingleItemOptions;
 
-/**
- * @template SingleItemOptions of array{table: array<string>, dir: string, namespace: string}
- */
 class ModelGeneratorHelper
 {
     public static function queryTables(ConnectionInterface $connection): array
@@ -126,18 +124,17 @@ class ModelGeneratorHelper
     /**
      * @param array<SingleItemOptions> $items
      */
-    public static function loadSingle(array $items, ?string $defaultConnect = null): \Generator
+    public static function loadSingle(array $items): \Generator
     {
         foreach ($items as $item) {
-            $class = $item['class'];
-            $table = $item['table'];
-            $connect = $item['connect'] ?? null;
+            $class = $item->getClass();
+            $table = $item->getTable();
+            $connect = $item->getConnect();
 
             if (!class_exists($class)) {
                 yield ModelFileItem::fromNewClass(
                     classname: $class,
                     connect: $connect,
-                    defaultConnect: $defaultConnect,
                     tableName: $table,
                 );
                 continue;
@@ -151,7 +148,7 @@ class ModelGeneratorHelper
                 namespace: $namespace,
                 filename: basename($filename),
                 dir: \dirname($filename),
-                defaultConnect: $defaultConnect,
+                defaultConnect: $connect,
                 tableName: $table,
                 reflection: $ref,
             );

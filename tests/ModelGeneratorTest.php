@@ -81,6 +81,7 @@ class ModelGeneratorTest extends TestCase
 
         $tableCollection = new TableCollection(
             defaultOptions: $defaultOptions,
+            single: [],
             mapping: [],
             logger: $logger,
             tryRun: true,

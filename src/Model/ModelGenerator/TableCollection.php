@@ -16,6 +16,7 @@ use Zxin\Think\Model\ModelGenerator\Data\ModelFileItem;
 use Zxin\Think\Model\ModelGenerator\Data\RecordRow;
 use Zxin\Think\Model\ModelGenerator\Options\DefaultConfigOptions;
 use Zxin\Think\Model\ModelGenerator\Options\MappingConfigOptions;
+use Zxin\Think\Model\ModelGenerator\Options\SingleItemOptions;
 
 class TableCollection
 {
@@ -35,6 +36,8 @@ class TableCollection
 
     public function __construct(
         private DefaultConfigOptions $defaultOptions,
+        /** @var array<SingleItemOptions> */
+        private array            $single,
         /** @var array<MappingConfigOptions> */
         private array            $mapping,
         private ?LoggerInterface $logger = null,
@@ -47,6 +50,14 @@ class TableCollection
     public function getDefaultOptions(): MappingConfigOptions
     {
         return $this->defaultOptions;
+    }
+
+    /**
+     * @return SingleItemOptions[]
+     */
+    public function getSingleOptions(): array
+    {
+        return $this->single;
     }
 
     /**

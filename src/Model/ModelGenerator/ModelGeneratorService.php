@@ -8,11 +8,10 @@ use Psr\Log\LoggerInterface;
 use think\helper\Arr;
 use Zxin\Think\Model\ModelGenerator\Options\DefaultConfigOptions;
 use Zxin\Think\Model\ModelGenerator\Options\MappingConfigOptions;
+use Zxin\Think\Model\ModelGenerator\Options\SingleItemOptions;
 
 /**
  * 模型生成服务
- *
- * @template SingleItemOptions of array{table: array<string>, dir: string, namespace: string}
  */
 class ModelGeneratorService
 {
@@ -38,6 +37,7 @@ class ModelGeneratorService
     {
         $tableCollection = new TableCollection(
             defaultOptions: $this->defaultOptions,
+            single: $this->single,
             mapping: $this->mapping,
             logger: $this->logger,
             tryRun: $tryRun,
@@ -50,7 +50,7 @@ class ModelGeneratorService
         $tableCollection->loadTables();
 
         $mc = $tableCollection->getModelCollection();
-        $mc->loadModelByList($this->single);
+        $mc->loadModelByList();
         $mc->loadModelByDefaultNamespace();
         $mc->loadModelByMapping();
 
@@ -83,13 +83,13 @@ class ModelGeneratorService
         $mapping = Arr::get($config, 'mapping', []);
 
         $this->strictTypes = Arr::get($config, 'strictTypes', true);
-        $this->single = $single;
         $this->defaultOptions = DefaultConfigOptions::makeDefault(
             connect: $defaultConnect,
             namespace: $baseNamespace,
             baseClass: $baseClass,
             exclude: $excludeTable,
         );
+        $this->single = SingleItemOptions::fromArrSet($single, $this->defaultOptions);
         $this->mapping = MappingConfigOptions::fromArrSet($mapping, $this->defaultOptions);
 
         return true;
