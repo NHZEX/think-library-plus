@@ -106,11 +106,9 @@ class TableCollection
                 if (\in_array($table, $defaultExclude)) {
                     return false;
                 }
-                return null === $this->resolveMappingConfigOptionsByExclude($table, $connectName);
+                return true;
             }, ARRAY_FILTER_USE_KEY);
             $this->handleModelByConnect($connectName, $tables);
-
-            // todo 处理当前连接的单个模型声明
         }
 
         foreach ($this->modelCollection->getModelList() as $item) {
@@ -141,15 +139,23 @@ class TableCollection
         foreach ($tables as $table => $comment) {
             if (isset($modelList[$table])) {
                 foreach ($modelList[$table] as $item) {
+                    $options = $item->getOptions();
+                    if ($options instanceof MappingConfigOptions) {
+                        if ($options->testExcludeOption($table, $connectName)) {
+                            continue;
+                        }
+                    }
                     if ($item->hasFile()) {
                         $this->updateModel($connectName, $table, $item);
-                        $this->efficientModelSet[$item->getObjId()] = true;
                     } else {
                         $this->createModelByItem($item, $connectName, $table, $comment);
-                        $this->efficientModelSet[$item->getObjId()] = true;
                     }
+                    $this->efficientModelSet[$item->getObjId()] = true;
                 }
             } else {
+                if (null !== $this->resolveMappingConfigOptionsByExclude($table, $connectName)) {
+                    continue;
+                }
                 $record = $this->createModel($connectName, $table, $comment);
                 if (null !== $record) {
                     $this->recordRows[] = $record;
