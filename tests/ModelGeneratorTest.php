@@ -32,7 +32,7 @@ class ModelGeneratorTest extends TestCase
                 return $this->logs;
             }
 
-            public function log($level, \Stringable|string $message, array $context = []): void
+            public function log($level, string|\Stringable $message, array $context = []): void
             {
                 echo \sprintf('%s: %s', $level, $message), PHP_EOL;
             }
@@ -172,11 +172,15 @@ class ModelGeneratorTest extends TestCase
 
             // 单个模型绑定跟踪
             'single' => [
-                // todo 有问题需要修
                 [
                     'table'   => 'exception_logs',
                     'connect' => null,
                     'class'   => '\Tests\ModelOutput\T0\ExceptionLogsModelAlias',
+                ],
+                [
+                    'table'   => 'exception_logs',
+                    'connect' => null,
+                    'class'   => '\Tests\ModelOutput\T0\ExceptionLogsModelNew',
                 ],
             ],
 
@@ -210,6 +214,8 @@ class ModelGeneratorTest extends TestCase
 
         self::assertNotEmpty($recordRows);
 
+        $hasExceptionLogsModelNew = false;
+        $hasExceptionLogsModelAlias = false;
         foreach ($recordRows as $row) {
             echo \sprintf(
                 '> [%s]%s, class %s, filename: %s, status: %s',
@@ -222,7 +228,12 @@ class ModelGeneratorTest extends TestCase
 
             self::assertTrue(\in_array($row->getStatus(), ['CREATE', 'UPDATE', 'LOSS', 'OK']));
 
-            if ($row->getClassName() === 'Tests\ModelOutput\T0\ExceptionLogsModelAlias') {
+            if ($row->getClassName() === 'Tests\ModelOutput\T0\ExceptionLogsModelNew') {
+                // 通过直接映射新建类
+                $hasExceptionLogsModelNew = true;
+            } elseif ($row->getClassName() === 'Tests\ModelOutput\T0\ExceptionLogsModelAlias') {
+                // 通过直接映射更新类
+                $hasExceptionLogsModelAlias = true;
                 self::assertEquals('OK', $row->getStatus());
             } elseif ($row->getClassName() === 'Tests\ModelOutput\LossModel') {
                 self::assertEquals('LOSS', $row->getStatus());
@@ -230,6 +241,8 @@ class ModelGeneratorTest extends TestCase
                 self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
             }
         }
+        self::assertTrue($hasExceptionLogsModelNew, 'hasExceptionLogsModelNew');
+        self::assertTrue($hasExceptionLogsModelAlias, 'hasExceptionLogsModelAlias');
 
         // 更新文件后测试UPDATE
         \file_put_contents($fs->url() . '/T2/AdminUserModel.php', VFSStructure\AdminUserModel_RAW);

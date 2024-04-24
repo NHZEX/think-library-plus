@@ -131,8 +131,15 @@ class ModelGeneratorHelper
         foreach ($items as $item) {
             $class = $item['class'];
             $table = $item['table'];
+            $connect = $item['connect'] ?? null;
 
             if (!class_exists($class)) {
+                yield ModelFileItem::fromNewClass(
+                    classname: $class,
+                    connect: $connect,
+                    defaultConnect: $defaultConnect,
+                    tableName: $table,
+                );
                 continue;
             }
 

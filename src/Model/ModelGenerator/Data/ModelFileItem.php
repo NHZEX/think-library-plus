@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Zxin\Think\Model\ModelGenerator\Data;
 
 use think\Model;
+use Zxin\Think\Model\ModelGenerator\ModelGeneratorHelper;
 
 class ModelFileItem
 {
     private int    $objId;
     private ?string $connectName = null;
+    private bool $fileExists = true;
 
     private function __construct(
         private string $namespace,
@@ -23,7 +25,7 @@ class ModelFileItem
         /**
          * @var \ReflectionClass<Model>|null
          */
-        private \ReflectionClass $reflectionClass,
+        private ?\ReflectionClass $reflectionClass,
         private ?string $tableName = null,
         private ?string $defaultConnect = null,
     ) {
@@ -83,6 +85,38 @@ class ModelFileItem
         );
     }
 
+    public static function fromNewClass(
+        string $classname,
+        ?string $connect,
+        string $defaultConnect,
+        ?string $tableName,
+    )
+    {
+        $classname = ltrim($classname, '\\');
+
+        $namespace = substr($classname, 0, strrpos($classname, '\\'));
+        $pathname = ModelGeneratorHelper::classToPath($classname);
+
+        $filename = basename($pathname);
+        $dir = dirname($pathname);
+
+        $obj = new self(
+            namespace: $namespace,
+            filename: $filename,
+            dir: $dir,
+            pathname: $pathname,
+            classname: $classname,
+            reflectionClass: null,
+            tableName: $tableName,
+            defaultConnect: $defaultConnect,
+        );
+
+        $obj->connectName = $connect ?? $defaultConnect;
+        $obj->fileExists = false;
+
+        return $obj;
+    }
+
     public function getObjId(): int
     {
         return $this->objId;
@@ -106,6 +140,11 @@ class ModelFileItem
     public function getFilename(): string
     {
         return $this->filename;
+    }
+
+    public function hasFile(): bool
+    {
+        return $this->fileExists || file_exists($this->getPathname());
     }
 
     public function getDir(): string

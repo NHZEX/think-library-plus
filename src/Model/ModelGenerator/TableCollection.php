@@ -122,8 +122,13 @@ class TableCollection
         foreach ($tables as $table => $comment) {
             if (isset($modelList[$table])) {
                 foreach ($modelList[$table] as $item) {
-                    $this->updateModel($connectName, $table, $item);
-                    $this->efficientModelSet[$item->getObjId()] = true;
+                    if ($item->hasFile()) {
+                        $this->updateModel($connectName, $table, $item);
+                        $this->efficientModelSet[$item->getObjId()] = true;
+                    } else {
+                        $this->createModelByItem($item, $connectName, $table, $comment);
+                        $this->efficientModelSet[$item->getObjId()] = true;
+                    }
                 }
             } else {
                 $record = $this->createModel($connectName, $table, $comment);
@@ -169,6 +174,40 @@ class TableCollection
         return $record;
     }
 
+    private function createModelByItem(ModelFileItem $model, string $connectName, string $table, string $comment): bool
+    {
+        $_className = $model->getClassname();
+        $content = $this->_generateModel(
+            connectName: $connectName,
+            table: $table,
+            comment: $comment,
+            namespace: $model->getNamespace(),
+            baseClass: $this->defaultOptions->getBaseClass(),
+            className: $_className,
+        );
+
+        if (empty($content)) {
+            $this->logger->warning("table invalid, table: [{$connectName}]{$table}");
+            return false;
+        }
+
+        $this->recordRows[] = new RecordRow(
+            connect: $connectName,
+            table: $table,
+            className: $model->getClassname(),
+            filename: $model->getPathname(),
+            status: 'CREATE',
+            content: $content,
+            change: true,
+        );
+
+        if (!$this->tryRun) {
+            self::writeFile($model->getPathname(), $content);
+        }
+
+        return true;
+    }
+
     private function updateModel(string $connectName, string $table, ModelFileItem $model): void
     {
         $content = $this->_updateModel($connectName, $table, $model);
@@ -203,6 +242,29 @@ class TableCollection
         ?MappingConfigOptions $matchOption,
         ?string &$className,
     ): ?string {
+
+        $namespace = $matchOption?->getNamespace() ?? $this->defaultOptions->getNamespace();
+        $baseClass = $matchOption?->getBaseClass() ?? $this->defaultOptions->getBaseClass();
+
+        return $this->_generateModel(
+            connectName: $connectName,
+            table: $table,
+            comment: $comment,
+            namespace: $namespace,
+            baseClass: $baseClass,
+            className: $className,
+        );
+    }
+
+    private function _generateModel(
+        string  $connectName,
+        string  $table,
+        string  $comment,
+        string  $namespace,
+        string  $baseClass,
+        ?string &$className = null,
+    ): ?string {
+        $namespace  = ltrim($namespace, '\\');
         $connection = self::resolveDbConnect($connectName);
         $fields     = ModelGeneratorHelper::queryTableFields($connection, $table);
 
@@ -214,14 +276,17 @@ class TableCollection
 
         $phpFile->setStrictTypes();
 
-        $namespace = $matchOption?->getNamespace() ?? $this->defaultOptions->getNamespace();
-        $baseClass = $matchOption?->getBaseClass() ?? $this->defaultOptions->getBaseClass();
-
         $phpNamespace = $phpFile->addNamespace($namespace);
         $phpNamespace->addUse($baseClass);
 
+        if (null !== $className) {
+            $_name = substr($className, strrpos($className, '\\') + 1);
+        } else {
+            $_name = Str::studly($table) . 'Model';
+        }
+
         $phpClass = $phpNamespace
-            ->addClass(Str::studly($table) . 'Model')
+            ->addClass($_name)
             ->setFinal()
             ->setExtends($baseClass);
 

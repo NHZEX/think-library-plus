@@ -55,4 +55,17 @@ class RecordRow
     {
         return $this->change;
     }
+
+    public function __debugInfo(): ?array
+    {
+        return [
+            'connect' => $this->connect,
+            'table' => $this->table,
+            'className' => $this->className,
+            'filename' => $this->filename,
+            'status' => $this->status,
+            // 'content' => $this->content,
+            'change' => $this->change,
+        ];
+    }
 }
