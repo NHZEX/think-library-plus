@@ -48,7 +48,6 @@ class ModelReaderCollection
                 namespace: $options->getNamespace(),
                 filename: basename($pathname),
                 dir: \dirname($pathname),
-                defaultConnect: $options->getConnect(),
                 options: $options,
             );
             if (null === $item) {
@@ -88,7 +87,7 @@ class ModelReaderCollection
             }
             $this->classSet[$item->getClassName()] = true;
             $this->modelList[]                                      = $item;
-            $connectName                                            = $item->getConnectName() ?: $this->defaultOptions->getConnect();
+            $connectName                                            = $item->getConnectName();
             $this->modelTree[$connectName][$item->getTableName()][] = $item;
         }
     }

@@ -7,6 +7,7 @@ namespace Zxin\Think\Model\ModelGenerator\Data;
 use think\Model;
 use Zxin\Think\Model\ModelGenerator\ModelGeneratorHelper;
 use Zxin\Think\Model\ModelGenerator\Options\ItemOptionsInterface;
+use Zxin\Think\Model\ModelGenerator\Options\MappingConfigOptions;
 use Zxin\Think\Model\ModelGenerator\Options\SingleItemOptions;
 
 class ModelFileItem
@@ -28,9 +29,11 @@ class ModelFileItem
          * @var \ReflectionClass<Model>|null
          */
         private ?\ReflectionClass $reflectionClass,
+        /**
+         * @var ItemOptionsInterface|MappingConfigOptions|SingleItemOptions
+         */
         private ItemOptionsInterface $options,
         private ?string $tableName = null,
-        private ?string $defaultConnect = null,
     ) {
         $this->objId = spl_object_id($this);
     }
@@ -39,14 +42,12 @@ class ModelFileItem
         string $namespace,
         string $filename,
         string $dir,
-        string $defaultConnect,
         ItemOptionsInterface $options,
     ): ?self {
         return self::fromReflection(
             namespace: $namespace,
             filename: $filename,
             dir: $dir,
-            defaultConnect: $defaultConnect,
             tableName: null,
             reflection: null,
             options: $options,
@@ -57,7 +58,6 @@ class ModelFileItem
         string $namespace,
         string $filename,
         string $dir,
-        string $defaultConnect,
         ?string $tableName,
         ?\ReflectionClass $reflection,
         ItemOptionsInterface $options,
@@ -86,7 +86,6 @@ class ModelFileItem
             reflectionClass: $reflection,
             options: $options,
             tableName: $tableName,
-            defaultConnect: $defaultConnect,
         );
     }
 
@@ -113,7 +112,6 @@ class ModelFileItem
             reflectionClass: null,
             options: $options,
             tableName: $tableName,
-            defaultConnect: null,
         );
 
         $obj->connectName = $connect;
@@ -242,7 +240,7 @@ class ModelFileItem
 
     }
 
-    public function getConnectName(): ?string
+    public function getConnectName(): string
     {
         if (null !== $this->connectName) {
             return $this->connectName;
@@ -251,7 +249,7 @@ class ModelFileItem
         $prop = $this->makeReflectionInstance()->getProperty('connection');
         $prop->setAccessible(true);
 
-        return $this->connectName ??= ($prop->getValue($this->internalObject) ?: $this->defaultConnect);
+        return $this->connectName ??= ($prop->getValue($this->internalObject) ?: $this->options->getConnect());
     }
 
     public function getFileContent(): string

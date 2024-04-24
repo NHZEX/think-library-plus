@@ -140,7 +140,6 @@ class ModelGeneratorHelper
                 namespace: $namespace,
                 filename: basename($filename),
                 dir: \dirname($filename),
-                defaultConnect: $connect,
                 tableName: $table,
                 reflection: $ref,
                 options: $item,

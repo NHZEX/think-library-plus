@@ -12,7 +12,7 @@ class SingleItemOptions implements ItemOptionsInterface
         protected int         $index,
         protected string      $class,
         protected string      $table,
-        protected string|null $connect,
+        protected string      $connect,
         protected string|null $baseClass,
     ) {
         if (-1 > $index) {
@@ -52,7 +52,7 @@ class SingleItemOptions implements ItemOptionsInterface
         return $this->table;
     }
 
-    public function getConnect(): ?string
+    public function getConnect(): string
     {
         return $this->connect;
     }
