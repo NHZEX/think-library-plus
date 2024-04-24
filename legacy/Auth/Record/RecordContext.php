@@ -44,9 +44,6 @@ class RecordContext
         return $this->extra;
     }
 
-    /**
-     * @param array|null $extra
-     */
     public function setExtra(?array $extra): void
     {
         $this->extra = $extra;

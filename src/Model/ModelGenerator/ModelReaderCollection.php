@@ -98,7 +98,6 @@ class ModelReaderCollection
     }
 
     /**
-     * @param string $connectName
      * @return array<string, array<ModelFileItem>>
      */
     public function getModelsByConnect(string $connectName): array

@@ -37,7 +37,6 @@ class Response implements \Stringable
     /**
      * Create a new "allow" Response.
      *
-     * @param string|null $message
      * @param mixed       $code
      * @return Response
      */
@@ -49,7 +48,6 @@ class Response implements \Stringable
     /**
      * Create a new "deny" Response.
      *
-     * @param string|null $message
      * @param mixed $code
      * @return Response
      */
@@ -131,8 +129,6 @@ class Response implements \Stringable
 
     /**
      * Get the string representation of the message.
-     *
-     * @return string
      */
     public function __toString(): string
     {

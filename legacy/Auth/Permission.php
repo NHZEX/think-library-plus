@@ -43,7 +43,6 @@ class Permission
 
     /**
      * 获取树
-     * @param array|null    $data
      * @param callable|null $filter
      */
     public function getTree(

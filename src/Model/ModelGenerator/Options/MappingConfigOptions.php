@@ -25,7 +25,6 @@ class MappingConfigOptions implements ItemOptionsInterface
     }
 
     /**
-     * @param array $set
      * @return array<MappingConfigOptions>
      */
     public static function fromArrSet(array $set, ?DefaultConfigOptions $defaultOptions = null): array

@@ -78,7 +78,6 @@ class ValidateMiddleware
     /**
      * @param             $controllerClass
      * @param             $controllerAction
-     * @param string|null $scene
      * @throws ValidateException
      */
     protected function execValidate(Request $request, $controllerClass, $controllerAction, string $class, ?string $scene): ?Response
