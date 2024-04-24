@@ -304,7 +304,7 @@ class TableCollection
         $className = $phpNamespace->getName() . '\\' . $phpClass->getName();
 
         // 注释头
-        if ($comment) {
+        if ('' !== trim($comment)) {
             $phpClass->addComment("Model: {$comment}.\n");
         } else {
             $phpClass->addComment("Model: Table of {$table}.\n");

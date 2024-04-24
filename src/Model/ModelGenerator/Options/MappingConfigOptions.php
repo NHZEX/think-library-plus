@@ -19,7 +19,7 @@ class MappingConfigOptions implements ItemOptionsInterface
         if (-1 > $index) {
             throw new \InvalidArgumentException('index must be greater than -1');
         }
-        if ($this::class === DefaultConfigOptions::class && $index !== -1) {
+        if (static::class === DefaultConfigOptions::class && $index !== -1) {
             throw new \InvalidArgumentException('index must be -1');
         }
     }

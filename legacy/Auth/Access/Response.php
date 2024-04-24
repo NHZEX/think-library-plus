@@ -6,7 +6,7 @@ namespace Zxin\Think\Auth\Access;
 
 use Zxin\Think\Auth\Exception\AuthorizationException;
 
-class Response
+class Response implements \Stringable
 {
     /**
      * Indicates whether the response was allowed.
@@ -23,21 +23,13 @@ class Response
     protected $message;
 
     /**
-     * The response code.
-     *
-     * @var mixed
-     */
-    protected $code;
-
-    /**
      * Create a new response.
      *
      * @param  mixed  $code
      * @return void
      */
-    final public function __construct(bool $allowed, ?string $message = '', $code = null)
+    final public function __construct(bool $allowed, ?string $message = '', protected $code = null)
     {
-        $this->code = $code;
         $this->allowed = $allowed;
         $this->message = $message;
     }
@@ -142,7 +134,7 @@ class Response
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->message();
     }

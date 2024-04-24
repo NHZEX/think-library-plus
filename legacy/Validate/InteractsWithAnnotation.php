@@ -16,7 +16,7 @@ trait InteractsWithAnnotation
     {
         try {
             $refClass = new \ReflectionClass($class);
-        } catch (\ReflectionException $e) {
+        } catch (\ReflectionException) {
             return null;
         }
         if ($refClass->isAbstract() || $refClass->isTrait()) {

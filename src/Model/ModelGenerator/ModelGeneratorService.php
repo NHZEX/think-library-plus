@@ -15,7 +15,6 @@ use Zxin\Think\Model\ModelGenerator\Options\SingleItemOptions;
  */
 class ModelGeneratorService
 {
-    private LoggerInterface      $logger;
     private DefaultConfigOptions $defaultOptions;
     private bool                 $strictTypes;
     /**
@@ -27,10 +26,8 @@ class ModelGeneratorService
      */
     private array $mapping = [];
 
-    public function __construct(
-        ?LoggerInterface $logger,
-    ) {
-        $this->logger = $logger;
+    public function __construct(private LoggerInterface $logger)
+    {
     }
 
     public function execute(bool $tryRun = false): ?TableCollection
