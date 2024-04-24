@@ -18,10 +18,20 @@ jobs:
           - 8.3
         prefer-lowest: [false]
         experimental: [false]
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: testing
+          MYSQL_USER: testing
+          MYSQL_ROOT_PASSWORD: password
+        ports:
+          - 13306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -44,7 +54,7 @@ jobs:
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache vendor
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           cache-name: composer
         with:
@@ -62,4 +72,10 @@ jobs:
         run: composer update --prefer-dist --no-progress --no-suggest --prefer-lowest
 
       - name: Run test suite
-        run: phpunit -v
+        run: ./vendor/bin/phpunit -v
+        env:
+          TESTS_DB_MYSQL_HOST: 127.0.0.1
+          TESTS_DB_MYSQL_PORT: 13306
+          TESTS_DB_MYSQL_USERNAME: testing
+          TESTS_DB_MYSQL_PASSWORD: password
+          TESTS_DB_MYSQL_DATABASE: testing

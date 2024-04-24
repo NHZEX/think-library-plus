@@ -22,15 +22,15 @@ return [
             // 数据库类型
             'type'            => 'mysql',
             // 服务器地址
-            'hostname'        => env('DB_MAIN_HOSTNAME', '127.0.0.1'),
+            'hostname'        => env('TESTS_DB_MYSQL_HOST', '127.0.0.1'),
             // 端口
-            'hostport'        => env('DB_MAIN_HOSTPORT', '3306'),
+            'hostport'        => env('TESTS_DB_MYSQL_PORT', '3306'),
             // 数据库名
-            'database'        => (string) env('DB_MAIN_DATABASE', ''),
+            'database'        => (string) env('TESTS_DB_MYSQL_DATABASE', ''),
             // 用户名
-            'username'        => (string) env('DB_MAIN_USERNAME', 'root'),
+            'username'        => (string) env('TESTS_DB_MYSQL_USERNAME', 'root'),
             // 密码
-            'password'        => (string) env('DB_MAIN_PASSWORD', ''),
+            'password'        => (string) env('TESTS_DB_MYSQL_PASSWORD', ''),
             // 数据库编码默认采用utf8
             'charset'         => 'utf8mb4',
             // 数据库表前缀
@@ -42,15 +42,15 @@ return [
             // 数据库类型
             'type'            => 'mysql',
             // 服务器地址
-            'hostname'        => env('DB_MAIN_HOSTNAME', '127.0.0.1'),
+            'hostname'        => env('TESTS_DB_MYSQL_HOST', '127.0.0.1'),
             // 端口
-            'hostport'        => env('DB_MAIN_HOSTPORT', '3306'),
+            'hostport'        => env('TESTS_DB_MYSQL_PORT', '3306'),
             // 数据库名
-            'database'        => (string) env('DB_MAIN_DATABASE', ''),
+            'database'        => (string) env('TESTS_DB_MYSQL_DATABASE', ''),
             // 用户名
-            'username'        => (string) env('DB_MAIN_USERNAME', 'root'),
+            'username'        => (string) env('TESTS_DB_MYSQL_USERNAME', 'root'),
             // 密码
-            'password'        => (string) env('DB_MAIN_PASSWORD', ''),
+            'password'        => (string) env('TESTS_DB_MYSQL_PASSWORD', ''),
             // 数据库编码默认采用utf8
             'charset'         => 'utf8mb4',
             // 数据库表前缀

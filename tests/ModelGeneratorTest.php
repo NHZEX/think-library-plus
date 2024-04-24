@@ -198,15 +198,15 @@ class ModelGeneratorTest extends TestCase
                     ],
                     'namespace' => 'Tests\ModelOutput\T2',
                 ],
-//                [
-//                    // 匹配指定表，空代表任意表
-//                    'table'     => null,
-//                    // 模型映射关联的连接
-//                    'connect'   => 'cat',
-//                    // 模型映射使用的命名空间
-//                    'namespace' => 'Tests\\ModelOutput\\T2',
-//                    'baseClass' => \Tests\ModelOutput\T2\T2ModelBase::class,
-//                ],
+                [
+                    // 匹配指定表，空代表任意表
+                    'table'     => null,
+                    // 模型映射关联的连接
+                    'connect'   => 'cat',
+                    // 模型映射使用的命名空间
+                    'namespace' => 'Tests\\ModelOutput\\CAT',
+                    'baseClass' => \Tests\Stubs\ModelGenCatBase::class,
+                ],
             ],
         ]);
         $tableResult = $mgs->execute(false);
