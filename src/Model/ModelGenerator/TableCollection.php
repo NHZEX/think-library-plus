@@ -20,6 +20,8 @@ use Zxin\Think\Model\ModelGenerator\Options\SingleItemOptions;
 
 class TableCollection
 {
+    private bool $strictTypes = true;
+
     /**
      * @var array<string, array<string, string>>
      */
@@ -45,6 +47,11 @@ class TableCollection
     ) {
         $this->logger          ??= new NullLogger();
         $this->modelCollection = new ModelReaderCollection($this);
+    }
+
+    public function setStrictTypes(bool $strictTypes): void
+    {
+        $this->strictTypes = $strictTypes;
     }
 
     public function getDefaultOptions(): MappingConfigOptions
@@ -285,7 +292,7 @@ class TableCollection
 
         $phpFile = new PhpFile();
 
-        $phpFile->setStrictTypes();
+        $phpFile->setStrictTypes($this->strictTypes);
 
         $phpNamespace = $phpFile->addNamespace($namespace);
         $phpNamespace->addUse($baseClass);
