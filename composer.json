@@ -1,6 +1,9 @@
 {
     "name": "zxin/think-library-plus",
     "type": "library",
+    "license": "MIT",
+    "description": "thinkphp 8 扩展增强库",
+    "keywords": ["thinkphp", "thinkphp 8"],
     "require": {
         "php": "^8.0",
         "composer-runtime-api": "^2",
