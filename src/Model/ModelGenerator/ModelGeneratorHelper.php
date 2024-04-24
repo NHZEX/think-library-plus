@@ -122,7 +122,8 @@ class ModelGeneratorHelper
             $table = $item->getTable();
             $connect = $item->getConnect();
 
-            if (!class_exists($class)) {
+            $_filePath = ModelGeneratorHelper::classToPath($class);
+            if (!file_exists($_filePath) || !class_exists($class)) {
                 yield ModelFileItem::fromNewClass(
                     classname: $class,
                     connect: $connect,

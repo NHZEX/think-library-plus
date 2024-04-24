@@ -66,6 +66,10 @@ class ModelFileItem
         $classname = $namespace . '\\' . substr($filename, 0, -4);
 
         if (null === $reflection) {
+            $filePath = ModelGeneratorHelper::classToPath($classname);
+            if (!file_exists($filePath)) {
+                return null;
+            }
             if (class_exists($classname)) {
                 $reflection = new \ReflectionClass($classname);
             } else {
