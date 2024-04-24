@@ -17,7 +17,7 @@ class ModelReaderCollection
     private array $modelList = [];
 
     /**
-     * @var array<string, array<string, ModelFileItem>>
+     * @var array<string, array<string, array<ModelFileItem>>>
      */
     private array $modelTree = [];
     private array $classSet = [];
