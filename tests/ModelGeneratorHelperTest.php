@@ -15,6 +15,6 @@ class ModelGeneratorHelperTest extends TestCase
 
     public function testNotExistClassToPath(): void
     {
-        $this->assertStringEndsWith('/tests/ModelOutput/T0/NotExistModel123.php', ModelGeneratorHelper::classToPath('\Tests\ModelOutput\T0\NotExistModel123'));
+        $this->assertStringEndsWith('/tests/T0/NotExistModel123.php', ModelGeneratorHelper::classToPath('\Tests\T0\NotExistModel123'));
     }
 }
