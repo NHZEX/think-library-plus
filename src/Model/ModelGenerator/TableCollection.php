@@ -12,7 +12,6 @@ use Psr\Log\NullLogger;
 use think\db\ConnectionInterface;
 use think\db\PDOConnection;
 use think\helper\Str;
-use Throwable;
 use Zxin\Think\Model\ModelGenerator\Data\ModelFileItem;
 use Zxin\Think\Model\ModelGenerator\Data\RecordRow;
 use Zxin\Think\Model\ModelGenerator\Options\DefaultConfigOptions;
@@ -479,7 +478,7 @@ class TableCollection
                         $_p = PhpFile::fromCode($output2);
                         $_c = $_p->getClasses()[$model->getClassname()];
                         $_cpv = $_c->getProperty('pk')->getValue();
-                    } catch (Throwable $e) {
+                    } catch (\Throwable $e) {
                         $this->logger->error(message: "校验更改时发生错误: " . $e);
                         $_cpv = null;
                     }
