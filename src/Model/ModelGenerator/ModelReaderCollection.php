@@ -36,21 +36,32 @@ class ModelReaderCollection
     public function loadModelByDefaultNamespace(): void
     {
         $this->loadModelByNamespace(
-            namespace: $this->defaultOptions->getNamespace(),
-            connect: $this->defaultOptions->getConnect(),
+            $this->defaultOptions,
         );
     }
 
-    public function loadModelByNamespace(string $namespace, string $connect): void
+    public function loadModelByNamespace(MappingConfigOptions $options): void
     {
-        foreach (ModelGeneratorHelper::scanNamespace($namespace, $connect) as $item) {
+        foreach (ModelGeneratorHelper::scanNamespace($options->getNamespace(), $options->getConnect()) as $pathname) {
+
+            $item = ModelFileItem::fromFile(
+                namespace: $options->getNamespace(),
+                filename: basename($pathname),
+                dir: \dirname($pathname),
+                defaultConnect: $options->getConnect(),
+                options: $options,
+            );
+            if (null === $item) {
+                // todo 做日志记录
+                continue;
+            }
             if (isset($this->classSet[$item->getClassName()])) {
                 // todo 加入重复冲突日志
                 continue;
             }
             $this->classSet[$item->getClassName()] = true;
             $this->modelList[]                                      = $item;
-            $connectName                                            = $item->getConnectName() ?: $connect;
+            $connectName                                            = $item->getConnectName();
             $this->modelTree[$connectName][$item->getTableName()][] = $item;
         }
     }
@@ -64,7 +75,7 @@ class ModelReaderCollection
             if (empty($item->getNamespace())) {
                 continue;
             }
-            $this->loadModelByNamespace($item->getNamespace(), $item->getConnect() ?? $this->defaultOptions->getConnect());
+            $this->loadModelByNamespace($item);
         }
     }
 

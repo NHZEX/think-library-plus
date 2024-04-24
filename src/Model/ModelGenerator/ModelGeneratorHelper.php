@@ -106,17 +106,8 @@ class ModelGeneratorHelper
                 if ('Base.php' === $filename) {
                     continue;
                 }
-                $item = ModelFileItem::fromFile(
-                    namespace: $namespace,
-                    filename: $filename,
-                    dir: $dir,
-                    defaultConnect: $defaultConnect,
-                );
-                if (null === $item) {
-                    // todo 做日志记录
-                    continue;
-                }
-                yield $item;
+
+                yield $dir . DIRECTORY_SEPARATOR . $filename;
             }
         }
     }
@@ -136,6 +127,7 @@ class ModelGeneratorHelper
                     classname: $class,
                     connect: $connect,
                     tableName: $table,
+                    options: $item,
                 );
                 continue;
             }
@@ -151,6 +143,7 @@ class ModelGeneratorHelper
                 defaultConnect: $connect,
                 tableName: $table,
                 reflection: $ref,
+                options: $item,
             );
             if (null === $item) {
                 // todo 做日志记录

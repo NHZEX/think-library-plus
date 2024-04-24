@@ -6,6 +6,8 @@ namespace Zxin\Think\Model\ModelGenerator\Data;
 
 use think\Model;
 use Zxin\Think\Model\ModelGenerator\ModelGeneratorHelper;
+use Zxin\Think\Model\ModelGenerator\Options\ItemOptionsInterface;
+use Zxin\Think\Model\ModelGenerator\Options\SingleItemOptions;
 
 class ModelFileItem
 {
@@ -26,6 +28,7 @@ class ModelFileItem
          * @var \ReflectionClass<Model>|null
          */
         private ?\ReflectionClass $reflectionClass,
+        private ItemOptionsInterface $options,
         private ?string $tableName = null,
         private ?string $defaultConnect = null,
     ) {
@@ -37,6 +40,7 @@ class ModelFileItem
         string $filename,
         string $dir,
         string $defaultConnect,
+        ItemOptionsInterface $options,
     ): ?self {
         return self::fromReflection(
             namespace: $namespace,
@@ -45,6 +49,7 @@ class ModelFileItem
             defaultConnect: $defaultConnect,
             tableName: null,
             reflection: null,
+            options: $options,
         );
     }
 
@@ -54,7 +59,8 @@ class ModelFileItem
         string $dir,
         string $defaultConnect,
         ?string $tableName,
-        ?\ReflectionClass $reflection
+        ?\ReflectionClass $reflection,
+        ItemOptionsInterface $options,
     ): ?self {
         $pathname  = $dir . DIRECTORY_SEPARATOR . $filename;
         $classname = $namespace . '\\' . substr($filename, 0, -4);
@@ -78,6 +84,7 @@ class ModelFileItem
             pathname: $pathname,
             classname: $classname,
             reflectionClass: $reflection,
+            options: $options,
             tableName: $tableName,
             defaultConnect: $defaultConnect,
         );
@@ -87,6 +94,7 @@ class ModelFileItem
         string $classname,
         string $connect,
         ?string $tableName,
+        SingleItemOptions $options,
     ) {
         $classname = ltrim($classname, '\\');
 
@@ -103,6 +111,7 @@ class ModelFileItem
             pathname: $pathname,
             classname: $classname,
             reflectionClass: null,
+            options: $options,
             tableName: $tableName,
             defaultConnect: null,
         );
@@ -116,6 +125,11 @@ class ModelFileItem
     public function getObjId(): int
     {
         return $this->objId;
+    }
+
+    public function getOptions(): ItemOptionsInterface
+    {
+        return $this->options;
     }
 
     public function getNamespace(): string

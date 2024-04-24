@@ -6,7 +6,7 @@ namespace Zxin\Think\Model\ModelGenerator\Options;
 
 use function Zxin\Arr\array_map_with_key;
 
-class MappingConfigOptions
+class MappingConfigOptions implements ItemOptionsInterface
 {
     public function __construct(
         protected int $index,
@@ -43,7 +43,7 @@ class MappingConfigOptions
             connect: $config['connect'] ?? $defaultOptions->getConnect(),
             namespace: $config['namespace'],
             table: $config['table'] ?? null,
-            baseClass: $config['baseClass'] ?? null,
+            baseClass: $config['baseClass'] ?? $defaultOptions->getBaseClass(),
             exclude: $config['exclude'] ?? null,
         );
     }

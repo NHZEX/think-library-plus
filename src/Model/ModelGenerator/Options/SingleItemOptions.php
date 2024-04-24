@@ -6,7 +6,7 @@ namespace Zxin\Think\Model\ModelGenerator\Options;
 
 use function Zxin\Arr\array_map_with_key;
 
-class SingleItemOptions
+class SingleItemOptions implements ItemOptionsInterface
 {
     public function __construct(
         protected int         $index,
