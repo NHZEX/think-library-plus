@@ -12,6 +12,7 @@ use Psr\Log\NullLogger;
 use think\db\ConnectionInterface;
 use think\db\PDOConnection;
 use think\helper\Str;
+use Throwable;
 use Zxin\Think\Model\ModelGenerator\Data\ModelFileItem;
 use Zxin\Think\Model\ModelGenerator\Data\RecordRow;
 use Zxin\Think\Model\ModelGenerator\Options\DefaultConfigOptions;
@@ -447,6 +448,42 @@ class TableCollection
             $this->logger->warning("更新模型注释可能失败: {$model->getClassname()}");
 
             $output = null;
+        }
+
+        // 主键更新
+        $rawPkValue = $model->getPkValue();
+        if (false !== $rawPkValue) {
+            $priFields = $fields->where('COLUMN_KEY', '=', 'PRI')->column('COLUMN_NAME');
+            $newPkValue = null;
+            if ($priFields) {
+                if (\count($priFields) === 1) {
+                    $newPkValue = $priFields[0];
+                } else {
+                    $newPkValue = $priFields;
+                }
+            }
+            if ($rawPkValue !== $newPkValue) {
+                $propVar = var_export($newPkValue, true);
+                $output2 = Preg::replace('#(\$pk\s*?=\s*?)((?:[\'"]|\[[\'"])[\S\s]*?[\'"\]]+\s*)(;)#m', "\$1{$propVar}\$3", $output, 1, $count);
+
+                if (0 === $count) {
+                    $this->logger->warning("更新模型主键可能失败: {$model->getClassname()}");
+                } else {
+                    try {
+                        $_p = PhpFile::fromCode($output2);
+                        $_c = $_p->getClasses()[$model->getClassname()];
+                        $_cpv = $_c->getProperty('pk')->getValue();
+                    } catch (Throwable $e) {
+                        $this->logger->error(message: "校验更改时发生错误: " . $e);
+                        $_cpv = null;
+                    }
+                    if ($_cpv === $newPkValue) {
+                        $output = $output2;
+                    } else {
+                        $this->logger->warning("更新模型主键可能失败: {$model->getClassname()}");
+                    }
+                }
+            }
         }
 
         return $output;

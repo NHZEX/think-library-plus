@@ -229,6 +229,20 @@ class ModelFileItem
         return $this->tableName;
     }
 
+    public function getPkValue(): string|array|null|false
+    {
+        if (!$this->hasFile()) {
+            return false;
+        }
+        $obj = $this->makeReflectionInstance();
+        if (!$obj->hasProperty('pk')) {
+            return false;
+        }
+        $prop = $obj->getProperty('pk');
+        $prop->setAccessible(true);
+        return $prop->getValue($this->internalObject);
+    }
+
     public function getConnectOptions(): ?array
     {
         $name = $this->getConnectName();

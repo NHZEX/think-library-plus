@@ -249,7 +249,7 @@ const AdminUserModel_RAW = <<<PHP
     final class AdminUserModel extends ModelBase
     {
         public \$table = 'admin_user';
-        public \$pk = 'id';
+        public \$pk = ["username", "id"];
     }
     PHP;
 
