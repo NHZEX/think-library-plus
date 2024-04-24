@@ -56,7 +56,9 @@ class ModelToolCommand extends Command
         if (!$generatorService->loadConfig()) {
             return 1;
         }
-        $tableResult = $generatorService->execute(true);
+
+        $tryRun = $input->hasOption('try-run');
+        $tableResult = $generatorService->execute($tryRun);
 
         $table = new Table();
         $table->setHeader(['connect', 'table', 'model', 'status']);
