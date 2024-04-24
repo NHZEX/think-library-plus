@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Think\Model\ModelGenerator\Data;
@@ -13,8 +14,7 @@ class RecordRow
         private string $status,
         private string $content = '',
         private bool $change = false,
-    )
-    {
+    ) {
     }
 
     public function getConnect(): string
@@ -35,7 +35,7 @@ class RecordRow
     public function getFilename(?string $cutRootPath = null): string
     {
         if ($cutRootPath) {
-            return \str_starts_with($this->filename, $cutRootPath) ? \substr($this->filename, \strlen($cutRootPath)) : $this->filename;
+            return str_starts_with($this->filename, $cutRootPath) ? substr($this->filename, \strlen($cutRootPath)) : $this->filename;
         } else {
             return $this->filename;
         }

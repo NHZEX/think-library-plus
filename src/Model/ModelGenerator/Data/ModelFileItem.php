@@ -37,8 +37,7 @@ class ModelFileItem
         string $filename,
         string $dir,
         string $defaultConnect,
-    ): ?self
-    {
+    ): ?self {
         return self::fromReflection(
             namespace: $namespace,
             filename: $filename,
@@ -56,13 +55,12 @@ class ModelFileItem
         string $defaultConnect,
         ?string $tableName,
         ?\ReflectionClass $reflection
-    ): ?self
-    {
+    ): ?self {
         $pathname  = $dir . DIRECTORY_SEPARATOR . $filename;
         $classname = $namespace . '\\' . substr($filename, 0, -4);
 
         if (null === $reflection) {
-            if (\class_exists($classname)) {
+            if (class_exists($classname)) {
                 $reflection = new \ReflectionClass($classname);
             } else {
                 return null;
@@ -90,15 +88,14 @@ class ModelFileItem
         ?string $connect,
         string $defaultConnect,
         ?string $tableName,
-    )
-    {
+    ) {
         $classname = ltrim($classname, '\\');
 
         $namespace = substr($classname, 0, strrpos($classname, '\\'));
         $pathname = ModelGeneratorHelper::classToPath($classname);
 
         $filename = basename($pathname);
-        $dir = dirname($pathname);
+        $dir = \dirname($pathname);
 
         $obj = new self(
             namespace: $namespace,
@@ -252,7 +249,7 @@ class ModelFileItem
     public function writeFileContent(string $content): bool
     {
         $flags = LOCK_EX;
-        if (\defined('TEST_MODEL_GENERATOR_USE_VFS') && TEST_MODEL_GENERATOR_USE_VFS && \str_starts_with($this->pathname, 'vfs://')) {
+        if (\defined('TEST_MODEL_GENERATOR_USE_VFS') && TEST_MODEL_GENERATOR_USE_VFS && str_starts_with($this->pathname, 'vfs://')) {
             $flags &= ~LOCK_EX;
         }
         return file_put_contents($this->pathname, $content, $flags) > 0;

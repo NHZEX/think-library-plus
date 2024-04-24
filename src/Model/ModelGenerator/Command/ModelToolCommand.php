@@ -31,7 +31,7 @@ class ModelToolCommand extends Command
 
     public function execute(Input $input, Output $output): int
     {
-        $logger = new class($output) extends AbstractLogger {
+        $logger = new class ($output) extends AbstractLogger {
             public function __construct(
                 private Output $output,
             ) {

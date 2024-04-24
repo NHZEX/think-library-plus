@@ -212,7 +212,7 @@ class TableCollection
     {
         $content = $this->_updateModel($connectName, $table, $model);
 
-        $isChange = \file_get_contents($model->getPathname()) !== $content;
+        $isChange = file_get_contents($model->getPathname()) !== $content;
 
         $status = match (true) {
             empty($content) => 'FAIL',
@@ -450,7 +450,7 @@ class TableCollection
         }
 
         $flags = LOCK_EX;
-        if (\defined('TEST_MODEL_GENERATOR_USE_VFS') && TEST_MODEL_GENERATOR_USE_VFS && \str_starts_with($filename, 'vfs://')) {
+        if (\defined('TEST_MODEL_GENERATOR_USE_VFS') && TEST_MODEL_GENERATOR_USE_VFS && str_starts_with($filename, 'vfs://')) {
             $flags &= ~LOCK_EX;
         }
         file_put_contents($filename, $content, $flags);

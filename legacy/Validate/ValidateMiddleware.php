@@ -34,7 +34,7 @@ class ValidateMiddleware
     public function init()
     {
         $this->app = app();
-        if (\is_file($path = ValidateService::getDumpFilePath())) {
+        if (is_file($path = ValidateService::getDumpFilePath())) {
             $this->mapping = require $path;
         }
         $this->namespace = $this->app->config->get('validate.namespace', 'app\\Validate');
@@ -83,7 +83,7 @@ class ValidateMiddleware
      */
     protected function execValidate(Request $request, $controllerClass, $controllerAction, string $class, ?string $scene): ?Response
     {
-        if (\is_subclass_of($class, AskValidateInterface::class)) {
+        if (is_subclass_of($class, AskValidateInterface::class)) {
             $result = $class::askValidate($request, $scene);
             if ($result) {
                 if (\is_string($result)) {
@@ -108,7 +108,7 @@ class ValidateMiddleware
             $scene && $validateClass->scene($scene);
         }
         if ($this->app->isDebug()) {
-            $this->app->log->record(\sprintf('[validate] %s, scene=%s', $validateClass::class, $scene ?: 'null'), 'debug');
+            $this->app->log->record(sprintf('[validate] %s, scene=%s', $validateClass::class, $scene ?: 'null'), 'debug');
         }
         $input = $request->param();
         if ($files = $request->file()) {
@@ -124,7 +124,7 @@ class ValidateMiddleware
                 }
                 return $errorHandle->handle($request, $ctx);
             }
-            $message = \is_array($validateClass->getError()) ? \join(',', $validateClass->getError()) : $validateClass->getError();
+            $message = \is_array($validateClass->getError()) ? join(',', $validateClass->getError()) : $validateClass->getError();
             return Response::create($message, 'html', 400);
         }
         $allowInputFields = [];
@@ -132,7 +132,7 @@ class ValidateMiddleware
             $allowInputFields = $validateClass->getRuleKeys();
         } elseif (method_exists($validateClass, 'getRuleKeys')) {
             throw new ValidateException(
-                \sprintf('Must extends the %s class', ValidateBase::class)
+                sprintf('Must extends the %s class', ValidateBase::class)
             );
         }
         ValidateContext::create($controllerClass, $controllerAction, $validateClass, true, $allowInputFields);

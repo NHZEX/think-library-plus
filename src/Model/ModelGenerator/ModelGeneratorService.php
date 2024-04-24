@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Think\Model\ModelGenerator;
@@ -29,8 +30,7 @@ class ModelGeneratorService
 
     public function __construct(
         ?LoggerInterface $logger,
-    )
-    {
+    ) {
         $this->logger = $logger;
     }
 
@@ -61,9 +61,9 @@ class ModelGeneratorService
 
     public function loadConfig(?array $config = null): bool
     {
-        $app = \app();
+        $app = app();
 
-        $config = $config ?? $app->config->get('model_tools', []);
+        $config ??= $app->config->get('model_tools', []);
 
         $baseClass = Arr::get($config, 'baseClass');
 
