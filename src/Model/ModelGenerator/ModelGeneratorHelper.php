@@ -38,6 +38,7 @@ class ModelGeneratorHelper
 
     public static function findNamespacePaths(string $class, ?ClassLoader $loader, ?array &$baseDirs = null): ?array
     {
+        $class = ltrim($class, '\\');
         if (null === $loader) {
             $loaders = ClassLoader::getRegisteredLoaders();
             $loader  = current($loaders);
@@ -51,8 +52,12 @@ class ModelGeneratorHelper
         $dirs = null;
 
         $notFound = [];
+        $maxLoop = 128;
 
         do {
+            if ($maxLoop-- < 0) {
+                throw new \LogicException('Max loop reached');
+            }
             $tmp = null;
             if ($lastPos) {
                 $tmp = substr($subPath, $lastPos + 1);
