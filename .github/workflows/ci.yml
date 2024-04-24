@@ -1,0 +1,65 @@
+name: ci
+
+on: [push]
+
+jobs:
+  phpunit:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+        php-version:
+          - 8.0
+          - 8.1
+          - 8.2
+          - 8.3
+        prefer-lowest: [false]
+        experimental: [false]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring #optional, setup extensions
+          coverage: none #optional, setup coverage driver
+
+      - name: Check Version
+        run: |
+          php -v
+          php -m
+          composer -V
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Get composer cache directory
+        id: composercache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache vendor
+        uses: actions/cache@v3
+        env:
+          cache-name: composer
+        with:
+          path: ${{ steps.composercache.outputs.dir }}
+          key: cache-${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.php-version }}
+          restore-keys: |
+            cache-${{ env.cache-name }}-${{ matrix.os }}-
+
+      - name: Install dependencies (composer.lock)
+        if: false == matrix.prefer-lowest
+        run: composer install --prefer-dist --no-progress
+
+      - name: Install dependencies (prefer-lowest)
+        if: true == matrix.prefer-lowest
+        run: composer update --prefer-dist --no-progress --no-suggest --prefer-lowest
+
+      - name: Run test suite
+        run: phpunit -v
