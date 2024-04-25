@@ -62,6 +62,7 @@ class Permission
         foreach ($data as $permission) {
             if ($permission['pid'] === $index) {
                 $permission['title'] = $permission['name'];
+                $permission['level'] = $level;
                 $permission['spread'] = true;
                 $permission['valid'] = !empty($permission['allow']);
                 $permission['children'] = $this->getTree($permission['title'], $level + 1, $data);
