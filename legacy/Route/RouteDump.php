@@ -18,9 +18,12 @@ class RouteDump extends DumpValue
         echo '========== DONE ==========' . PHP_EOL;
     }
 
-    public function exportVar($data, string $default = '[]'): string
+    public function exportVar(mixed $data): string
     {
-        return VarExporter::export($data);
+        return VarExporter::export(
+            $data,
+            VarExporter::TRAILING_COMMA_IN_ARRAY | VarExporter::INLINE_SCALAR_LIST
+        );
     }
 
     public function saveData(array $items)

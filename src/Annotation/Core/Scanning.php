@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zxin\Think\Annotation\Core;
 
 use Symfony\Component\Finder\Finder;
