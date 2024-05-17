@@ -11,8 +11,10 @@ class DumpValue
     private ?string $fileHash = null;
     public static bool $dumpGenerateDate = false;
 
-    public function __construct(private string $filename)
-    {
+    public function __construct(
+        private string $filename,
+        private int $exportOptions = VarExporter::TRAILING_COMMA_IN_ARRAY | VarExporter::INLINE_SCALAR_LIST
+    ) {
     }
 
     public function load(): void
@@ -26,7 +28,7 @@ class DumpValue
     {
         return VarExporter::export(
             $data,
-            VarExporter::TRAILING_COMMA_IN_ARRAY | VarExporter::INLINE_SCALAR_LIST
+            $this->exportOptions,
         );
     }
 

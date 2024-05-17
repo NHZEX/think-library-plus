@@ -14,16 +14,12 @@ class RouteDump extends DumpValue
     {
         echo '====== RouteDump ======' . PHP_EOL;
         $path = RouteLoader::getDumpFilePath();
-        (new self($path))->scanAnnotation();
-        echo '========== DONE ==========' . PHP_EOL;
-    }
-
-    public function exportVar(mixed $data): string
-    {
-        return VarExporter::export(
-            $data,
+        $dump = new self(
+            $path,
             VarExporter::TRAILING_COMMA_IN_ARRAY | VarExporter::INLINE_SCALAR_LIST
         );
+        $dump->scanAnnotation();
+        echo '========== DONE ==========' . PHP_EOL;
     }
 
     public function saveData(array $items)

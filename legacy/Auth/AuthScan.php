@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zxin\Think\Auth;
 
+use Brick\VarExporter\VarExporter;
 use think\App;
 use Zxin\Think\Annotation\Core\DumpValue;
 use Zxin\Think\Annotation\Core\Scanning;
@@ -59,7 +60,7 @@ class AuthScan
 
     public function export($value)
     {
-        $dump = new DumpValue(Permission::getDumpFilePath());
+        $dump = new DumpValue(Permission::getDumpFilePath(), VarExporter::TRAILING_COMMA_IN_ARRAY);
         $dump->load();
         $dump->save($value);
     }
