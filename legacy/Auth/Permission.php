@@ -49,8 +49,11 @@ class Permission
         string $index = '__ROOT__',
         int $level = 0,
         ?array $data = null,
-        callable $filter = null
+        callable $filter = null,
+        bool $convertChildrenEmptyToNull = false,
     ): array {
+        // todo 实现 key-mapping (label, key, isLeaf)
+
         if (null === $data) {
             $data = array_merge([], $this->loadStorage()->permission);
             if (\is_callable($data)) {
@@ -65,7 +68,12 @@ class Permission
                 $permission['level'] = $level;
                 $permission['spread'] = true;
                 $permission['valid'] = !empty($permission['allow']);
-                $permission['children'] = $this->getTree($permission['title'], $level + 1, $data);
+                $children = $this->getTree($permission['title'], $level + 1, $data);
+                if ($convertChildrenEmptyToNull && empty($children)) {
+                    $children = null;
+                }
+                $permission['children'] = $children;
+                $permission['isLeaf'] = empty($children);
                 $tree[] = $permission;
             }
         }
