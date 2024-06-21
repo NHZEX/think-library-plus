@@ -426,7 +426,11 @@ class TableCollection
             $headLines[] = '';
         }
         if ($endLines && $endLines[0] !== '') {
-            array_unshift($endLines, '');
+            if (empty(array_filter($endLines, fn ($line) => str_contains($line, 'virtual props')))) {
+                array_unshift($endLines, '', '↓↓ virtual props ↓↓');
+            } else {
+                array_unshift($endLines, '');
+            }
         }
 
         $lines = [];
