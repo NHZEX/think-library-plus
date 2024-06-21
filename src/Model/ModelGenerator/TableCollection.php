@@ -362,11 +362,13 @@ class TableCollection
 
         // 加载类文件
         $phpFile  = PhpFile::fromCode($model->getFileContent());
-//        var_dump($model->getFileContent());
-//        var_dump($phpFile->getClasses());
         $phpClass = $phpFile->getClasses()[$model->getClassname()];
 
         $rawComment = $phpClass->getComment();
+
+        $realConvertNameToCamel = $phpClass->hasProperty('convertNameToCamel')
+            ? $phpClass->getProperty('convertNameToCamel')->getValue()
+            : null;
 
         $liens = [];
         foreach (explode("\n", $rawComment) as $i => $line) {
@@ -402,7 +404,7 @@ class TableCollection
         $fields             = ModelGeneratorHelper::queryTableFields($connection, $table);
         $propertyCollection = PropertyCollection::fromFields(
             fields: $fields,
-            fieldToCamelCase: $model->getOptions()->isFieldToCamelCase() ?? $this->defaultOptions->isFieldToCamelCase()
+            fieldToCamelCase: $realConvertNameToCamel ?? ($model->getOptions()->isFieldToCamelCase() ?? $this->defaultOptions->isFieldToCamelCase())
         );
 
         // todo 支持更新主键

@@ -155,4 +155,9 @@ class PropertyCollection
         }
         return $output;
     }
+
+    public function isFieldToCamelCase(): ?bool
+    {
+        return $this->fieldToCamelCase;
+    }
 }
