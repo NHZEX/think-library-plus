@@ -124,9 +124,9 @@ class ModelGeneratorTest extends TestCase
              */
             final class TestAdminUserModel extends ModelBase
             {
-                public \$table = 'test_admin_user';
-                public \$pk = 'id';
-                public \$convertNameToCamel = true;
+                protected \$table = 'test_admin_user';
+                protected \$pk = 'id';
+                protected \$convertNameToCamel = true;
             }
             
             PHP,

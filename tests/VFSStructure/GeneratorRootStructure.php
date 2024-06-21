@@ -170,9 +170,9 @@ const SCAN_ROOT_DIR = [
              */
             final class ExceptionLogsModelAlias extends ModelBase
             {
-                public \$table = 'exception_logs';
-                public \$pk = 'id';
-                public \$convertNameToCamel = true;
+                protected \$table = 'exception_logs';
+                protected \$pk = 'id';
+                protected \$convertNameToCamel = true;
             }
             
             PHP,
@@ -188,8 +188,8 @@ const SCAN_ROOT_DIR = [
          */
         final class LossModel extends ModelBase
         {
-            public \$table = 'loss_table';
-            public \$pk = 'id';
+            protected \$table = 'loss_table';
+            protected \$pk = 'id';
         }
         
         PHP,
@@ -249,8 +249,8 @@ const AdminUserModel_RAW = <<<PHP
      */
     final class AdminUserModel extends ModelBase
     {
-        public \$table = 'admin_user';
-        public \$pk = ["username", "id"];
+        protected \$table = 'admin_user';
+        protected \$pk = ["username", "id"];
     }
     PHP;
 
@@ -297,8 +297,8 @@ const AdminUserModel_UPDATE = <<<PHP
      */
     final class AdminUserModel extends ModelBase
     {
-        public \$table = 'admin_user';
-        public \$pk = 'id';
+        protected \$table = 'admin_user';
+        protected \$pk = 'id';
     }
     PHP;
 

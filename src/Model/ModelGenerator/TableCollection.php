@@ -333,10 +333,10 @@ class TableCollection
         // 类元声明
         // > 连接
         if ($connectName !== $this->defaultOptions->getConnect()) {
-            $phpClass->addProperty('connection', $connectName);
+            $phpClass->addProperty('connection', $connectName)->setProtected();
         }
         // > 表名
-        $phpClass->addProperty('table', $table);
+        $phpClass->addProperty('table', $table)->setProtected();
         // > 主键
         $priFields = $fields->where('COLUMN_KEY', '=', 'PRI')->column('COLUMN_NAME');
         if ($priFields) {
@@ -346,11 +346,11 @@ class TableCollection
                 $pkValue = $priFields;
             }
 
-            $phpClass->addProperty('pk', $pkValue);
+            $phpClass->addProperty('pk', $pkValue)->setProtected();
         }
 
         if (null !== $fieldToCamelCase) {
-            $phpClass->addProperty('convertNameToCamel', $fieldToCamelCase);
+            $phpClass->addProperty('convertNameToCamel', $fieldToCamelCase)->setProtected();
         }
 
         return self::printPhpFile($phpFile);
