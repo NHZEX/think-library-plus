@@ -14,4 +14,6 @@ interface ItemOptionsInterface
     public function getConnect(): string;
 
     public function getBaseClass(): ?string;
+
+    public function isFieldToCamelCase(): ?bool;
 }

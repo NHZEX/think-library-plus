@@ -80,12 +80,15 @@ class ModelGeneratorService
 
         $mapping = Arr::get($config, 'mapping', []);
 
+        $fieldToCamelCase = Arr::get($config, 'fieldToCamelCase');
+
         $this->strictTypes = Arr::get($config, 'strictTypes', true);
         $this->defaultOptions = DefaultConfigOptions::makeDefault(
             connect: $defaultConnect,
             namespace: $baseNamespace,
             baseClass: $baseClass,
             exclude: $excludeTable,
+            fieldToCamelCase: $fieldToCamelCase,
         );
         $this->single = SingleItemOptions::fromArrSet($single, $this->defaultOptions);
         $this->mapping = MappingConfigOptions::fromArrSet($mapping, $this->defaultOptions);

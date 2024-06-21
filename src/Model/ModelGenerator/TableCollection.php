@@ -208,6 +208,7 @@ class TableCollection
             namespace: $model->getNamespace(),
             baseClass: $this->defaultOptions->getBaseClass(),
             className: $_className,
+            fieldToCamelCase: $this->defaultOptions->isFieldToCamelCase(),
         );
 
         if (empty($content)) {
@@ -269,6 +270,7 @@ class TableCollection
 
         $namespace = $matchOption?->getNamespace() ?? $this->defaultOptions->getNamespace();
         $baseClass = $matchOption?->getBaseClass() ?? $this->defaultOptions->getBaseClass();
+        $isFieldToCamelCase = $matchOption?->isFieldToCamelCase() ?? $this->defaultOptions->isFieldToCamelCase();
 
         return $this->_generateModel(
             connectName: $connectName,
@@ -277,6 +279,7 @@ class TableCollection
             namespace: $namespace,
             baseClass: $baseClass,
             className: $className,
+            fieldToCamelCase: $isFieldToCamelCase,
         );
     }
 
@@ -287,6 +290,7 @@ class TableCollection
         string  $namespace,
         string  $baseClass,
         ?string &$className = null,
+        ?bool   $fieldToCamelCase = null,
     ): ?string {
         $namespace  = ltrim($namespace, '\\');
         $connection = self::resolveDbConnect($connectName);
@@ -345,6 +349,10 @@ class TableCollection
             $phpClass->addProperty('pk', $pkValue);
         }
 
+        if (null !== $fieldToCamelCase) {
+            $phpClass->addProperty('convertNameToCamel', $fieldToCamelCase);
+        }
+
         return self::printPhpFile($phpFile);
     }
 
@@ -354,6 +362,8 @@ class TableCollection
 
         // 加载类文件
         $phpFile  = PhpFile::fromCode($model->getFileContent());
+//        var_dump($model->getFileContent());
+//        var_dump($phpFile->getClasses());
         $phpClass = $phpFile->getClasses()[$model->getClassname()];
 
         $rawComment = $phpClass->getComment();

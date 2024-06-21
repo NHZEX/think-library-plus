@@ -9,11 +9,12 @@ use function Zxin\Arr\array_map_with_key;
 class SingleItemOptions implements ItemOptionsInterface
 {
     public function __construct(
-        protected int         $index,
-        protected string      $class,
-        protected string      $table,
-        protected string      $connect,
-        protected string|null $baseClass,
+        protected int     $index,
+        protected string  $class,
+        protected string  $table,
+        protected string  $connect,
+        protected ?string $baseClass,
+        protected ?bool   $fieldToCamelCase,
     ) {
         if (-1 > $index) {
             throw new \InvalidArgumentException('index must be greater than -1');
@@ -39,6 +40,7 @@ class SingleItemOptions implements ItemOptionsInterface
             table: $config['table'],
             connect: $config['connect'] ?? $defaultOptions->getConnect(),
             baseClass: $config['baseClass'] ?? $defaultOptions->getBaseClass(),
+            fieldToCamelCase: $config['fieldToCamelCase'] ?? $defaultOptions->isFieldToCamelCase(),
         );
     }
 
@@ -60,5 +62,10 @@ class SingleItemOptions implements ItemOptionsInterface
     public function getBaseClass(): ?string
     {
         return $this->baseClass;
+    }
+
+    public function isFieldToCamelCase(): ?bool
+    {
+        return $this->fieldToCamelCase;
     }
 }

@@ -2,10 +2,11 @@
 declare(strict_types=1);
 
 return [
-    'baseClass'      => \think\Model::class,
-    'baseNamespace'  => 'app\\Model',
-    'defaultConnect' => null,
-    'strictTypes'    => true,
+    'baseClass'        => \think\Model::class,
+    'baseNamespace'    => 'app\\Model',
+    'defaultConnect'   => null,
+    'strictTypes'      => true,
+    'fieldToCamelCase' => null,
 
     'exclude' => [
         '_phinxlog',
@@ -16,6 +17,7 @@ return [
         [
             'table' => 'table_name',
             'class' => 'class_name',
+            'fieldToCamelCase' => null,
         ],
     ],
 
@@ -27,6 +29,7 @@ return [
             ],
             'connect'   => null,
             'namespace' => 'app\\Model\\Admin',
+            'fieldToCamelCase' => null,
         ],
     ],
 ];

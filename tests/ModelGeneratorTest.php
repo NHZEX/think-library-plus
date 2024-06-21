@@ -48,6 +48,7 @@ class ModelGeneratorTest extends TestCase
             namespace: 'Tests\\ModelOutput',
             baseClass: 'Tests\\ModelOutput\\ModelBase',
             exclude: [],
+            fieldToCamelCase: true,
         );
 
         $this->app->db->connect($defaultOptions->getConnect())->execute('DROP TABLE IF EXISTS `test_admin_user`');
@@ -125,6 +126,7 @@ class ModelGeneratorTest extends TestCase
             {
                 public \$table = 'test_admin_user';
                 public \$pk = 'id';
+                public \$convertNameToCamel = true;
             }
             
             PHP,
@@ -177,11 +179,13 @@ class ModelGeneratorTest extends TestCase
                     'table'   => 'exception_logs',
                     'connect' => null,
                     'class'   => '\Tests\ModelOutput\T0\ExceptionLogsModelAlias',
+                    'fieldToCamelCase' => true,
                 ],
                 [
                     'table'   => 'exception_logs',
                     'connect' => null,
                     'class'   => '\Tests\ModelOutput\T0\ExceptionLogsModelNew',
+                    'fieldToCamelCase' => false,
                 ],
             ],
 
@@ -197,6 +201,7 @@ class ModelGeneratorTest extends TestCase
                         'activity_log',
                     ],
                     'namespace' => 'Tests\ModelOutput\T2',
+                    'fieldToCamelCase' => null,
                 ],
                 [
                     // 匹配指定表，空代表任意表
@@ -206,6 +211,7 @@ class ModelGeneratorTest extends TestCase
                     // 模型映射使用的命名空间
                     'namespace' => 'Tests\\ModelOutput\\CAT',
                     'baseClass' => \Tests\Stubs\ModelGenCatBase::class,
+                    'fieldToCamelCase' => true,
                 ],
             ],
         ]);

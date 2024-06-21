@@ -11,6 +11,7 @@ class DefaultConfigOptions extends MappingConfigOptions
         string $namespace,
         string $baseClass,
         ?array $exclude,
+        ?bool $fieldToCamelCase,
     ): DefaultConfigOptions {
         return new DefaultConfigOptions(
             index: -1,
@@ -19,6 +20,7 @@ class DefaultConfigOptions extends MappingConfigOptions
             table: null,
             baseClass: $baseClass,
             exclude: $exclude,
+            fieldToCamelCase: $fieldToCamelCase,
         );
     }
 
