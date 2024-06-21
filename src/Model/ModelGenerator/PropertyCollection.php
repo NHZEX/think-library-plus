@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zxin\Think\Model\ModelGenerator;
 
 use Nette\Utils\Validators;
+use think\helper\Str;
 
 class PropertyCollection
 {
@@ -15,9 +16,17 @@ class PropertyCollection
     protected array $properties = [];
     protected array $refProps = [];
 
-    public static function fromFields(iterable $fields): PropertyCollection
+    public function __construct(
+        protected ?bool $fieldToCamelCase,
+    )
     {
-        $self = new PropertyCollection();
+    }
+
+    public static function fromFields(iterable $fields, ?bool $fieldToCamelCase): PropertyCollection
+    {
+        $self = new PropertyCollection(
+            fieldToCamelCase: $fieldToCamelCase,
+        );
 
         foreach ($fields as $item) {
             $field   = $item['COLUMN_NAME'];
@@ -51,6 +60,7 @@ class PropertyCollection
 
     public function push(string $field, string $type, string $comment): void
     {
+        $field = Str::snake($field);
         $this->properties[$field] = [
             'index'   => $this->index++,
             'field'   => $field,
@@ -65,6 +75,7 @@ class PropertyCollection
     public function appendRef(string $field, string $type, ?string $comment): void
     {
         $type = trim($type);
+        $field = Str::snake($field);
 
         if (empty($type)) {
             return;
@@ -80,6 +91,7 @@ class PropertyCollection
 
     public function hasProperty(string $field): bool
     {
+        $field = Str::snake($field);
         return isset($this->properties[$field]);
     }
 
@@ -121,6 +133,9 @@ class PropertyCollection
             null,
             null,
         ];
+        if ($this->fieldToCamelCase) {
+            $field = Str::camel($field);
+        }
         if ($comment) {
             $line[2] = '$' . str_pad($field, $this->fieldStrMaxLen);
             $line[3] = $comment;

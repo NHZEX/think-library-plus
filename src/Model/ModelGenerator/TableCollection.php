@@ -208,7 +208,7 @@ class TableCollection
             namespace: $model->getNamespace(),
             baseClass: $this->defaultOptions->getBaseClass(),
             className: $_className,
-            fieldToCamelCase: $this->defaultOptions->isFieldToCamelCase(),
+            fieldToCamelCase: $model->getOptions()->isFieldToCamelCase() ?? $this->defaultOptions->isFieldToCamelCase(),
         );
 
         if (empty($content)) {
@@ -327,7 +327,7 @@ class TableCollection
             $phpClass->addComment("Model: Table of {$table}.\n");
         }
         // 注释属性
-        $propertyCollection = PropertyCollection::fromFields($fields);
+        $propertyCollection = PropertyCollection::fromFields($fields, $fieldToCamelCase);
         $phpClass->addComment($propertyCollection->outputAllText());
 
         // 类元声明
@@ -400,7 +400,10 @@ class TableCollection
 
         // 加载表字段
         $fields             = ModelGeneratorHelper::queryTableFields($connection, $table);
-        $propertyCollection = PropertyCollection::fromFields($fields);
+        $propertyCollection = PropertyCollection::fromFields(
+            fields: $fields,
+            fieldToCamelCase: $model->getOptions()->isFieldToCamelCase() ?? $this->defaultOptions->isFieldToCamelCase()
+        );
 
         // todo 支持更新主键
 

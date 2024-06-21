@@ -158,20 +158,21 @@ const SCAN_ROOT_DIR = [
             
             /**
              * @property int    \$id
-             * @property int    \$create_time    创建时间
-             * @property string \$request_url    请求地址
-             * @property string \$request_route  请求路由
-             * @property string \$request_method 请求方法
-             * @property string \$request_ip     请求IP
+             * @property int    \$createTime     创建时间
+             * @property string \$requestUrl     请求地址
+             * @property string \$requestRoute   请求路由
+             * @property string \$requestMethod  请求方法
+             * @property string \$requestIp      请求IP
              * @property string \$mode           类型
-             * @property string \$request_info   请求信息
+             * @property string \$requestInfo    请求信息
              * @property string \$message        消息
-             * @property string \$trace_info     异常堆栈
+             * @property string \$traceInfo      异常堆栈
              */
             final class ExceptionLogsModelAlias extends ModelBase
             {
                 public \$table = 'exception_logs';
                 public \$pk = 'id';
+                public \$convertNameToCamel = true;
             }
             
             PHP,

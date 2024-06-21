@@ -111,16 +111,16 @@ class ModelGeneratorTest extends TestCase
              * @property string \$password        用户密码
              * @property string \$email           用户邮箱
              * @property string \$avatar          用户头像
-             * @property int    \$role_id         角色ID
-             * @property int    \$group_id        部门ID
-             * @property string \$signup_ip       注册IP
-             * @property int    \$create_time     创建时间
-             * @property int    \$update_time     更新时间
-             * @property int    \$delete_time     删除时间
-             * @property int    \$last_login_time 最后登录时间
-             * @property string \$last_login_ip   登录ip
+             * @property int    \$roleId          角色ID
+             * @property int    \$groupId         部门ID
+             * @property string \$signupIp        注册IP
+             * @property int    \$createTime      创建时间
+             * @property int    \$updateTime      更新时间
+             * @property int    \$deleteTime      删除时间
+             * @property int    \$lastLoginTime   最后登录时间
+             * @property string \$lastLoginIp     登录ip
              * @property string \$remember        登录ip
-             * @property int    \$lock_version
+             * @property int    \$lockVersion
              */
             final class TestAdminUserModel extends ModelBase
             {
@@ -168,6 +168,8 @@ class ModelGeneratorTest extends TestCase
             'defaultConnect' => null,
             // 生成文件是否使用严格类型
             'strictTypes'    => true,
+            // 字段转换为驼峰法
+            'fieldToCamelCase' => null,
 
             'exclude' => [
                 '_phinxlog',
@@ -241,6 +243,7 @@ class ModelGeneratorTest extends TestCase
             } elseif ($row->getClassName() === 'Tests\ModelOutput\T0\ExceptionLogsModelAlias') {
                 // 通过直接映射更新类
                 $hasExceptionLogsModelAlias = true;
+                echo $row->getContent();
                 self::assertEquals('OK', $row->getStatus());
             } elseif ($row->getClassName() === 'Tests\ModelOutput\LossModel') {
                 self::assertEquals('LOSS', $row->getStatus());
