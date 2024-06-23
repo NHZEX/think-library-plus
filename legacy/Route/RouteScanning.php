@@ -58,22 +58,38 @@ class RouteScanning
                 $refClass->getAttributes(MiddlewareAttr::class, \ReflectionAttribute::IS_INSTANCEOF)
             );
 
-            $attr = $refClass->getAttributes(ResourceAttr::class, \ReflectionAttribute::IS_INSTANCEOF)[0] ?? null;
-            $resourceAttr = $attr !== null ? $attr->newInstance() : null;
-
             $filename = (string) $file;
             $filename = substr($filename, $cutPathLen);
-            $items[] = [
-                'file'          => $filename,
-                'class'         => $class,
-                'controller'    => $this->classToRouteName($class),
-                'sort'          => $sort,
-                'group'         => $groupAttr,
-                'middleware'    => $middlewareAttr,
-                'resource'      => $resourceAttr,
-                'resourceItems' => [],
-                'routeItems'    => [],
-            ];
+
+            $resourceArr = $refClass->getAttributes(ResourceAttr::class, \ReflectionAttribute::IS_INSTANCEOF);
+            if ($resourceArr) {
+                foreach ($resourceArr as $resourceAttr) {
+                    $resourceAttrInst = $resourceAttr->newInstance();
+                    $items[] = [
+                        'file'          => $filename,
+                        'class'         => $class,
+                        'controller'    => $this->classToRouteName($class),
+                        'sort'          => $sort,
+                        'group'         => $groupAttr,
+                        'middleware'    => $middlewareAttr,
+                        'resource'      => $resourceAttrInst,
+                        'resourceItems' => [],
+                        'routeItems'    => [],
+                    ];
+                }
+            } else {
+                $items[] = [
+                    'file'          => $filename,
+                    'class'         => $class,
+                    'controller'    => $this->classToRouteName($class),
+                    'sort'          => $sort,
+                    'group'         => $groupAttr,
+                    'middleware'    => $middlewareAttr,
+                    'resource'      => null,
+                    'resourceItems' => [],
+                    'routeItems'    => [],
+                ];
+            }
         }
 
         usort($items, fn ($a, $b) => $b['sort'] <=> $a['sort']);
