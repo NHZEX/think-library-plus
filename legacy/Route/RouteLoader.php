@@ -133,8 +133,29 @@ class RouteLoader
                         $items[$nodeName] = [$rrule->method, $nodeName, $methodName];
                     }
 
+                    $definition = $this->restfullDefinition;
+                    if ($resourceAttr->presetFilter) {
+                        $presetControl = $resourceAttr->presetFilter;
+                        $operator = $presetControl[0] ?? null;
+                        $operator = match ($operator) {
+                            true, 'in' => true,
+                            false, 'not', '!' => false,
+                            default => null,
+                        };
+                        if (null !== $operator) {
+                            unset($presetControl[0]);
+                        }
+                        if (null === $operator || true === $operator) {
+                            // 只允许这些规则
+                            $definition = array_intersect_key($definition, array_flip($presetControl));
+                        } else {
+                            // 排除这些规则
+                            $definition = array_diff_key($definition, array_flip($presetControl));
+                        }
+                    }
+
                     // 注册资源路由
-                    $this->route->rest($items + $this->restfullDefinition, true);
+                    $this->route->rest($items + $definition, true);
                     $resource = $this->route->resource($resourceAttr->name, $controllerName)
                         ->option($resourceAttr->getOptions());
                     if ($resourceAttr->vars) {

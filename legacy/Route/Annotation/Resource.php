@@ -33,6 +33,7 @@ final class Resource extends Base
         public ?array            $filter = null,
         public ?array            $append = null,
         public ?array            $pattern = null,
+        public ?array            $presetFilter = null,
     ) {
     }
 }
