@@ -19,6 +19,7 @@ class RouteLoader
 
     private array $config = [
         'restfull_definition' => null,
+        'restfull_definition_set' => null,
         'route' => [
             'dump_path' => null,
             'only_load_dump' => false,
@@ -37,6 +38,7 @@ class RouteLoader
     ];
 
     private array $restfullDefinition;
+    private array $restfullDefinitionSet = [];
 
     private string $routeDumpFilename;
 
@@ -68,6 +70,9 @@ class RouteLoader
             $this->route = $this->app->route;
 
             $this->restfullDefinition = $this->config['restfull_definition'] ?: self::RESTFULL_DEFINITION;
+            if (!empty($this->config['restfull_definition_set'])) {
+                $this->restfullDefinitionSet = $this->config['restfull_definition_set'] ?: [];
+            }
 
             $this->route->rest($this->restfullDefinition, true);
 
@@ -133,7 +138,11 @@ class RouteLoader
                         $items[$nodeName] = [$rrule->method, $nodeName, $methodName];
                     }
 
-                    $definition = $this->restfullDefinition;
+                    if ($resourceAttr->presetName && !empty($this->restfullDefinitionSet[$resourceAttr->presetName])) {
+                        $definition = $this->restfullDefinitionSet[$resourceAttr->presetName];
+                    } else {
+                        $definition = $this->restfullDefinition;
+                    }
                     if ($resourceAttr->presetFilter) {
                         $presetControl = $resourceAttr->presetFilter;
                         $operator = $presetControl[0] ?? null;
