@@ -35,6 +35,8 @@ final class Resource extends Base
         public ?array            $pattern = null,
         public ?string           $presetName = null,
         public ?array            $presetFilter = null,
+        // 设置路由注册顺序
+        public ?int              $registerSort = null,
     ) {
     }
 }

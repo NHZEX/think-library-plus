@@ -69,7 +69,7 @@ class RouteScanning
                         'file'          => $filename,
                         'class'         => $class,
                         'controller'    => $this->classToRouteName($class),
-                        'sort'          => $sort,
+                        'sort'          => $resourceAttrInst->registerSort ?? $sort,
                         'group'         => $groupAttr,
                         'middleware'    => $middlewareAttr,
                         'resource'      => $resourceAttrInst,
