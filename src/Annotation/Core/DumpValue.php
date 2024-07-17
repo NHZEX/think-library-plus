@@ -45,7 +45,11 @@ class DumpValue
         } else {
             $info = "// hash: {$hash}";
         }
-        $content = "<?php\n{$info}\n{$content}";
+        $head = <<<HEAD
+            /** @noinspection ALL */
+            HEAD;
+
+        $content = "<?php\n{$info}\n\n{$head}\n{$content}";
 
         if (false === self::$dumpGenerateDate) {
             if ($this->fileHash && hash('sha1', $content, true) === $this->fileHash) {
