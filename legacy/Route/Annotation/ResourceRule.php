@@ -7,7 +7,7 @@ namespace Zxin\Think\Route\Annotation;
 /**
  * 注册资源路由
  */
-#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_METHOD)]
 final class ResourceRule extends Base
 {
     public function __construct(
