@@ -49,6 +49,7 @@ class ModelGeneratorTest extends TestCase
             baseClass: 'Tests\\ModelOutput\\ModelBase',
             exclude: [],
             fieldToCamelCase: true,
+            alignPadding: true,
         );
 
         $this->app->db->connect($defaultOptions->getConnect())->execute('DROP TABLE IF EXISTS `test_admin_user`');
