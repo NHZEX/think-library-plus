@@ -12,6 +12,7 @@ class DefaultConfigOptions extends MappingConfigOptions
         string $baseClass,
         ?array $exclude,
         ?bool $fieldToCamelCase,
+        ?bool $alignPadding,
     ): DefaultConfigOptions {
         return new DefaultConfigOptions(
             index: -1,
@@ -21,6 +22,7 @@ class DefaultConfigOptions extends MappingConfigOptions
             baseClass: $baseClass,
             exclude: $exclude,
             fieldToCamelCase: $fieldToCamelCase,
+            alignPadding: $alignPadding,
         );
     }
 

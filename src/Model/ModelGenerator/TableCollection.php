@@ -271,6 +271,7 @@ class TableCollection
         $namespace = $matchOption?->getNamespace() ?? $this->defaultOptions->getNamespace();
         $baseClass = $matchOption?->getBaseClass() ?? $this->defaultOptions->getBaseClass();
         $isFieldToCamelCase = $matchOption?->isFieldToCamelCase() ?? $this->defaultOptions->isFieldToCamelCase();
+        $alignPadding = $matchOption?->isAlignPadding() ?? $this->defaultOptions->isAlignPadding();
 
         return $this->_generateModel(
             connectName: $connectName,
@@ -280,6 +281,7 @@ class TableCollection
             baseClass: $baseClass,
             className: $className,
             fieldToCamelCase: $isFieldToCamelCase,
+            alignPadding: $alignPadding,
         );
     }
 
@@ -291,6 +293,7 @@ class TableCollection
         string  $baseClass,
         ?string &$className = null,
         ?bool   $fieldToCamelCase = null,
+        ?bool   $alignPadding = true,
     ): ?string {
         $namespace  = ltrim($namespace, '\\');
         $connection = self::resolveDbConnect($connectName);
@@ -327,7 +330,7 @@ class TableCollection
             $phpClass->addComment("Model: Table of {$table}.\n");
         }
         // 注释属性
-        $propertyCollection = PropertyCollection::fromFields($fields, $fieldToCamelCase);
+        $propertyCollection = PropertyCollection::fromFields($fields, $fieldToCamelCase, $alignPadding);
         $phpClass->addComment($propertyCollection->outputAllText());
 
         // 类元声明
@@ -404,7 +407,8 @@ class TableCollection
         $fields             = ModelGeneratorHelper::queryTableFields($connection, $table);
         $propertyCollection = PropertyCollection::fromFields(
             fields: $fields,
-            fieldToCamelCase: $realConvertNameToCamel ?? ($model->getOptions()->isFieldToCamelCase() ?? $this->defaultOptions->isFieldToCamelCase())
+            fieldToCamelCase: $realConvertNameToCamel ?? ($model->getOptions()->isFieldToCamelCase() ?? $this->defaultOptions->isFieldToCamelCase()),
+            alignPadding: $model->getOptions()->isAlignPadding() ?? $this->defaultOptions->isAlignPadding(),
         );
 
         // todo 支持更新主键

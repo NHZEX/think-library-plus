@@ -15,6 +15,7 @@ class SingleItemOptions implements ItemOptionsInterface
         protected string  $connect,
         protected ?string $baseClass,
         protected ?bool   $fieldToCamelCase,
+        protected bool|null $alignPadding,
     ) {
         if (-1 > $index) {
             throw new \InvalidArgumentException('index must be greater than -1');
@@ -41,6 +42,7 @@ class SingleItemOptions implements ItemOptionsInterface
             connect: $config['connect'] ?? $defaultOptions->getConnect(),
             baseClass: $config['baseClass'] ?? $defaultOptions->getBaseClass(),
             fieldToCamelCase: $config['fieldToCamelCase'] ?? $defaultOptions->isFieldToCamelCase(),
+            alignPadding: $config['alignPadding'] ?? $defaultOptions->isAlignPadding(),
         );
     }
 
@@ -67,5 +69,10 @@ class SingleItemOptions implements ItemOptionsInterface
     public function isFieldToCamelCase(): ?bool
     {
         return $this->fieldToCamelCase;
+    }
+
+    public function isAlignPadding(): ?bool
+    {
+        return $this->alignPadding;
     }
 }

@@ -16,4 +16,5 @@ interface ItemOptionsInterface
     public function getBaseClass(): ?string;
 
     public function isFieldToCamelCase(): ?bool;
+    public function isAlignPadding(): ?bool;
 }

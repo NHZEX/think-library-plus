@@ -18,14 +18,16 @@ class PropertyCollection
 
     public function __construct(
         protected ?bool $fieldToCamelCase,
+        protected bool $alignPadding,
     )
     {
     }
 
-    public static function fromFields(iterable $fields, ?bool $fieldToCamelCase): PropertyCollection
+    public static function fromFields(iterable $fields, ?bool $fieldToCamelCase, ?bool $alignPadding = true): PropertyCollection
     {
         $self = new PropertyCollection(
             fieldToCamelCase: $fieldToCamelCase,
+            alignPadding: $alignPadding,
         );
 
         foreach ($fields as $item) {
@@ -125,7 +127,7 @@ class PropertyCollection
             $comment = $refOptions['comment'];
         }
 
-        $printType = str_pad($type, $this->typeStrMaxLen);
+        $printType = $this->alignPadding ? str_pad($type, $this->typeStrMaxLen) : $type;
 
         $line = [
             '@property',
@@ -137,7 +139,7 @@ class PropertyCollection
             $field = Str::camel($field);
         }
         if ($comment) {
-            $line[2] = '$' . str_pad($field, $this->fieldStrMaxLen);
+            $line[2] = '$' . ($this->alignPadding ? str_pad($field, $this->fieldStrMaxLen) : $field);
             $line[3] = $comment;
         } else {
             $line[2] = '$' . $field;

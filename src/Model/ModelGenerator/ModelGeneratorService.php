@@ -81,6 +81,7 @@ class ModelGeneratorService
         $mapping = Arr::get($config, 'mapping', []);
 
         $fieldToCamelCase = Arr::get($config, 'fieldToCamelCase');
+        $alignPadding = Arr::get($config, 'alignPadding');
 
         $this->strictTypes = Arr::get($config, 'strictTypes', true);
         $this->defaultOptions = DefaultConfigOptions::makeDefault(
@@ -89,6 +90,7 @@ class ModelGeneratorService
             baseClass: $baseClass,
             exclude: $excludeTable,
             fieldToCamelCase: $fieldToCamelCase,
+            alignPadding: $alignPadding ?? true,
         );
         $this->single = SingleItemOptions::fromArrSet($single, $this->defaultOptions);
         $this->mapping = MappingConfigOptions::fromArrSet($mapping, $this->defaultOptions);

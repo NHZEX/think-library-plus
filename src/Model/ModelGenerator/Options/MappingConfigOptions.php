@@ -16,6 +16,7 @@ class MappingConfigOptions implements ItemOptionsInterface
         protected string|null $baseClass,
         protected array|null $exclude,
         protected bool|null $fieldToCamelCase,
+        protected bool|null $alignPadding,
     ) {
         if (-1 > $index) {
             throw new \InvalidArgumentException('index must be greater than -1');
@@ -46,6 +47,7 @@ class MappingConfigOptions implements ItemOptionsInterface
             baseClass: $config['baseClass'] ?? $defaultOptions->getBaseClass(),
             exclude: $config['exclude'] ?? null,
             fieldToCamelCase: $config['fieldToCamelCase']  ?? $defaultOptions->isFieldToCamelCase(),
+            alignPadding: $config['alignPadding']  ?? $defaultOptions->isAlignPadding(),
         );
     }
 
@@ -82,6 +84,11 @@ class MappingConfigOptions implements ItemOptionsInterface
     public function isFieldToCamelCase(): ?bool
     {
         return $this->fieldToCamelCase;
+    }
+
+    public function isAlignPadding(): ?bool
+    {
+        return $this->alignPadding;
     }
 
     public function getExclude(): ?array
