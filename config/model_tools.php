@@ -7,6 +7,7 @@ return [
     'defaultConnect'   => null,
     'strictTypes'      => true,
     'fieldToCamelCase' => null,
+    'alignPadding'     => true,
 
     'exclude' => [
         '_phinxlog',
