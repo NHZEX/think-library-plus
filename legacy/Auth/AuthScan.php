@@ -146,17 +146,24 @@ class AuthScan
         if (empty($auth->name)) {
             throw new AuthException('annotation value not empty(Auth): ' . $methodPath);
         }
-        $authStr  = $this->parseAuth($auth->name, $controllerUrl, $methodName);
+
+        $authFlags = is_string($auth->name) ? [$auth->name] : $auth->name;
         $features = "node@{$nodeUrl}";
-        if (isset($this->permissions[$authStr]['allow']) && !\is_array($this->permissions[$authStr]['allow'])) {
-            $this->permissions[$authStr]['allow'] = [];
+
+        foreach ($authFlags as $authFlag) {
+            $authStr  = $this->parseAuth($authFlag, $controllerUrl, $methodName);
+
+            if (isset($this->permissions[$authStr]['allow']) && !\is_array($this->permissions[$authStr]['allow'])) {
+                $this->permissions[$authStr]['allow'] = [];
+            }
+            $this->permissions[$authStr]['allow'][] = $features;
         }
-        $this->permissions[$authStr]['allow'][] = $features;
+
         // 记录节点控制信息
         $this->nodes[$features] = [
             'class'  => $methodPath,
             'policy' => $auth->policy,
-            'desc'   => '',
+            'desc'   => $auth->desc ?? '',
         ];
 
         if ($this->debug) {
