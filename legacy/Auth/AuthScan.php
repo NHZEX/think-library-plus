@@ -9,6 +9,7 @@ use think\App;
 use Zxin\Think\Annotation\Core\DumpValue;
 use Zxin\Think\Annotation\Core\Scanning;
 use Zxin\Think\Auth\Annotation\Auth;
+use Zxin\Think\Auth\Annotation\AuthDesc;
 use Zxin\Think\Auth\Annotation\AuthMeta;
 use Zxin\Think\Auth\Annotation\Base;
 use Zxin\Think\Auth\Exception\AuthException;
@@ -32,6 +33,7 @@ class AuthScan
     protected $permissions = [];
     protected $nodes       = [];
     protected $controllers = [];
+    protected array $permissionMetaItems = [];
 
     protected $debug = false;
 
@@ -107,6 +109,12 @@ class AuthScan
                 $controllerUrl = strtolower(str_replace('\\', '.', $controllerUrl));
             }
 
+            foreach ($refClass->getAttributes(Base::class, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                $attribute = $attribute->newInstance();
+                if ($attribute instanceof AuthDesc) {
+                    $this->handleAuthDesc($attribute);
+                }
+            }
 
             foreach ($refClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $refMethod) {
                 if ($refMethod->isStatic()) {
@@ -188,6 +196,31 @@ class AuthScan
             $this->nodes[$features]['policy'] = $auth->policy;
         } else {
             throw new AuthException('nodes not ready(AuthDescription): ' . $methodPath);
+        }
+    }
+
+    protected function handleAuthDesc(AuthDesc $attribute): void
+    {
+        foreach ($attribute->desc as $node => $info) {
+            if (isset($this->permissionMetaItems[$node])) {
+                continue;
+            }
+            if (is_string($info)) {
+                $this->permissionMetaItems[$node] = [
+                    'sort' => null,
+                    'desc' => $info,
+                ];
+            } elseif (is_integer($info)) {
+                $this->permissionMetaItems[$node] = [
+                    'sort' => $info,
+                    'desc' => null,
+                ];
+            } elseif (is_array($info) && is_string($info[0]) && is_integer($info[1])) {
+                $this->permissionMetaItems[$node] = [
+                    'sort' => $info[1],
+                    'desc' => $info[0],
+                ];
+            }
         }
     }
 

@@ -6,7 +6,6 @@ namespace Zxin\Think\Auth;
 
 /**
  * Trait InteractsWithStorage
- * @package Zxin\Think\Auth
  */
 trait InteractsWithStorage
 {
@@ -16,10 +15,11 @@ trait InteractsWithStorage
 
         $permission = Permission::getInstance();
         if ($permission->hasStorage()) {
+            $permissionMetaItems = $this->permissionMetaItems;
             foreach ($permissionList as $key => $item) {
                 if ($info = $permission->queryPermission($key)) {
-                    $item['sort'] = (int) $info['sort'];
-                    $item['desc'] = $info['desc'];
+                    $item['sort'] = $permissionMetaItems[$key]['sort'] ?? (int) $info['sort'];
+                    $item['desc'] = $permissionMetaItems[$key]['desc'] ?? $info['desc'];
                     $permissionList[$key] = $item;
                 }
             }
@@ -54,6 +54,7 @@ trait InteractsWithStorage
     protected function fillPermission(array $data, array $original): array
     {
         $result = [];
+        $permissionMetaItems = $this->permissionMetaItems;
         $original = $original['permission'] ?? [];
         foreach ($data as $permission => $control) {
             // 填充父节点
@@ -70,16 +71,16 @@ trait InteractsWithStorage
                 $result[$permission] = [
                     'pid' => $pid,
                     'name' => $permission,
-                    'sort' => $control['sort'] ?? $sort,
-                    'desc' => $control['desc'] ?? $desc,
+                    'sort' => $permissionMetaItems[$permission]['sort'] ?? $control['sort'] ?? $sort,
+                    'desc' => $permissionMetaItems[$permission]['desc'] ?? $control['desc'] ?? $desc,
                     'allow' => $control['allow'] ?? null,
                 ];
             } else {
                 $result[$permission] = [
                     'pid' => $pid,
                     'name' => $permission,
-                    'sort' => $sort,
-                    'desc' => $desc,
+                    'sort' => $permissionMetaItems[$permission]['sort'] ?? $sort,
+                    'desc' => $permissionMetaItems[$permission]['desc'] ?? $desc,
                     'allow' => array_values($control),
                 ];
             }
@@ -103,6 +104,8 @@ trait InteractsWithStorage
         array_pop($parents);
         $result = implode($delimiter, $parents);
 
+        $permissionMetaItems = $this->permissionMetaItems;
+
         while (\count($parents)) {
             $curr = implode($delimiter, $parents);
             array_pop($parents);
@@ -118,8 +121,8 @@ trait InteractsWithStorage
             $data[$curr] = [
                 'pid' => $parent,
                 'name' => $curr,
-                'sort' => $sort,
-                'desc' => $desc,
+                'sort' => $permissionMetaItems[$curr]['sort'] ?? $sort,
+                'desc' => $permissionMetaItems[$curr]['desc'] ?? $desc,
                 'allow' => $data[$curr]['allow'] ?? null,
             ];
         }
