@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests;
+namespace Tests\ModelGenerator;
 
 use PHPUnit\Framework\TestCase;
 use Zxin\Think\Model\ModelGenerator\ModelGeneratorHelper;
@@ -10,7 +10,9 @@ class ModelGeneratorHelperTest extends TestCase
 {
     public function testClassToPath(): void
     {
-        $this->assertEquals(__FILE__, \realpath(ModelGeneratorHelper::classToPath('Tests\\ModelGeneratorHelperTest')));
+        $this->assertEquals(__FILE__, \realpath(ModelGeneratorHelper::classToPath(
+            'Tests\\ModelGenerator\\ModelGeneratorHelperTest'
+        )));
     }
 
     public function testNotExistClassToPath(): void

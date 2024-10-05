@@ -1,13 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests;
+namespace Tests\ModelGenerator;
 
 use Composer\Autoload\ClassLoader;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
+use Tests\VFSStructure;
 use think\App;
 use Zxin\Think\Model\ModelGenerator\ModelGeneratorService;
 use Zxin\Think\Model\ModelGenerator\Options\DefaultConfigOptions;
