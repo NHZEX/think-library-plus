@@ -341,14 +341,18 @@ class TableCollection
         // > 表名
         $phpClass->addProperty('table', $table)->setProtected();
         // > 主键
-        $priFields = $fields->where('COLUMN_KEY', '=', 'PRI')->column('COLUMN_NAME');
+        $priFields = $fields->where('COLUMN_KEY', '=', 'PRI');
         if ($priFields) {
             if (\count($priFields) === 1) {
-                $pkValue = $priFields[0];
+                $pkValue = $priFields[0]['COLUMN_NAME'];
             } else {
-                $pkValue = $priFields;
+                $preferred = $priFields->where('EXTRA', '=', 'auto_increment');
+                if ($preferred->count() === 1) {
+                    $pkValue = $preferred[0]['COLUMN_NAME'];
+                } else {
+                    $pkValue = $priFields->column('COLUMN_NAME');
+                }
             }
-
             $phpClass->addProperty('pk', $pkValue)->setProtected();
         }
 
@@ -481,13 +485,18 @@ class TableCollection
         // 主键更新
         $rawPkValue = $model->getPkValue();
         if (false !== $rawPkValue) {
-            $priFields = $fields->where('COLUMN_KEY', '=', 'PRI')->column('COLUMN_NAME');
+            $priFields = $fields->where('COLUMN_KEY', '=', 'PRI');
             $newPkValue = null;
             if ($priFields) {
                 if (\count($priFields) === 1) {
-                    $newPkValue = $priFields[0];
+                    $newPkValue = $priFields[0]['COLUMN_NAME'];
                 } else {
-                    $newPkValue = $priFields;
+                    $preferred = $priFields->where('EXTRA', '=', 'auto_increment');
+                    if ($preferred->count() === 1) {
+                        $newPkValue = $preferred[0]['COLUMN_NAME'];
+                    } else {
+                        $newPkValue = $priFields->column('COLUMN_NAME');
+                    }
                 }
             }
             if ($rawPkValue !== $newPkValue) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Tests\VFSStructure;
 
 const SCAN_DDL = <<<MYSQL
+    drop table if exists _phinxlog;
     create table if not exists _phinxlog
     (
         version        bigint               not null
@@ -15,6 +16,7 @@ const SCAN_DDL = <<<MYSQL
     )
         charset = utf8mb3;
     
+    drop table if exists activity_log;
     create table if not exists activity_log
     (
         id           int unsigned auto_increment
@@ -33,6 +35,7 @@ const SCAN_DDL = <<<MYSQL
     )
         comment '活动日志' collate = utf8mb4_general_ci;
     
+    drop table if exists admin_role;
     create table if not exists admin_role
     (
         id           int unsigned auto_increment
@@ -49,11 +52,11 @@ const SCAN_DDL = <<<MYSQL
         lock_version int unsigned     default '0' not null
     )
         comment '系统角色' collate = utf8mb4_general_ci;
-    
+
+    drop table if exists admin_user;
     create table if not exists admin_user
     (
-        id              int unsigned auto_increment
-            primary key,
+        id              int unsigned auto_increment,
         genre           tinyint unsigned          default '0' not null comment '用户类型',
         status          tinyint unsigned          default '0' not null comment '用户状态',
         username        varchar(32)               default ''  not null comment '用户账户',
@@ -71,11 +74,13 @@ const SCAN_DDL = <<<MYSQL
         last_login_ip   varchar(46) charset ascii default ''  not null comment '登录ip',
         remember        varchar(16) charset ascii default ''  not null comment '登录ip',
         lock_version    int unsigned              default '0' not null,
+        primary key (id, genre),
         constraint idx_username
             unique (username, delete_time)
     )
         comment '系统用户' collate = utf8mb4_general_ci;
-    
+
+    drop table if exists attachment;
     create table if not exists attachment
     (
         id            int unsigned auto_increment
@@ -94,7 +99,8 @@ const SCAN_DDL = <<<MYSQL
         update_time   int unsigned               default '0' not null comment '更新时间'
     )
         comment '附件管理' collate = utf8mb4_general_ci;
-    
+
+    drop table if exists exception_logs;
     create table if not exists exception_logs
     (
         id             int unsigned auto_increment
@@ -110,7 +116,8 @@ const SCAN_DDL = <<<MYSQL
         trace_info     text                      not null comment '异常堆栈'
     )
         comment '异常堆栈日志' collate = utf8mb4_general_ci;
-    
+
+    drop table if exists `system`;
     create table if not exists `system`
     (
         label varchar(48) charset ascii default '' not null comment '标签'
@@ -120,7 +127,8 @@ const SCAN_DDL = <<<MYSQL
             unique (label)
     )
         comment '系统表' collate = utf8mb4_general_ci;
-    
+
+    drop table if exists user_role_relation;
     create table if not exists user_role_relation
     (
         id          int unsigned auto_increment

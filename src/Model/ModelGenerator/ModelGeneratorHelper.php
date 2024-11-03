@@ -26,6 +26,7 @@ class ModelGeneratorHelper
 
     public static function queryTableFields(ConnectionInterface $connection, string $table): Collection
     {
+        // todo 后续抽象为一个独立的表对象
         return $connection
             ->table('information_schema.COLUMNS')
             ->whereRaw('`TABLE_SCHEMA`=SCHEMA()')
