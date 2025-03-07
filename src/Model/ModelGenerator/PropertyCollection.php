@@ -19,8 +19,7 @@ class PropertyCollection
     public function __construct(
         protected ?bool $fieldToCamelCase,
         protected bool $alignPadding,
-    )
-    {
+    ) {
     }
 
     public static function fromFields(iterable $fields, ?bool $fieldToCamelCase, ?bool $alignPadding = true): PropertyCollection

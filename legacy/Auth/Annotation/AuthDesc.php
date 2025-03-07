@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Zxin\Think\Auth\Annotation;
@@ -11,7 +12,6 @@ class AuthDesc extends Base
      */
     public function __construct(
         public array $desc,
-    )
-    {
+    ) {
     }
 }

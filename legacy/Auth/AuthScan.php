@@ -155,7 +155,7 @@ class AuthScan
             throw new AuthException('annotation value not empty(Auth): ' . $methodPath);
         }
 
-        $authFlags = is_string($auth->name) ? [$auth->name] : $auth->name;
+        $authFlags = \is_string($auth->name) ? [$auth->name] : $auth->name;
         $features = "node@{$nodeUrl}";
 
         foreach ($authFlags as $authFlag) {
@@ -175,7 +175,7 @@ class AuthScan
         ];
 
         if ($this->debug) {
-            echo sprintf(
+            echo \sprintf(
                 '> %s%s%s  => %s',
                 $methodPath,
                 PHP_EOL,
@@ -205,17 +205,17 @@ class AuthScan
             if (isset($this->permissionMetaItems[$node])) {
                 continue;
             }
-            if (is_string($info)) {
+            if (\is_string($info)) {
                 $this->permissionMetaItems[$node] = [
                     'sort' => null,
                     'desc' => $info,
                 ];
-            } elseif (is_integer($info)) {
+            } elseif (\is_integer($info)) {
                 $this->permissionMetaItems[$node] = [
                     'sort' => $info,
                     'desc' => null,
                 ];
-            } elseif (is_array($info) && is_string($info[0]) && is_integer($info[1])) {
+            } elseif (\is_array($info) && \is_string($info[0]) && \is_integer($info[1])) {
                 $this->permissionMetaItems[$node] = [
                     'sort' => $info[1],
                     'desc' => $info[0],

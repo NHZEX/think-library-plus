@@ -107,7 +107,7 @@ class ValidateMiddleware
             $scene && $validateClass->scene($scene);
         }
         if ($this->app->isDebug()) {
-            $this->app->log->record(sprintf('[validate] %s, scene=%s', $validateClass::class, $scene ?: 'null'), 'debug');
+            $this->app->log->record(\sprintf('[validate] %s, scene=%s', $validateClass::class, $scene ?: 'null'), 'debug');
         }
         $input = $request->param();
         if ($files = $request->file()) {
@@ -131,7 +131,7 @@ class ValidateMiddleware
             $allowInputFields = $validateClass->getRuleKeys();
         } elseif (method_exists($validateClass, 'getRuleKeys')) {
             throw new ValidateException(
-                sprintf('Must extends the %s class', ValidateBase::class)
+                \sprintf('Must extends the %s class', ValidateBase::class)
             );
         }
         ValidateContext::create($controllerClass, $controllerAction, $validateClass, true, $allowInputFields);

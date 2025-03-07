@@ -20,6 +20,7 @@ use Zxin\Think\Auth\Contracts\ProviderlSelfCheck;
 use Zxin\Think\Auth\Exception\AuthException;
 use Zxin\Think\Auth\Traits\EventHelpers;
 use Zxin\Think\Auth\Traits\GuardHelpers;
+
 use function Zxin\Crypto\decrypt_data;
 use function Zxin\Crypto\encrypt_data;
 

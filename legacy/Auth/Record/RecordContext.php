@@ -25,7 +25,7 @@ class RecordContext
     public function setException(\Throwable $throwable): RecordContext
     {
         $this->code = $throwable->getCode();
-        $this->message = sprintf('%s [%s]', $throwable->getMessage(), $throwable::class);
+        $this->message = \sprintf('%s [%s]', $throwable->getMessage(), $throwable::class);
         return $this;
     }
 

@@ -41,7 +41,7 @@ class ModelGeneratorService
         );
         $tableCollection->setStrictTypes($this->strictTypes);
 
-        $this->logger->info(sprintf("Connect: \t%s", $this->defaultOptions->getConnect()));
+        $this->logger->info(\sprintf("Connect: \t%s", $this->defaultOptions->getConnect()));
         $this->logger->info("Namespace: \t{$this->defaultOptions->getNamespace()}");
         $this->logger->info("BaseClass: \t{$this->defaultOptions->getBaseClass()}");
 

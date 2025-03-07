@@ -16,7 +16,7 @@ abstract class BaseAnnotation
     public function __get($name)
     {
         throw new \BadMethodCallException(
-            sprintf("Unknown property '%s' on annotation '%s'.", $name, static::class)
+            \sprintf("Unknown property '%s' on annotation '%s'.", $name, static::class)
         );
     }
 
@@ -31,7 +31,7 @@ abstract class BaseAnnotation
     public function __set($name, mixed $value)
     {
         throw new \BadMethodCallException(
-            sprintf("Unknown property '%s' on annotation '%s'.", $name, static::class)
+            \sprintf("Unknown property '%s' on annotation '%s'.", $name, static::class)
         );
     }
 }
