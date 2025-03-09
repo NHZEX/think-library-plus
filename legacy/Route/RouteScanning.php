@@ -21,14 +21,18 @@ class RouteScanning
 
     public function classToRouteName(string $class): string
     {
-        $controllerName = str_replace("app\\{$this->controllerLayer}\\", '', $class);
+        $appNamespace = $this->app->getNamespace();
+
+        $controllerName = str_replace("{$appNamespace}\\{$this->controllerLayer}\\", '', $class);
         return str_replace('\\', '.', $controllerName);
     }
 
     public function scan(): array
     {
+        $appNamespace = $this->app->getNamespace();
+
         $cutPathLen = \strlen($this->app->getRootPath());
-        $scanning = new Scanning($this->app);
+        $scanning = new Scanning($this->app, "{$appNamespace}\\");
 
         $items = [];
 
