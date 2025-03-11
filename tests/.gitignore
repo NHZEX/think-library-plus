@@ -1,0 +1,4 @@
+coverage
+Stubs/runtime
+**/.env
+Stubs/route_storage.dump.php
