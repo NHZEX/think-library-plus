@@ -50,7 +50,13 @@ class Scanning
     protected function scanningFile($dirs): \Generator
     {
         $finder = new Finder();
-        $finder->files()->in($dirs)->name('*.php');
+        $finder
+            ->files()
+            ->in($dirs)
+            ->sort(static function (\SplFileInfo $a, \SplFileInfo $b) {
+                return strnatcasecmp($a->getRealPath(), $b->getRealPath());
+            })
+            ->name('*.php');
         if (!$finder->hasResults()) {
             return;
         }
