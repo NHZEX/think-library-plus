@@ -10,7 +10,7 @@ const TEST_MODEL_GENERATOR_USE_VFS = true;
 require __DIR__ . '/VFSStructure/GeneratorRootStructure.php';
 
 $app = new App(__DIR__ . DIRECTORY_SEPARATOR . 'Stubs');
-$app->setNamespace('Tests\\Stubs\\App');
+$app->setNamespace('Tests\\Stubs\\app');
 $app->initialize();
 
 //$app->config->set([], 'cache');
