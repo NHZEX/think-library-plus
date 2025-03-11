@@ -27,16 +27,10 @@ class RouteScanning
         return str_replace('\\', '.', $controllerName);
     }
 
-    public function scan(): array
+    private function dataProvider(): \Generator
     {
         $appNamespace = $this->app->getNamespace();
-
-        $cutPathLen = \strlen($this->app->getRootPath());
         $scanning = new Scanning($this->app, "{$appNamespace}\\");
-
-        $items = [];
-
-        $refMap = [];
 
         foreach ($scanning->scanningClass() as $file => $class) {
             try {
@@ -48,9 +42,24 @@ class RouteScanning
                 continue;
             }
 
-            $attr = $refClass->getAttributes(GroupAttr::class, \ReflectionAttribute::IS_INSTANCEOF)[0] ?? null;
+            yield [$file, $class, $refClass];
+        }
+    }
+
+    public function scan(): array
+    {
+        $cutPathLen = \strlen($this->app->getRootPath());
+
+        $items = [];
+
+        $refMap = [];
+
+        foreach ($this->dataProvider() as [$file, $class, $refClass]) {
+            /**
+             * @var \ReflectionClass $refClass
+             */
             /** @var GroupAttr|null $groupAttr */
-            $groupAttr = $attr !== null ? $attr->newInstance() : null;
+            $groupAttr = ($refClass->getAttributes(GroupAttr::class, \ReflectionAttribute::IS_INSTANCEOF)[0] ?? null)?->newInstance();
 
             $sort = $groupAttr !== null ? $groupAttr->registerSort : 1000;
 
