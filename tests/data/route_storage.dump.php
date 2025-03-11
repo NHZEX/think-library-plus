@@ -1,11 +1,11 @@
 <?php
-// hash: e8c4cf6b9098983eabad06162e9dccbb
+// hash: 92a061dd133d3767e1ebb60dd2d2451d
 
 /** @noinspection ALL */
 return [
     [
         'file' => 'app/Controller/admin/Index.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\admin\\Index',
+        'class' => 'Tests\\Stubs\\app\\Controller\\admin\\Index',
         'controller' => 'admin.Index',
         'sort' => 3000,
         'group' => \Zxin\Think\Route\Annotation\Group::__set_state([
@@ -108,7 +108,7 @@ return [
     ],
     [
         'file' => 'app/Controller/admin/User.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\admin\\User',
+        'class' => 'Tests\\Stubs\\app\\Controller\\admin\\User',
         'controller' => 'admin.User',
         'sort' => 3000,
         'group' => \Zxin\Think\Route\Annotation\Group::__set_state([
@@ -155,7 +155,7 @@ return [
     ],
     [
         'file' => 'app/Controller/V2/Admin/Users.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\V2\\Admin\\Users',
+        'class' => 'Tests\\Stubs\\app\\Controller\\V2\\Admin\\Users',
         'controller' => 'V2.Admin.Users',
         'sort' => 3000,
         'group' => \Zxin\Think\Route\Annotation\Group::__set_state([
@@ -210,7 +210,7 @@ return [
     ],
     [
         'file' => 'app/Controller/admin/Role.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\admin\\Role',
+        'class' => 'Tests\\Stubs\\app\\Controller\\admin\\Role',
         'controller' => 'admin.Role',
         'sort' => 2900,
         'group' => \Zxin\Think\Route\Annotation\Group::__set_state([
@@ -257,7 +257,7 @@ return [
     ],
     [
         'file' => 'app/Controller/V2/Admin/Roles.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\V2\\Admin\\Roles',
+        'class' => 'Tests\\Stubs\\app\\Controller\\V2\\Admin\\Roles',
         'controller' => 'V2.Admin.Roles',
         'sort' => 2900,
         'group' => \Zxin\Think\Route\Annotation\Group::__set_state([
@@ -304,7 +304,7 @@ return [
     ],
     [
         'file' => 'app/Controller/admin/Permission.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\admin\\Permission',
+        'class' => 'Tests\\Stubs\\app\\Controller\\admin\\Permission',
         'controller' => 'admin.Permission',
         'sort' => 1000,
         'group' => \Zxin\Think\Route\Annotation\Group::__set_state([
@@ -359,7 +359,7 @@ return [
     ],
     [
         'file' => 'app/Controller/Api/V1/Picture.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\Api\\V1\\Picture',
+        'class' => 'Tests\\Stubs\\app\\Controller\\Api\\V1\\Picture',
         'controller' => 'Api.V1.Picture',
         'sort' => 1000,
         'group' => \Zxin\Think\Route\Annotation\Group::__set_state([
@@ -437,7 +437,7 @@ return [
     ],
     [
         'file' => 'app/Controller/Api/V1/Product.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\Api\\V1\\Product',
+        'class' => 'Tests\\Stubs\\app\\Controller\\Api\\V1\\Product',
         'controller' => 'Api.V1.Product',
         'sort' => 1000,
         'group' => \Zxin\Think\Route\Annotation\Group::__set_state([
@@ -515,7 +515,7 @@ return [
     ],
     [
         'file' => 'app/Controller/Dict/Dict.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\Dict\\Dict',
+        'class' => 'Tests\\Stubs\\app\\Controller\\Dict\\Dict',
         'controller' => 'Dict.Dict',
         'sort' => 1000,
         'group' => null,
@@ -554,7 +554,7 @@ return [
     ],
     [
         'file' => 'app/Controller/Dict/DictItem.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\Dict\\DictItem',
+        'class' => 'Tests\\Stubs\\app\\Controller\\Dict\\DictItem',
         'controller' => 'Dict.DictItem',
         'sort' => 1000,
         'group' => null,
@@ -587,7 +587,7 @@ return [
     ],
     [
         'file' => 'app/Controller/Dict/DictItem.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\Dict\\DictItem',
+        'class' => 'Tests\\Stubs\\app\\Controller\\Dict\\DictItem',
         'controller' => 'Dict.DictItem',
         'sort' => 1000,
         'group' => null,
@@ -618,7 +618,7 @@ return [
     ],
     [
         'file' => 'app/Controller/Picture/Picture.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\Picture\\Picture',
+        'class' => 'Tests\\Stubs\\app\\Controller\\Picture\\Picture',
         'controller' => 'Picture.Picture',
         'sort' => 1000,
         'group' => \Zxin\Think\Route\Annotation\Group::__set_state([
@@ -1161,7 +1161,7 @@ return [
     ],
     [
         'file' => 'app/Controller/Product/Product.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\Product\\Product',
+        'class' => 'Tests\\Stubs\\app\\Controller\\Product\\Product',
         'controller' => 'Product.Product',
         'sort' => 1000,
         'group' => null,
@@ -1235,7 +1235,7 @@ return [
     ],
     [
         'file' => 'app/Controller/Product/ProductCategory.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\Product\\ProductCategory',
+        'class' => 'Tests\\Stubs\\app\\Controller\\Product\\ProductCategory',
         'controller' => 'Product.ProductCategory',
         'sort' => 1000,
         'group' => null,
@@ -1281,7 +1281,7 @@ return [
     ],
     [
         'file' => 'app/Controller/System.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\System',
+        'class' => 'Tests\\Stubs\\app\\Controller\\System',
         'controller' => 'System',
         'sort' => 1000,
         'group' => \Zxin\Think\Route\Annotation\Group::__set_state([
@@ -1443,7 +1443,7 @@ return [
     ],
     [
         'file' => 'app/Controller/V2/Admin/Permission.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\V2\\Admin\\Permission',
+        'class' => 'Tests\\Stubs\\app\\Controller\\V2\\Admin\\Permission',
         'controller' => 'V2.Admin.Permission',
         'sort' => 1000,
         'group' => \Zxin\Think\Route\Annotation\Group::__set_state([
@@ -1575,7 +1575,7 @@ return [
     ],
     [
         'file' => 'app/Controller/V2/Index.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\V2\\Index',
+        'class' => 'Tests\\Stubs\\app\\Controller\\V2\\Index',
         'controller' => 'V2.Index',
         'sort' => 1000,
         'group' => null,
@@ -1696,7 +1696,7 @@ return [
     ],
     [
         'file' => 'app/Controller/V2/System.php',
-        'class' => 'Tests\\Stubs\\App\\Controller\\V2\\System',
+        'class' => 'Tests\\Stubs\\app\\Controller\\V2\\System',
         'controller' => 'V2.System',
         'sort' => 1000,
         'group' => \Zxin\Think\Route\Annotation\Group::__set_state([
