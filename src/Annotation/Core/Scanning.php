@@ -53,9 +53,7 @@ class Scanning
         $finder
             ->files()
             ->in($dirs)
-            ->sort(static function (\SplFileInfo $a, \SplFileInfo $b) {
-                return strnatcasecmp($a->getRealPath(), $b->getRealPath());
-            })
+            ->sort(static fn(\SplFileInfo $a, \SplFileInfo $b) => strnatcasecmp($a->getRealPath(), $b->getRealPath()))
             ->name('*.php');
         if (!$finder->hasResults()) {
             return;
