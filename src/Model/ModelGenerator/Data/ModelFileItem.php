@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zxin\Think\Model\ModelGenerator\Data;
 
 use think\Model;
+use Zxin\Think\Model\ModelGenerator\Helper;
 use Zxin\Think\Model\ModelGenerator\ModelGeneratorHelper;
 use Zxin\Think\Model\ModelGenerator\Options\ItemOptionsInterface;
 use Zxin\Think\Model\ModelGenerator\Options\MappingConfigOptions;
@@ -261,10 +262,25 @@ class ModelFileItem
             return $this->connectName;
         }
 
-        $prop = $this->makeReflectionInstance()->getProperty('connection');
-        $prop->setAccessible(true);
+        if (Helper::ormIsV4()) {
+            $ref = $this->makeReflectionInstance();
+            if ($ref->hasProperty('connection')) {
+                $prop = $ref->getProperty('connection');
+                $prop->setAccessible(true);
+                $this->connectName = $prop->getValue($this->internalObject) ?: $this->options->getConnect();
+            } else {
+                $method = $ref->getMethod('getOptions');
+                $method->setAccessible(true);
+                $options = $method->invoke($this->internalObject);
+                $this->connectName = ($options['connection'] ?? null) ?: $this->options->getConnect();
+            }
+        } else {
+            $prop = $this->makeReflectionInstance()->getProperty('connection');
+            $prop->setAccessible(true);
+            $this->connectName = ($prop->getValue($this->internalObject) ?: $this->options->getConnect());
+        }
 
-        return $this->connectName ??= ($prop->getValue($this->internalObject) ?: $this->options->getConnect());
+        return $this->connectName;
     }
 
     public function getFileContent(): string
