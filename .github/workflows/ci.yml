@@ -21,7 +21,7 @@ jobs:
           - 8.3
           - 8.4
         think-orm:
-          - ~3.0.14
+          - ~3.0
           - ~4.0
         prefer-lowest: [false]
         experimental: [false]
@@ -78,7 +78,7 @@ jobs:
         run: composer update --prefer-dist --no-progress --no-suggest --prefer-lowest
 
       - name: Install ThinkOrm
-        run: composer require ${{ matrix.think-orm }}
+        run: composer require --dev topthink/think-orm=${{ matrix.think-orm }}
 
       - name: Run test suite
         run: ./vendor/bin/phpunit -v
