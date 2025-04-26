@@ -10,6 +10,7 @@ class DumpValue
 {
     private ?string $fileHash = null;
     public static bool $dumpGenerateDate = false;
+    public static bool $dumpGenerateHash = false;
 
     public function __construct(
         private string $filename,
@@ -39,17 +40,20 @@ class DumpValue
         $content = "return {$dumpData};\n";
         $hash = hash('md5', $content);
 
-        if (self::$dumpGenerateDate) {
-            $date = date('c');
-            $info = "// update date: {$date}\n// hash: {$hash}";
-        } else {
-            $info = "// hash: {$hash}";
-        }
         $head = <<<HEAD
             /** @noinspection ALL */
             HEAD;
 
-        $content = "<?php\n{$info}\n\n{$head}\n{$content}";
+        if (self::$dumpGenerateDate) {
+            $date = date('c');
+            $info = "// update date: {$date}\n// hash: {$hash}";
+            $head = "{$info}\n\n{$head}";
+        } elseif (self::$dumpGenerateHash) {
+            $info = "// hash: {$hash}";
+            $head = "{$info}\n\n{$head}";
+        }
+
+        $content = "<?php\n{$head}\n{$content}";
 
         if (false === self::$dumpGenerateDate) {
             if ($this->fileHash && hash('sha1', $content, true) === $this->fileHash) {
