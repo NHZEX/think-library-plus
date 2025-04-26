@@ -76,6 +76,7 @@ class ModelGeneratorTest extends TestCase
                 last_login_ip   varchar(46) charset ascii default ''  not null comment '登录ip',
                 remember        varchar(16) charset ascii default ''  not null comment '登录ip',
                 lock_version    int unsigned              default '0' not null,
+                is_enabled      bit(1)                    default 1 not null,
                 constraint idx_username
                     unique (username, delete_time)
             ) comment '系统用户' collate = utf8mb4_general_ci;
@@ -123,6 +124,7 @@ class ModelGeneratorTest extends TestCase
              * @property string \$lastLoginIp     登录ip
              * @property string \$remember        登录ip
              * @property int    \$lockVersion
+             * @property bool   \$isEnabled
              */
             final class TestAdminUserModel extends ModelBase
             {

@@ -22,7 +22,7 @@ class PropertyCollection
     ) {
     }
 
-    public static function fromFields(iterable $fields, ?bool $fieldToCamelCase, ?bool $alignPadding = true): PropertyCollection
+    public static function fromFields(iterable $fields, ?bool $fieldToCamelCase, ?bool $alignPadding = true, bool $enableBoolParse = true): PropertyCollection
     {
         $self = new PropertyCollection(
             fieldToCamelCase: $fieldToCamelCase,
@@ -55,6 +55,9 @@ class PropertyCollection
                 'json' => 'array',
                 default => 'mixed',
             };
+            if ($enableBoolParse && 'bit(1)' === $item['COLUMN_TYPE'] && str_starts_with($field, 'is_')) {
+                $type = 'bool';
+            }
 
             $self->push($field, $type, $comment);
         }
