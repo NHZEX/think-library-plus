@@ -21,6 +21,7 @@ use Zxin\Think\Model\ModelGenerator\Options\SingleItemOptions;
 class TableCollection
 {
     private bool $strictTypes = true;
+    private bool $showVirtualPropsLabel = false;
 
     /**
      * @var array<string, array<string, string>>
@@ -52,6 +53,11 @@ class TableCollection
     public function setStrictTypes(bool $strictTypes): void
     {
         $this->strictTypes = $strictTypes;
+    }
+
+    public function setShowVirtualPropsLabel(bool $showVirtualPropsLabel): void
+    {
+        $this->showVirtualPropsLabel = $showVirtualPropsLabel;
     }
 
     public function getDefaultOptions(): MappingConfigOptions
@@ -448,7 +454,7 @@ class TableCollection
         if ($headLines && $headLines[array_key_last($headLines)] !== '') {
             $headLines[] = '';
         }
-        if ($endLines && $endLines[0] !== '') {
+        if ($this->showVirtualPropsLabel && $endLines && $endLines[0] !== '') {
             if (empty(array_filter($endLines, fn ($line) => str_contains($line, 'virtual props')))) {
                 array_unshift($endLines, '', '↓↓ virtual props ↓↓');
             } else {
