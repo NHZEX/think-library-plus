@@ -293,8 +293,6 @@ const AdminUserModel_UPDATE = <<<PHP
      * @property string \$last_login_ip   登录ip
      * @property string \$remember        记住令牌
      * @property int    \$lock_version    数据版本
-     *
-     * ↓↓ virtual props ↓↓
      * @property-read string            \$status_desc     状态描述
      * @property-read string            \$genre_desc      类型描述
      * @property-read string            \$role_name       load(beRoleName)
