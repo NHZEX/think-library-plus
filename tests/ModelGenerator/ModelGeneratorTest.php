@@ -260,12 +260,14 @@ class ModelGeneratorTest extends TestCase
 
         // 更新文件后测试UPDATE
         \file_put_contents($fs->url() . '/T2/AdminUserModel.php', VFSStructure\AdminUserModel_RAW);
+        \file_put_contents($fs->url() . '/T2/AdminRoleModel.php', VFSStructure\AdminRoleModel_RAW);
 
         $tableResult = $mgs->execute(true);
 
         $recordRows = $tableResult->getRecordRows();
 
         self::assertNotEmpty($recordRows);
+        $hasAdminRoleModelUpdate = false;
 
         foreach ($recordRows as $row) {
             echo \sprintf(
@@ -282,11 +284,18 @@ class ModelGeneratorTest extends TestCase
             } elseif ($row->getClassName() === 'Tests\ModelOutput\T2\AdminUserModel') {
                 self::assertEquals('UPDATE', $row->getStatus());
                 self::assertEquals(VFSStructure\AdminUserModel_UPDATE, $row->getContent());
+            } elseif ($row->getClassName() === 'Tests\ModelOutput\T2\AdminRoleModel') {
+                $hasAdminRoleModelUpdate = true;
+                self::assertTrue(\in_array($row->getStatus(), ['OK', 'UPDATE'], true));
+                self::assertMatchesRegularExpression('/@property\s+array<string, mixed>\|null\s+\$ext\s+自定义扩展字段/', $row->getContent());
+                self::assertMatchesRegularExpression('/@property-read string\s+\$status_text\s+状态文本/', $row->getContent());
+                self::assertSame(1, preg_match_all('/^\s*\*\s*@property[^\n]*\$ext\b/m', $row->getContent()));
             } else {
                 // UNCHANGED
                 self::assertEquals('OK', $row->getStatus());
                 self::assertEquals(\file_get_contents($row->getFilename()), $row->getContent());
             }
         }
+        self::assertTrue($hasAdminRoleModelUpdate, 'hasAdminRoleModelUpdate');
     }
 }

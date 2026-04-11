@@ -392,21 +392,17 @@ class TableCollection
 
             $line = trim($line);
 
-            if (!preg_match('/^@(property\S*?)\s+(\S+)\s+\$(\S+)(?:\s([\S\s]+))?/', $line, $matchs, PREG_UNMATCHED_AS_NULL)) {
+            $parsed = PropertyDocLineParser::parse($line);
+            if (null === $parsed) {
                 $liens[] = [$i, $line, 'raw'];
                 continue;
             }
 
-            $head        = trim($matchs[1]);
-            $propType    = trim($matchs[2]);
-            $propName    = trim($matchs[3]);
-            $propComment = $matchs[4] ? trim($matchs[4]) : null;
-
             $line = [$i, $line, 'property', [
-                'head'    => $head,
-                'type'    => $propType,
-                'name'    => $propName,
-                'comment' => $propComment,
+                'head'    => $parsed['head'],
+                'type'    => $parsed['type'],
+                'name'    => $parsed['name'],
+                'comment' => $parsed['comment'],
             ]];
 
             $liens[] = $line;

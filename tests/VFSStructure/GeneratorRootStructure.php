@@ -308,3 +308,34 @@ const AdminUserModel_UPDATE = <<<PHP
     }
     PHP;
 
+const AdminRoleModel_RAW = <<<PHP
+    <?php
+
+    declare(strict_types=1);
+
+    namespace Tests\ModelOutput\T2;
+
+    use Tests\ModelOutput\ModelBase;
+
+    /**
+     * Model: 系统角色.
+     *
+     * @property int                       \$id
+     * @property int                       \$pid
+     * @property int                       \$genre        角色类型
+     * @property int                       \$status       角色状态
+     * @property int                       \$create_time  创建时间
+     * @property int                       \$update_time  更新时间
+     * @property int                       \$delete_time  删除时间
+     * @property string                    \$name         角色名称
+     * @property string                    \$description  角色描述
+     * @property array<string, mixed>|null \$ext          自定义扩展字段
+     * @property int                       \$lock_version 数据版本
+     * @property-read string               \$status_text  状态文本
+     */
+    final class AdminRoleModel extends ModelBase
+    {
+        protected \$table = 'admin_role';
+        protected \$pk = 'id';
+    }
+    PHP;
