@@ -11,6 +11,7 @@ class DumpValue
     private ?string $fileHash = null;
     public static bool $dumpGenerateDate = false;
     public static bool $dumpGenerateHash = false;
+    public static bool $dumpGenerateWarning = true;
 
     public function __construct(
         private string $filename,
@@ -43,6 +44,11 @@ class DumpValue
         $head = <<<HEAD
             /** @noinspection ALL */
             HEAD;
+
+        if (self::$dumpGenerateWarning) {
+            $warning = '// GENERATED FILE. DO NOT EDIT (including by AI/agent).';
+            $head = "{$warning}\n\n{$head}";
+        }
 
         if (self::$dumpGenerateDate) {
             $date = date('c');
