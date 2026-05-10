@@ -6,6 +6,7 @@ namespace Zxin\Think\Validate;
 
 use Exception;
 use think\App;
+use Zxin\Think\Annotation\Core\DumpCommand;
 use Zxin\Think\Route\RouteDump;
 use function file_exists;
 
@@ -20,6 +21,32 @@ if (!isset($file)) {
     throw new Exception('autoload.php file does not exist');
 }
 
-App::getInstance()->initialize();
+try {
+    $command = DumpCommand::fromArgv($argv);
+    if ($command->shouldShowHelp()) {
+        echo $command->help('dump-route', 'Dump route annotation storage.');
+        exit(0);
+    }
 
-RouteDump::dump();
+    App::getInstance()->initialize();
+
+    RouteDump::dump($command);
+} catch (\Throwable $e) {
+    $command ??= DumpCommand::forErrorOutput($argv);
+    if ($command->isJson()) {
+        echo json_encode([
+            'command' => 'dump-route',
+            'status' => 'error',
+            'error' => [
+                'type' => $e::class,
+                'message' => $e->getMessage(),
+            ],
+        ], \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE) . PHP_EOL;
+    } else {
+        fwrite(STDERR, 'RouteDump: error type=' . $e::class . ' message=' . $e->getMessage() . PHP_EOL);
+        if ($command->isVerbose()) {
+            fwrite(STDERR, $e->getTraceAsString() . PHP_EOL);
+        }
+    }
+    exit(1);
+}

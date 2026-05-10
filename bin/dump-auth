@@ -6,7 +6,9 @@ namespace Zxin\Think\Validate;
 
 use Exception;
 use think\App;
+use Zxin\Think\Annotation\Core\DumpCommand;
 use Zxin\Think\Auth\AuthScan;
+use Zxin\Think\Auth\Permission;
 use function file_exists;
 
 foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../../autoload.php', __DIR__ . '/../autoload.php', __DIR__ . '/vendor/autoload.php',] as $_) {
@@ -20,12 +22,54 @@ if (!isset($file)) {
     throw new Exception('autoload.php file does not exist');
 }
 
-App::getInstance()->initialize();
+try {
+    $command = DumpCommand::fromArgv($argv);
+    if ($command->shouldShowHelp()) {
+        echo $command->help('dump-auth', 'Dump auth annotation storage.');
+        exit(0);
+    }
 
-echo '====== AuthDump ======' . PHP_EOL;
-/** @var AuthScan $scan */
-$scan = App::getInstance()->make(AuthScan::class);
-$scan->setDebug(true);
-$scan->refresh();
-echo '========== DONE ==========' . PHP_EOL;
+    App::getInstance()->initialize();
 
+    $path = Permission::getDumpFilePath();
+    $before = is_file($path) ? hash_file('sha1', $path) : null;
+    $startedAt = microtime(true);
+
+    /** @var AuthScan $scan */
+    $scan = App::getInstance()->make(AuthScan::class);
+    $scan->setDebug(false);
+    $report = $scan->refreshWithReport();
+
+    $elapsedMs = (microtime(true) - $startedAt) * 1000;
+    clearstatcache(true, $path);
+    $after = is_file($path) ? hash_file('sha1', $path) : null;
+
+    echo $command->render(
+        'dump-auth',
+        'AuthDump',
+        'ok',
+        $before !== $after,
+        $path,
+        $elapsedMs,
+        $report['summary'],
+        $report['details']
+    );
+} catch (\Throwable $e) {
+    $command ??= DumpCommand::forErrorOutput($argv);
+    if ($command->isJson()) {
+        echo json_encode([
+            'command' => 'dump-auth',
+            'status' => 'error',
+            'error' => [
+                'type' => $e::class,
+                'message' => $e->getMessage(),
+            ],
+        ], \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE) . PHP_EOL;
+    } else {
+        fwrite(STDERR, 'AuthDump: error type=' . $e::class . ' message=' . $e->getMessage() . PHP_EOL);
+        if ($command->isVerbose()) {
+            fwrite(STDERR, $e->getTraceAsString() . PHP_EOL);
+        }
+    }
+    exit(1);
+}

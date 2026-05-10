@@ -21,7 +21,14 @@ class RouteAnnotationTest extends TestCase
 
     public function testDump()
     {
+        ob_start();
         RouteDump::dump();
+        $output = ob_get_clean();
+
+        self::assertStringStartsWith(
+            '# dump-output v1 command=dump-route format=text detail=summary supports=--format=json,--verbose,--quiet,--help',
+            $output
+        );
 
         $filename = RouteLoader::getDumpFilePath();
 

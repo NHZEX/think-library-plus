@@ -34,6 +34,14 @@ class AuthScan
     protected $nodes       = [];
     protected $controllers = [];
     protected array $permissionMetaItems = [];
+    /**
+     * @var array<string, int>
+     */
+    protected array $summary = [];
+    /**
+     * @var list<array<string, scalar|null>>
+     */
+    protected array $details = [];
 
     protected $debug = false;
 
@@ -54,10 +62,26 @@ class AuthScan
 
     public function refresh()
     {
+        $this->refreshWithReport();
+    }
+
+    /**
+     * @return array{data: array, summary: array<string, int>, details: list<array<string, scalar|null>>}
+     */
+    public function refreshWithReport(): array
+    {
         $this->scanAnnotation();
 
         $output = $this->build();
         $this->export($output);
+
+        $summary = $this->summary + $this->summarizeStorage($output);
+
+        return [
+            'data' => $output,
+            'summary' => $summary,
+            'details' => $this->details,
+        ];
     }
 
     public function export($value)
@@ -78,6 +102,15 @@ class AuthScan
         $this->permissions = [];
         $this->nodes       = [];
         $this->controllers = [];
+        $this->permissionMetaItems = [];
+        $this->details = [];
+        $this->summary = [
+            'controllers' => 0,
+            'methods' => 0,
+            'auth' => 0,
+            'auth_meta' => 0,
+            'auth_desc' => 0,
+        ];
 
         $this->loadDefaultPermissions();
 
@@ -92,6 +125,7 @@ class AuthScan
             if ($refClass->isAbstract() || $refClass->isTrait()) {
                 continue;
             }
+            ++$this->summary['controllers'];
 
             $namespaces      = $scanning->getControllerNamespaces();
             $controllerLayer = $scanning->getControllerLayer();
@@ -124,6 +158,7 @@ class AuthScan
                 if (str_starts_with($methodName, '_')) {
                     continue;
                 }
+                ++$this->summary['methods'];
 
                 $nodeUrl    = $controllerUrl . '/' . strtolower($methodName);
                 $methodPath = $class . '::' . $methodName;
@@ -157,6 +192,7 @@ class AuthScan
 
         $authFlags = \is_string($auth->name) ? [$auth->name] : $auth->name;
         $features = "node@{$nodeUrl}";
+        ++$this->summary['auth'];
 
         foreach ($authFlags as $authFlag) {
             $authStr  = $this->parseAuth($authFlag, $controllerUrl, $methodName);
@@ -166,6 +202,13 @@ class AuthScan
             }
             $this->permissions[$authStr]['allow'][] = $features;
         }
+
+        $this->details[] = [
+            'type' => 'auth',
+            'method' => $methodPath,
+            'feature' => $features,
+            'permissions' => implode(',', $authFlags),
+        ];
 
         // 记录节点控制信息
         $this->nodes[$features] = [
@@ -191,9 +234,16 @@ class AuthScan
             throw new AuthException('annotation value not empty(AuthDescription): ' . $methodPath);
         }
         $features = "node@{$nodeUrl}";
+        ++$this->summary['auth_meta'];
         if (isset($this->nodes[$features])) {
             $this->nodes[$features]['desc']   = $auth->desc;
             $this->nodes[$features]['policy'] = $auth->policy;
+            $this->details[] = [
+                'type' => 'auth_meta',
+                'method' => $methodPath,
+                'feature' => $features,
+                'desc' => $auth->desc,
+            ];
         } else {
             throw new AuthException('nodes not ready(AuthDescription): ' . $methodPath);
         }
@@ -205,6 +255,7 @@ class AuthScan
             if (isset($this->permissionMetaItems[$node])) {
                 continue;
             }
+            ++$this->summary['auth_desc'];
             if (\is_string($info)) {
                 $this->permissionMetaItems[$node] = [
                     'sort' => null,
@@ -230,5 +281,22 @@ class AuthScan
             return str_replace('/', '.', $controllerUrl) . '.' . strtolower($methodName);
         }
         return $auth;
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    private function summarizeStorage(array $output): array
+    {
+        $linkCount = 0;
+        foreach ($output['permission2features'] ?? [] as $features) {
+            $linkCount += \count($features);
+        }
+
+        return [
+            'features' => \count($output['features'] ?? []),
+            'permissions' => \count($output['permission'] ?? []),
+            'links' => $linkCount,
+        ];
     }
 }
