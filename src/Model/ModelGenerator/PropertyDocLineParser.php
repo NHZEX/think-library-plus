@@ -44,7 +44,7 @@ final class PropertyDocLineParser
 
         $afterNameByte = $nameMatchOff + \strlen($nameMatchFull);
         $rest          = substr($line, $afterNameByte);
-        $propComment   = '' !== trim((string) $rest) ? trim($rest) : null;
+        $propComment   = '' !== trim($rest) ? trim($rest) : null;
 
         return [
             'head'    => $head,

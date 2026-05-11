@@ -71,7 +71,7 @@ class RouteLoader
 
             $this->restfullDefinition = $this->config['restfull_definition'] ?: self::RESTFULL_DEFINITION;
             if (!empty($this->config['restfull_definition_set'])) {
-                $this->restfullDefinitionSet = $this->config['restfull_definition_set'] ?: [];
+                $this->restfullDefinitionSet = $this->config['restfull_definition_set'];
             }
 
             $this->route->rest($this->restfullDefinition, true);

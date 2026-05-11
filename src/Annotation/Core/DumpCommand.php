@@ -23,7 +23,7 @@ final class DumpCommand
     {
         $self = new self();
 
-        foreach (array_slice($argv, 1) as $arg) {
+        foreach (\array_slice($argv, 1) as $arg) {
             if ('--json' === $arg || '--format=json' === $arg) {
                 $self->format = self::FORMAT_JSON;
                 continue;
@@ -67,7 +67,7 @@ final class DumpCommand
     {
         $self = new self();
 
-        foreach (array_slice($argv, 1) as $arg) {
+        foreach (\array_slice($argv, 1) as $arg) {
             if ('--json' === $arg || '--format=json' === $arg) {
                 $self->format = self::FORMAT_JSON;
                 continue;

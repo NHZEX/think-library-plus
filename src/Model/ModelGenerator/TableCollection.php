@@ -9,7 +9,6 @@ use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\Printer;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use think\db\ConnectionInterface;
 use think\db\PDOConnection;
 use think\helper\Str;
 use Zxin\Think\Model\ModelGenerator\Data\ModelFileItem;
@@ -81,7 +80,7 @@ class TableCollection
         return $this->mapping;
     }
 
-    public static function resolveDbConnect(string $name): ConnectionInterface|PDOConnection
+    public static function resolveDbConnect(string $name): PDOConnection
     {
         return app()->db->connect($name);
     }
@@ -107,7 +106,7 @@ class TableCollection
 
         foreach ($this->tableTree as $connectName => $tables) {
             $defaultExclude = $this->defaultOptions->getExclude() ?? [];
-            $tables = array_filter($tables, function (string $table) use ($connectName, $defaultExclude) {
+            $tables = array_filter($tables, function (string $table) use ($defaultExclude) {
                 if (\in_array($table, $defaultExclude)) {
                     return false;
                 }
@@ -348,7 +347,7 @@ class TableCollection
         $phpClass->addProperty('table', $table)->setProtected();
         // > 主键
         $priFields = $fields->where('COLUMN_KEY', '=', 'PRI');
-        if ($priFields) {
+        if (!$priFields->isEmpty()) {
             if (\count($priFields) === 1) {
                 $pkValue = $priFields[0]['COLUMN_NAME'];
             } else {
@@ -489,7 +488,7 @@ class TableCollection
         if (false !== $rawPkValue) {
             $priFields = $fields->where('COLUMN_KEY', '=', 'PRI');
             $newPkValue = null;
-            if ($priFields) {
+            if (!$priFields->isEmpty()) {
                 if (\count($priFields) === 1) {
                     $newPkValue = $priFields[0]['COLUMN_NAME'];
                 } else {

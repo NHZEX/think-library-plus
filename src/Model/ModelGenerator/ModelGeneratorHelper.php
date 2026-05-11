@@ -6,15 +6,16 @@ namespace Zxin\Think\Model\ModelGenerator;
 
 use Composer\Autoload\ClassLoader;
 use think\Collection;
-use think\db\ConnectionInterface;
+use think\db\PDOConnection;
 use Zxin\Think\Model\ModelGenerator\Data\ModelFileItem;
 use Zxin\Think\Model\ModelGenerator\Options\SingleItemOptions;
 
 class ModelGeneratorHelper
 {
-    public static function queryTables(ConnectionInterface $connection): array
+    public static function queryTables(PDOConnection $connection): array
     {
         $tables = $connection
+            ->newQuery()
             ->table('information_schema.tables')
             // 默认不处理视图 VIEW
             ->where('TABLE_TYPE', '=', 'BASE TABLE')
@@ -24,10 +25,11 @@ class ModelGeneratorHelper
         return $tables->column('TABLE_COMMENT', 'TABLE_NAME');
     }
 
-    public static function queryTableFields(ConnectionInterface $connection, string $table): Collection
+    public static function queryTableFields(PDOConnection $connection, string $table): Collection
     {
         // todo 后续抽象为一个独立的表对象
         return $connection
+            ->newQuery()
             ->table('information_schema.COLUMNS')
             ->whereRaw('`TABLE_SCHEMA`=SCHEMA()')
             ->where('table_name', '=', $table)
